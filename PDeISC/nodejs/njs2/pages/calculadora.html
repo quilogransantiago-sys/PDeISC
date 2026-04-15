@@ -1,0 +1,14 @@
+<h1>Calculadora</h1>
+<p>Ingresa dos números y elige una operación:</p>
+<form action="/calculadora" method="GET" class="form-calc">
+    <input type="number" name="a" placeholder="Número A" required>
+    <input type="number" name="b" placeholder="Número B" required>
+    <select name="operacion">
+        <option value="sumar">Sumar</option>
+        <option value="restar">Restar</option>
+        <option value="multiplicar">Multiplicar</option>
+        <option value="dividir">Dividir</option>
+    </select>
+    <button type="submit">Calcular</button>
+</form>
+{{RESULTADO}}
