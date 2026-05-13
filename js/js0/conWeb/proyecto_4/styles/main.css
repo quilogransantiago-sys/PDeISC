@@ -1,0 +1,317 @@
+/* 
+  ESTILOS PARA EL PROYECTO SHIFT()
+  Creado para ser visual pero fácil de entender.
+  Los comentarios explican cada parte importante.
+*/
+
+/* Reset: elimina márgenes y paddings que vienen por defecto */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Fondo general de la página - degradado suave */
+body {
+    font-family: system-ui, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background: linear-gradient(145deg, #eef2f3 0%, #d9e2e8 100%);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+/* Contenedor principal: ancho máximo y centrado */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Título principal: se ajusta automáticamente en móviles con clamp() */
+h1 {
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    text-align: center;
+    color: #1f3b4c;
+    margin-bottom: 0.5rem;
+}
+
+h1 code {
+    background: #1f3b4c;
+    color: #f0f3f5;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+}
+
+/* Párrafos explicativos */
+p {
+    text-align: center;
+    color: #2c4e6b;
+    margin-bottom: 1.5rem;
+}
+
+/* Tarjetas que contienen cada ejercicio */
+.card {
+    background: white;
+    border-radius: 32px;
+    padding: 1.8rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    /* pequeño efecto al pasar el mouse */
+}
+
+.card h2 {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    color: #1f3b4c;
+    border-left: 5px solid #e67e22;
+    padding-left: 0.8rem;
+}
+
+/* Estilo para mostrar el array de números */
+.array-box {
+    background: #f8f9fa;
+    padding: 0.8rem;
+    border-radius: 20px;
+    margin: 1rem 0;
+    text-align: center;
+}
+
+.array-display {
+    font-family: monospace;
+    font-size: 1.2rem;
+    background: #e9ecef;
+    padding: 0.3rem 0.8rem;
+    border-radius: 30px;
+    display: inline-block;
+}
+
+/* ========== EJERCICIO 2: CHAT (burbujas como WhatsApp) ========== */
+.chat-card {
+    background: #fef9e6;
+}
+
+.chat-container {
+    background: #e5ddd5;
+    /* color típico de fondo de chat */
+    border-radius: 20px;
+    padding: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Contenedor donde aparecen los mensajes. Tiene scroll si hay muchos */
+.chat-messages {
+    min-height: 200px;
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+}
+
+/* Cada burbuja de mensaje */
+.message-bubble {
+    background: #dcf8c5;
+    align-self: flex-start;
+    max-width: 80%;
+    padding: 10px 14px;
+    border-radius: 18px;
+    border-bottom-left-radius: 4px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.3s ease;
+    /* animación al aparecer */
+    word-wrap: break-word;
+}
+
+/* Animación cuando se elimina un mensaje (desaparece hacia la izquierda) */
+.message-bubble.removing {
+    animation: fadeOutLeft 0.4s forwards;
+}
+
+/* Animaciones keyframes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOutLeft {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(-50px);
+        display: none;
+    }
+}
+
+/* Botón del chat (color verde como WhatsApp) */
+.chat-btn,
+.attend-btn {
+    background: #e67e22;
+    width: 100%;
+    margin-top: 0;
+}
+
+.chat-btn:hover {
+    background: #d35400;
+}
+
+/* ========== EJERCICIO 3: COLA DE CLIENTES (tarjetas con ticket) ========== */
+.queue-card {
+    background: #f0f4f8;
+}
+
+.queue-container {
+    background: #ffffffcc;
+    border-radius: 24px;
+    padding: 1rem;
+}
+
+/* Contenedor flexible para las tarjetitas */
+.queue-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: flex-start;
+    margin-bottom: 1.5rem;
+    min-height: 100px;
+}
+
+/* Cada cliente es una tarjeta azul */
+.client-card {
+    background: #1f3b4c;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 50px;
+    font-weight: bold;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
+    animation: slideInRight 0.3s ease;
+}
+
+/* Animación cuando se atiende un cliente (se va volando a la derecha) */
+.client-card.removing {
+    animation: bounceOutRight 0.5s forwards;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes bounceOutRight {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    70% {
+        transform: translateX(40px);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: translateX(100px);
+        opacity: 0;
+        display: none;
+    }
+}
+
+/* Botón atender */
+.attend-btn {
+    background: #e67e22;
+}
+
+.attend-btn:hover {
+    background: #d35400;
+}
+
+/* Estilos para botones en general */
+button {
+    border: none;
+    padding: 0.75rem 1.2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 60px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.05s;
+    color: white;
+}
+
+button:hover {
+    transform: scale(0.98);
+}
+
+button:active {
+    transform: scale(0.96);
+}
+
+/* Mensajes de éxito y error que aparecen abajo de cada ejercicio */
+.mensaje {
+    margin-top: 0.8rem;
+    padding: 0.6rem 1rem;
+    border-radius: 40px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center;
+}
+
+.mensaje.exito {
+    background: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+
+.mensaje.error {
+    background: #f8d7da;
+    color: #721c24;
+    border-left: 4px solid #dc3545;
+}
+
+/* Para pantallas chicas (móviles): todo más compacto */
+@media (max-width: 640px) {
+    body {
+        padding: 1rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    .client-card {
+        padding: 8px 14px;
+        font-size: 0.9rem;
+    }
+
+    .message-bubble {
+        max-width: 95%;
+    }
+}

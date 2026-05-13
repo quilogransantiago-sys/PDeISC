@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punto 3 - Hijos del container por página</title>
+    <link rel="stylesheet" href="/styles/global.css">
+    <style>
+        /* Estilos mínimos para la zona de mensaje */
+        .mensaje-global {
+            margin-top: 30px;
+            padding: 12px;
+            background: #e9ecef;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            min-height: 60px;
+        }
+
+        .botones-navegacion {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .btn {
+            background: #e0e0e0;
+            border: 1px solid #aaa;
+            padding: 8px 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            color: black;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #ccc;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="botones-navegacion">
+            <a href="/pag_1" class="btn" data-pagina="pag_1">🎯 mousemove</a>
+            <a href="/pag_2" class="btn" data-pagina="pag_2">⌨️ keydown</a>
+            <a href="/pag_3" class="btn" data-pagina="pag_3">📝 focus/blur</a>
+            <a href="/pag_4" class="btn" data-pagina="pag_4">🖥️ resize</a>
+            <a href="/pag_5" class="btn" data-pagina="pag_5">📜 scroll</a>
+        </div>
+
+        <div id="mensajeGlobal" class="mensaje-global"></div>
+
+    </div>
+
+    <script type="module">
+        import { precargarContenedores, asignarEventosContadores } from '/modules/contadorHijos.js';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urls = {
+                pag_1: '/pag_1',
+                pag_2: '/pag_2',
+                pag_3: '/pag_3',
+                pag_4: '/pag_4',
+                pag_5: '/pag_5'
+            };
+            const contadores = await precargarContenedores(urls);
+            const botones = document.querySelectorAll('.btn[data-pagina]');
+            asignarEventosContadores(botones, contadores, 'mensajeGlobal');
+        });
+    </script>
+</body>
+
+</html>

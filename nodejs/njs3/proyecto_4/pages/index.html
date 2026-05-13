@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punto 4 - Crear y modificar nodos &lt;a&gt;</title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Creación y modificación de nodos &lt;a&gt;</h1>
+
+        <div class="botones-creacion">
+            <button id="crear1">🔗 Crear Google</button>
+            <button id="crear2">🔗 Crear YouTube</button>
+            <button id="crear3">🔗 Crear GitHub</button>
+            <button id="crear4">🔗 Crear Twitter</button>
+            <button id="crear5">🔗 Crear LinkedIn</button>
+        </div>
+
+        <div class="botones-modificacion">
+            <button id="modificarHref">✏️ Modificar href de todos (cambiar a 'https://example.com')</button>
+            <button id="modificarTexto">✏️ Modificar texto de todos (agregar ' - Modificado')</button>
+            <button id="modificarTarget">✏️ Modificar target de todos (abrir en nueva pestaña)</button>
+        </div>
+
+        <div id="areaNodos" class="area-nodos">
+            <h2>Enlaces creados:</h2>
+            <div id="listaEnlaces" class="lista-enlaces"></div>
+        </div>
+
+        <div id="mensajeLog" class="mensaje-log">
+            <h3>Registro de cambios:</h3>
+            <ul id="logList"></ul>
+        </div>
+
+        <div class="volver">
+            <a href="/" class="btn">Reiniciar (recargar página)</a>
+        </div>
+    </div>
+
+    <script type="module" src="/scripts/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,171 @@
+/* Reset básico para eliminar márgenes y paddings por defecto */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Fuente moderna y fondo degradado suave */
+body {
+    font-family: system-ui, 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background: linear-gradient(145deg, #f9fafb 0%, #eef2f6 100%);
+    min-height: 100vh;
+    padding: 2rem 1rem;
+}
+
+/* Contenedor fluido que aprovecha el ancho máximo sin márgenes laterales excesivos */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Títulos responsivos con clamp() */
+h1 {
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    text-align: center;
+    color: #0f172a;
+    margin-bottom: 0.5rem;
+}
+
+h1 code {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.9em;
+}
+
+/* Tarjetas con sombra y bordes redondeados */
+.card {
+    background: white;
+    border-radius: 28px;
+    padding: 1.8rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+}
+
+.card h2 {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    color: #0f172a;
+    border-left: 5px solid #3b82f6;
+    padding-left: 0.8rem;
+}
+
+/* Grupo de botones para ejercicio 1 */
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin: 1rem 0 0.5rem;
+}
+
+/* Estilos base para botones */
+button {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.7rem 1.3rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 60px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.05s;
+}
+
+button:hover {
+    background: #2563eb;
+    transform: scale(0.97);
+}
+
+/* Grupo de input para ejercicios 2 y 3 */
+.input-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin: 1rem 0 0.5rem;
+}
+
+input {
+    flex: 2;
+    min-width: 180px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    border: 2px solid #cbd5e1;
+    border-radius: 60px;
+    background: white;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Mensajes de éxito y error */
+.mensaje {
+    margin-top: 1rem;
+    padding: 0.6rem 1rem;
+    border-radius: 40px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.mensaje.exito {
+    background: #dcfce7;
+    color: #166534;
+    border-left: 4px solid #22c55e;
+}
+
+.mensaje.error {
+    background: #fee2e2;
+    color: #991b1b;
+    border-left: 4px solid #dc2626;
+}
+
+footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding: 1rem;
+    color: #475569;
+    font-size: 0.8rem;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 48px;
+}
+
+/* Media query para pantallas pequeñas: sin márgenes excesivos, elementos apilados */
+@media (max-width: 640px) {
+    body {
+        padding: 1rem;
+    }
+
+    .card {
+        padding: 1.2rem;
+    }
+
+    button,
+    .button-group button {
+        width: 100%;
+    }
+
+    .input-group {
+        flex-direction: column;
+    }
+
+    input,
+    button {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    .card h2 {
+        font-size: 1.3rem;
+    }
+}

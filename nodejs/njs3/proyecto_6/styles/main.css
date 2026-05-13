@@ -1,0 +1,139 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f0f2f5;
+    padding: 20px;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+h1,
+h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.form-registro {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.campo label {
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="email"],
+select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.radio-group,
+.checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 5px;
+}
+
+.botones {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+button {
+    background: #e0e0e0;
+    border: 1px solid #aaa;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #ccc;
+}
+
+button.reset {
+    background: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.resultado-panel {
+    margin-top: 30px;
+    padding: 15px;
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.datos-mostrados {
+    background: white;
+    padding: 10px;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.cerrar-btn {
+    background: #6c757d;
+    color: white;
+    border: none;
+}
+
+.volver {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn {
+    background: #e0e0e0;
+    padding: 6px 12px;
+    text-decoration: none;
+    color: black;
+    border-radius: 4px;
+}
+
+@media (max-width: 600px) {
+
+    .radio-group,
+    .checkbox-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .botones {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+    }
+}

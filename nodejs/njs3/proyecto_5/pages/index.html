@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punto 5 - Agregar HTML dinámico con innerHTML</title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Agregar objetos HTML con innerHTML</h1>
+
+        <div class="botones-agregar">
+            <button id="btnParrafo">➕ Agregar párrafo</button>
+            <button id="BtnImagen">🖼️ Agregar imagen</button>
+            <button id="btnLista">📋 Agregar lista</button>
+            <button id="btnTabla">📊 Agregar tabla</button>
+            <button id="btnDiv">🔲 Agregar div con borde</button>
+            <button id="btnLink">🔗 Agregar enlace</button>
+        </div>
+
+        <div class="area-contenido">
+            <h2>Contenido agregado (innerHTML):</h2>
+            <div id="contenedorDinamico" class="contenedor-dinamico"></div>
+        </div>
+
+        <div class="area-log">
+            <h3>Historial de acciones:</h3>
+            <ul id="logList"></ul>
+        </div>
+
+        <div class="botones-accion">
+            <button id="btnLimpiar">🗑️ Limpiar todo</button>
+        </div>
+    </div>
+
+    <script type="module" src="/scripts/main.js"></script>
+</body>
+
+</html>

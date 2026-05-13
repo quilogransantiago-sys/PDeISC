@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slice() - Copiar partes de un array</title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1> <code>slice()</code> – Copiar sin modificar</h1>
+        <p>slice() crea un nuevo array con una parte del original. El original no se toca.</p>
+
+        <!-- EJERCICIO 1: primeros 3 elementos (array de números) -->
+        <div class="card">
+            <h2>1️ Copiar los primeros 3 elementos</h2>
+            <p class="explicacion">
+                <code>numeros.slice(0, 3)</code> → Desde índice 0 hasta el 3 (no incluye índice 3).
+            </p>
+            <div class="array-box">
+                <div><strong>Array original:</strong> <span id="numerosOriginal">[10, 20, 30, 40, 50, 60]</span></div>
+                <div><strong>Copia (primeros 3):</strong> <span id="primeros3">—</span></div>
+            </div>
+            <button id="btnPrimeros3"> Obtener copia</button>
+            <div id="mensaje1" class="mensaje"></div>
+        </div>
+
+        <!-- EJERCICIO 2: desde posición 2 hasta la 4 (índices 2,3,4) usando array de películas -->
+        <div class="card">
+            <h2>2️ Copiar desde posición 2 hasta la 4</h2>
+            <p class="explicacion">
+                <code>peliculas.slice(2, 5)</code> → Desde índice 2 hasta el 5 (exclusivo). Así obtenemos las posiciones
+                2,3,4.
+            </p>
+            <div class="array-box">
+                <div><strong>Array original:</strong> <span id="peliculasOriginal">["El
+                        Padrino","Titanic","Inception","Gladiador","Matrix"]</span></div>
+                <div><strong>Copia (posiciones 2 a 4):</strong> <span id="copiaPeliculas">—</span></div>
+            </div>
+            <button id="btnPeliculas"> Copiar</button>
+            <div id="mensaje2" class="mensaje"></div>
+        </div>
+
+        <!-- EJERCICIO 3: últimos 3 elementos del MISMO array de películas (sin modificarlo) -->
+        <div class="card">
+            <h2>3️ Últimos 3 elementos (del mismo array de películas)</h2>
+            <p class="explicacion">
+                <code>peliculas.slice(-3)</code> → Con números negativos empieza desde el final.
+            </p>
+            <div class="array-box">
+                <div><strong>El mismo array original:</strong> <span id="peliculasParaUltimos">["El
+                        Padrino","Titanic","Inception","Gladiador","Matrix"]</span></div>
+                <div><strong>Copia (últimos 3):</strong> <span id="ultimos3">—</span></div>
+            </div>
+            <button id="btnUltimos3"> Obtener últimos 3</button>
+            <div id="mensaje3" class="mensaje"></div>
+        </div>
+    </div>
+
+    <script type="module" src="/scripts/main.js"></script>
+</body>
+
+</html>
