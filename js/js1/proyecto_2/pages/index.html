@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apple iPhone Store - Mayorista / Minorista</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') document.documentElement.classList.add('dark-theme');
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="app">
+        <header class="header">
+            <h1>Venta de iPhones (Mayorista / Minorista)</h1>
+            <button id="theme-toggle" class="theme-toggle">Modo oscuro</button>
+        </header>
+
+        <div class="dashboard">
+            <!-- Formulario -->
+            <div class="form-column">
+                <form id="sale-form" class="form">
+                    <div class="form-field">
+                        <label>Modelo *</label>
+                        <select id="model" required>
+                            <option value="">Seleccionar</option>
+                        </select>
+                        <small class="error-message" id="model-error"></small>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Color *</label>
+                        <select id="color" required disabled>
+                            <option value="">Primero selecciona modelo</option>
+                        </select>
+                        <small class="error-message" id="color-error"></small>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Capacidad *</label>
+                        <select id="capacity" required disabled>
+                            <option value="">Primero selecciona modelo</option>
+                        </select>
+                        <small class="error-message" id="capacity-error"></small>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Tipo de venta *</label>
+                        <select id="saleType" required>
+                            <option value="">Seleccionar</option>
+                            <option value="minorista">Minorista (venta al público, +30% sobre costo)</option>
+                            <option value="mayorista">Mayorista (precio costo, mínimo 10 unidades)</option>
+                        </select>
+                        <small class="error-message" id="saleType-error"></small>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Cantidad (unidades) *</label>
+                        <input type="number" id="quantity" min="1" value="1" required>
+                        <small class="error-message" id="quantity-error"></small>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Condición *</label>
+                        <select id="condition" required>
+                            <option value="">Seleccionar</option>
+                            <option value="nuevo">Nuevo (sellado)</option>
+                            <option value="reacondicionado">Reacondicionado (como nuevo)</option>
+                        </select>
+                        <small class="error-message" id="condition-error"></small>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Garantía (meses)</label>
+                        <input type="number" id="warranty" min="0" max="24" step="1">
+                        <small class="error-message" id="warranty-error"></small>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Precio total (USD) *</label>
+                        <input type="text" id="totalPrice" readonly disabled>
+                        <small class="hint">Se calcula automáticamente</small>
+                    </div>
+
+                    <div class="form-field">
+                        <label>Notas adicionales</label>
+                        <textarea id="notes" rows="2" placeholder="Opcional: IMEI, accesorios incluidos..."></textarea>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">Registrar venta</button>
+                        <button type="button" id="clear-all" class="btn btn-secondary">Eliminar todas</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Columna derecha: lista y almacenes -->
+            <div class="info-column">
+                <div class="items-list-box">
+                    <h2>Ventas registradas</h2>
+                    <div id="sales-list" class="items-list">
+                        <p class="empty-message">No hay ventas. Realice una.</p>
+                    </div>
+                </div>
+
+                <div class="storage-panel">
+                    <h3>Almacenamiento (3 métodos)</h3>
+                    <div class="storage-cards">
+                        <div class="storage-card">
+                            <strong>localStorage</strong> <span id="ls-count">0</span> ventas
+                            <button id="load-ls" class="btn-small">Cargar</button>
+                            <p class="hint">Persiste al cerrar navegador</p>
+                        </div>
+                        <div class="storage-card">
+                            <strong>sessionStorage</strong> <span id="ss-count">0</span> ventas
+                            <button id="load-ss" class="btn-small">Cargar</button>
+                            <p class="hint">Se borra al cerrar pestaña</p>
+                        </div>
+                        <div class="storage-card">
+                            <strong>Cookies</strong> <span id="cookie-count">0</span> ventas
+                            <button id="load-cookie" class="btn-small">Cargar</button>
+                            <p class="hint">Expiran en 7 días</p>
+                        </div>
+                    </div>
+                    <div class="demo-instructions">
+                        <p>✔️ Cada venta se guarda en los 3 almacenes.</p>
+                        <p>📌 Abre otra pestaña: sessionStorage estará vacío; pulsa "Cargar" desde localStorage para
+                            sincronizar.</p>
+                        <p>🍪 Ver cookies en DevTools > Application > Cookies.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="/scripts/main.js"></script>
+</body>
+
+</html>

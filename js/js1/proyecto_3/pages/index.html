@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Gestión de Personas</title>
+    <!-- Prevenir flash de modo oscuro: script inline antes de CSS -->
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+            } else {
+                document.documentElement.classList.remove('dark-mode');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Cabecera con botón de tema -->
+        <header class="main-header">
+            <h1>Almacén de Personas</h1>
+            <button id="theme-toggle" class="theme-btn" aria-label="Cambiar tema">Modo oscuro</button>
+        </header>
+
+        <!-- Formulario de carga -->
+        <section class="form-section">
+            <h2>Registrar nueva persona</h2>
+            <form id="person-form" novalidate>
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="nombre">Nombre *</label>
+                        <input type="text" id="nombre" name="nombre" placeholder="Ej: Juan" autocomplete="off">
+                        <span class="error-msg" data-for="nombre"></span>
+                    </div>
+                    <div class="form-field">
+                        <label for="apellido">Apellido *</label>
+                        <input type="text" id="apellido" name="apellido" placeholder="Ej: Pérez">
+                        <span class="error-msg" data-for="apellido"></span>
+                    </div>
+                    <div class="form-field">
+                        <label for="edad">Edad *</label>
+                        <input type="number" id="edad" name="edad" placeholder="18">
+                        <span class="error-msg" data-for="edad"></span>
+                    </div>
+                    <div class="form-field">
+                        <label for="fechaNac">Fecha de nacimiento *</label>
+                        <input type="date" id="fechaNac" name="fechaNac">
+                        <span class="error-msg" data-for="fechaNac"></span>
+                    </div>
+                    <div class="form-field">
+                        <label for="sexo">Sexo *</label>
+                        <select id="sexo" name="sexo">
+                            <option value="">Seleccione</option>
+                            <option value="Masculino">Masculino</option>
+                            <option value="Femenino">Femenino</option>
+                        </select>
+                        <span class="error-msg" data-for="sexo"></span>
+                    </div>
+                    <div class="form-field">
+                        <label for="documento">Documento *</label>
+                        <input type="text" id="documento" name="documento" placeholder="Solo números">
+                        <span class="error-msg" data-for="documento"></span>
+                    </div>
+                    <div class="form-field">
+                        <label for="estadoCivil">Estado civil *</label>
+                        <select id="estadoCivil" name="estadoCivil">
+                            <option value="">Seleccione</option>
+                            <option value="Soltero/a">Soltero/a</option>
+                            <option value="Casado/a">Casado/a</option>
+                            <option value="Divorciado/a">Divorciado/a</option>
+                            <option value="Viudo/a">Viudo/a</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                        <span class="error-msg" data-for="estadoCivil"></span>
+                    </div>
+                    <div class="form-field">
+                        <label for="nacionalidad">Nacionalidad *</label>
+                        <input type="text" id="nacionalidad" name="nacionalidad" placeholder="Ej: Argentina">
+                        <span class="error-msg" data-for="nacionalidad"></span>
+                    </div>
+                    <div class="form-field">
+                        <label for="telefono">Teléfono *</label>
+                        <input type="tel" id="telefono" name="telefono" placeholder="Ej: 123456789">
+                        <span class="error-msg" data-for="telefono"></span>
+                    </div>
+                    <div class="form-field">
+                        <label for="mail">Correo electrónico *</label>
+                        <input type="email" id="mail" name="mail" placeholder="ejemplo@dominio.com">
+                        <span class="error-msg" data-for="mail"></span>
+                    </div>
+                    <div class="form-field full-width">
+                        <div class="hijos-check-group">
+                            <input type="checkbox" id="tieneHijos" name="tieneHijos">
+                            <label for="tieneHijos">¿Tiene hijos?</label>
+                        </div>
+                        <div id="hijos-cantidad-container" style="display: none;">
+                            <label for="cantidadHijos">Cantidad de hijos *</label>
+                            <input type="number" id="cantidadHijos" name="cantidadHijos" min="1" step="1">
+                            <span class="error-msg" data-for="cantidadHijos"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">Guardar persona</button>
+                    <button type="reset" class="btn-reset">Limpiar formulario</button>
+                </div>
+                <div id="global-message" class="global-message"></div>
+            </form>
+        </section>
+
+        <!-- Listado de personas -->
+        <section class="list-section">
+            <h2>Personas registradas</h2>
+            <div id="people-list-container">
+                <div class="loading">Cargando listado...</div>
+            </div>
+        </section>
+    </div>
+
+    <script type="module" src="/scripts/main.js"></script>
+</body>
+
+</html>

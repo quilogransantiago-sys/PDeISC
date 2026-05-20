@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demostración: Lectura de Formularios en JavaScript</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark-theme');
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="app">
+        <header class="header">
+            <h1>Lectura de Formularios en JavaScript</h1>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">Modo oscuro</button>
+        </header>
+
+        <div class="dashboard">
+            <!-- Columna izquierda: formulario -->
+            <div class="form-column">
+                <form id="user-form" class="form">
+                    <div class="form-field">
+                        <label for="name">Nombre completo:</label>
+                        <input type="text" id="name" name="fullName" placeholder="Ej: Ana Garcia" required>
+                        <small class="error-message" id="name-error"></small>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="email">Correo electronico:</label>
+                        <input type="email" id="email" name="email" placeholder="usuario@ejemplo.com" required>
+                        <small class="error-message" id="email-error"></small>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="age">Edad:</label>
+                        <input type="number" id="age" name="age" placeholder="25" min="1" max="120">
+                        <small class="error-message" id="age-error"></small>
+                    </div>
+
+                    <!-- Reemplaza todo el bloque de intereses por este -->
+                    <div class="form-field">
+                        <label>Intereses:</label>
+                        <div class="checkboxes" id="interests-container">
+                            <label><input type="checkbox" name="interests" value="tecnologia"> Tecnologia</label>
+                            <label><input type="checkbox" name="interests" value="deportes"> Deportes</label>
+                            <label><input type="checkbox" name="interests" value="musica"> Musica</label>
+                            <label><input type="checkbox" name="interests" value="lectura"> Lectura</label>
+
+                            <!-- Sección Otro/s -->
+                            <div class="other-interest">
+                                <label>
+                                    <input type="checkbox" id="otherCheckbox"> Otro/s
+                                </label>
+                                <input type="text" id="otherText" class="other-input" placeholder="Escribe tu interes"
+                                    disabled>
+                            </div>
+                        </div>
+                        <small class="error-message" id="interests-error"></small>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" id="btn-elements" class="btn btn-primary">1. Leer con
+                            form.elements</button>
+                        <button type="button" id="btn-formdata" class="btn btn-primary">2. Leer con FormData</button>
+                        <button type="button" id="btn-query" class="btn btn-primary">3. Leer con querySelector</button>
+                        <button type="reset" class="btn btn-secondary">Limpiar</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Columna derecha: resultados y lista de usuarios -->
+            <div class="info-column">
+                <div class="result-box">
+                    <h2>Resultado de la lectura</h2>
+                    <pre id="result-area" class="result-content">Esperando accion...</pre>
+                </div>
+
+                <div class="users-box">
+                    <h2>Usuarios registrados</h2>
+                    <div id="users-list" class="users-list">
+                        <p class="empty-message">No hay usuarios registrados.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/scripts/main.js"></script>
+</body>
+
+</html>

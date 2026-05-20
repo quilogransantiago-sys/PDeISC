@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Método unshift() - Ejercicios</title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Demostración del método <code>unshift()</code></h1>
+        <p>Agrega uno o más elementos al inicio del array</p>
+
+        <!-- 
+      EJERCICIO 1: Array vacío de colores.
+      Muestra cómo unshift() puede agregar elementos al principio incluso cuando el array está vacío.
+      Se usan botones con valores predefinidos para evitar validaciones complejas.
+    -->
+        <section class="card">
+            <h2> 1. Agregar colores al principio (array vacío)</h2>
+            <p>Array actual: <strong id="coloresArray">[]</strong></p>
+            <div class="button-group">
+                <button id="agregarRojoBtn">Rojo</button>
+                <button id="agregarVerdeBtn">Verde</button>
+                <button id="agregarAzulBtn">Azul</button>
+            </div>
+            <div id="colorMensaje" class="mensaje"></div>
+        </section>
+
+        <!-- 
+      EJERCICIO 2: Tareas pendientes con tarea urgente.
+      El usuario puede escribir cualquier tarea. Se valida que no esté vacía.
+      La nueva tarea se coloca al principio (como urgente) usando unshift().
+    -->
+        <section class="card">
+            <h2> 2. Tareas pendientes</h2>
+            <p>Tareas actuales: <strong id="tareasArray">["Estudiar", "Comprar pan", "Llamar a mamá"]</strong></p>
+            <div class="input-group">
+                <input type="text" id="tareaInput" placeholder="Ej: Entregar informe" autocomplete="off">
+                <button id="agregarTareaBtn">Agregar como tarea urgente (unshift)</button>
+            </div>
+            <div id="tareaMensaje" class="mensaje"></div>
+        </section>
+
+        <!-- 
+      EJERCICIO 3: Usuarios conectados.
+      Se valida que el nombre solo contenga letras y espacios, mínimo 2 caracteres.
+      El nuevo usuario se inserta al principio (como el más reciente en conectarse).
+    -->
+        <section class="card">
+            <h2> 3. Usuarios conectados</h2>
+            <p>Usuarios actuales: <strong id="usuariosArray">["Ana", "Luis", "Marta"]</strong></p>
+            <div class="input-group">
+                <input type="text" id="usuarioInput" placeholder="Nombre de nuevo usuario" autocomplete="off">
+                <button id="agregarUsuarioBtn">Insertar al principio (unshift)</button>
+            </div>
+            <div id="usuarioMensaje" class="mensaje"></div>
+        </section>
+    </div>
+
+    <!-- Cargar el módulo principal como tipo module para usar import/export -->
+    <script type="module" src="/scripts/main.js"></script>
+</body>
+
+</html>

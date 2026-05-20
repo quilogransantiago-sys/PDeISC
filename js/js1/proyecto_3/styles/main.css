@@ -1,0 +1,351 @@
+/**
+ * main.css
+ * Estilos globales, diseño responsive y variables para modo claro/oscuro.
+ * Define la apariencia profesional y limpia.
+ */
+
+/* Variables por defecto (modo claro) */
+:root {
+    --bg-body: #f5f7fb;
+    --bg-surface: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #475569;
+    --border-color: #cbd5e1;
+    --input-bg: #ffffff;
+    --input-border: #cbd5e1;
+    --btn-primary-bg: #3b82f6;
+    --btn-primary-hover: #2563eb;
+    --btn-danger-bg: #ef4444;
+    --btn-danger-hover: #dc2626;
+    --btn-secondary-bg: #64748b;
+    --btn-secondary-hover: #475569;
+    --success-bg: #dcfce7;
+    --success-text: #166534;
+    --error-bg: #fee2e2;
+    --error-text: #b91c1c;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Modo oscuro */
+:root.dark-mode {
+    --bg-body: #0f172a;
+    --bg-surface: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --border-color: #334155;
+    --input-bg: #334155;
+    --input-border: #475569;
+    --btn-primary-bg: #2563eb;
+    --btn-primary-hover: #3b82f6;
+    --btn-danger-bg: #dc2626;
+    --btn-danger-hover: #ef4444;
+    --btn-secondary-bg: #475569;
+    --btn-secondary-hover: #64748b;
+    --success-bg: #064e3b;
+    --success-text: #a7f3d0;
+    --error-bg: #7f1d1d;
+    --error-text: #fecaca;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    font-family: system-ui, 'Segoe UI', 'Roboto', sans-serif;
+    line-height: 1.5;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.app-container {
+    width: 100%;
+    min-height: 100vh;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+/* Cabecera */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+
+.main-header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+.theme-btn {
+    background: var(--btn-secondary-bg);
+    color: white;
+    border: none;
+    padding: 0.5rem 1.2rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.theme-btn:hover {
+    background: var(--btn-secondary-hover);
+}
+
+/* Formulario */
+.form-section {
+    background: var(--bg-surface);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+}
+
+.form-section h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1.2rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.form-field.full-width {
+    grid-column: span 2;
+}
+
+label {
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+input,
+select {
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: 0.5rem;
+    padding: 0.7rem 0.8rem;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+    transition: border 0.2s;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--btn-primary-bg);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.error-msg {
+    font-size: 0.75rem;
+    color: var(--error-text);
+    min-height: 1.2rem;
+}
+
+.hijos-check-group {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 0.8rem;
+}
+
+#hijos-cantidad-container {
+    margin-top: 0.5rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.8rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.btn-submit,
+.btn-reset {
+    padding: 0.7rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.05s;
+}
+
+.btn-submit {
+    background: var(--btn-primary-bg);
+    color: white;
+}
+
+.btn-submit:hover {
+    background: var(--btn-primary-hover);
+}
+
+.btn-reset {
+    background: var(--btn-secondary-bg);
+    color: white;
+}
+
+.btn-reset:hover {
+    background: var(--btn-secondary-hover);
+}
+
+.global-message {
+    margin-top: 1rem;
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    font-weight: 500;
+    display: none;
+}
+
+.global-message.success {
+    display: block;
+    background: var(--success-bg);
+    color: var(--success-text);
+}
+
+.global-message.error {
+    display: block;
+    background: var(--error-bg);
+    color: var(--error-text);
+}
+
+/* Listado - nuevo estilo tipo tarjeta con grid */
+#people-list-container {
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.people-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+}
+
+.person-card {
+    background: var(--bg-body);
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    transition: box-shadow 0.2s;
+}
+
+.person-card:hover {
+    box-shadow: var(--card-shadow);
+}
+
+.person-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.person-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.delete-btn {
+    background: var(--btn-danger-bg);
+    color: white;
+    border: none;
+    padding: 0.3rem 0.8rem;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: background 0.2s;
+}
+
+.delete-btn:hover {
+    background: var(--btn-danger-hover);
+}
+
+.person-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.detail-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: var(--text-secondary);
+    min-width: 85px;
+}
+
+.detail-value {
+    color: var(--text-primary);
+    word-break: break-all;
+}
+
+.empty-message {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Responsive: móvil */
+@media (max-width: 768px) {
+    .app-container {
+        padding: 1rem;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-field.full-width {
+        grid-column: span 1;
+    }
+
+    .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .people-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .person-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .delete-btn {
+        align-self: flex-end;
+    }
+}

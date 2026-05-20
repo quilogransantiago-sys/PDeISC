@@ -1,0 +1,89 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f0f2f5;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+.botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+button {
+    background: #e0e0e0;
+    border: 1px solid #aaa;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #ccc;
+}
+
+button:active {
+    background: #bbb;
+}
+
+.contenido {
+    border-top: 1px solid #ccc;
+    padding-top: 20px;
+    text-align: center;
+}
+
+#zonaH1 {
+    margin-bottom: 30px;
+    min-height: 80px;
+}
+
+#zonaH1 h1 {
+    font-size: 2rem;
+    color: #2c3e66;
+    margin: 10px 0;
+}
+
+#zonaImagen img {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Responsive simple */
+@media (max-width: 600px) {
+    .botones button {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 1.4rem;
+    }
+}

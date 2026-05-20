@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>includes() - ¿Está o no está?</title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1> <code>includes()</code> – Comprobar existencia</h1>
+        <p>¿Un elemento está en el array? Devuelve true o false.</p>
+
+        <!-- Ejercicio 1: Buscar "admin" (insensible a mayúsculas) -->
+        <div class="card">
+            <h2>1️ ¿Contiene "admin"?</h2>
+            <div class="array-box">
+                <strong>Usuarios:</strong> <span id="usuariosArray">["admin","pepe","maria","root"]</span>
+            </div>
+            <div class="input-group">
+                <input type="text" id="buscarAdmin" placeholder="Escribe cualquier palabra" value="admin">
+                <button id="btnBuscarAdmin"> Buscar</button>
+            </div>
+            <div class="input-group">
+                <input type="text" id="nuevoUsuario" placeholder="Nuevo usuario">
+                <button id="btnAgregarUsuario"> Agregar</button>
+            </div>
+            <div id="mensajeAdmin" class="mensaje"></div>
+        </div>
+
+        <!-- Ejercicio 2: Buscar "verde" en colores -->
+        <div class="card">
+            <h2>2️ ¿Existe "verde"?</h2>
+            <div class="array-box">
+                <strong>Colores:</strong> <span id="coloresArray">["rojo","azul","amarillo","negro"]</span>
+            </div>
+            <div class="input-group">
+                <input type="text" id="buscarVerde" placeholder="Escribe un color" value="verde">
+                <button id="btnBuscarVerde"> Buscar</button>
+            </div>
+            <div class="input-group">
+                <input type="text" id="nuevoColor" placeholder="Nuevo color">
+                <button id="btnAgregarColor"> Agregar</button>
+            </div>
+            <div id="mensajeVerde" class="mensaje"></div>
+        </div>
+
+        <!-- Ejercicio 3: Verificar número antes de sumarlo (evitar duplicados) -->
+        <div class="card">
+            <h2>3️ Verificar número antes de agregarlo</h2>
+            <div class="array-box">
+                <strong>Números:</strong> <span id="numerosArray">[5, 12, 8, 20]</span>
+            </div>
+            <div class="input-group">
+                <input type="number" id="numeroAgregar" placeholder="Ej: 15">
+                <button id="btnAgregarNumero"> Agregar solo si no existe</button>
+            </div>
+            <div id="mensajeNumero" class="mensaje"></div>
+        </div>
+    </div>
+
+    <script type="module" src="/scripts/main.js"></script>
+</body>
+
+</html>
