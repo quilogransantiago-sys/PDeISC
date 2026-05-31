@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Diario Online | Noticias actualizadas</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <!-- Font Awesome 6 (íconos de redes) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Script para modo oscuro sin flash -->
+    <script>
+        (function () {
+            const modoGuardado = localStorage.getItem('modo');
+            const prefiereOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const esOscuro = modoGuardado === 'oscuro' || (modoGuardado === null && prefiereOscuro);
+            if (esOscuro) {
+                document.documentElement.classList.add('modo-oscuro');
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="contenedor-principal">
+        <header class="cabecera">
+            <div class="grupo-titulo">
+                <h1 class="titulo-sitio">Diario Online</h1>
+            </div>
+
+            <button id="menuHamburguesa" class="boton-hamburguesa" aria-label="Menú de temas">
+                <span></span><span></span><span></span>
+            </button>
+
+            <nav id="menuLateral" class="menu-lateral">
+                <button id="cerrarMenu" class="cerrar-menu" aria-label="Cerrar menú">✕</button>
+                <ul class="lista-temas">
+                    <li><button data-tema="todas" class="boton-tema activo">Todas</button></li>
+                    <li><button data-tema="Fútbol" class="boton-tema">⚽ Fútbol</button></li>
+                    <li><button data-tema="Juegos" class="boton-tema">🎮 Juegos</button></li>
+                    <li><button data-tema="Política" class="boton-tema">🏛️ Política</button></li>
+                    <li><button data-tema="Economía" class="boton-tema">📈 Economía</button></li>
+                </ul>
+            </nav>
+
+            <button id="botonModo" class="boton-modo" aria-label="Cambiar modo claro/oscuro">
+                <i id="iconoModo" class="fas fa-sun"></i>
+            </button>
+        </header>
+
+        <main>
+            <section class="seccion-noticias">
+                <h2 class="titulo-seccion">Últimas noticias</h2>
+                <div id="contenedorNoticias" class="grilla-noticias"></div>
+            </section>
+        </main>
+
+        <!-- Footer con solo logos (sin texto) -->
+        <footer class="pie">
+            <div class="redes-sociales">
+                <a href="https://www.instagram.com/quilogran.eze/" class="red-social" target="_blank"
+                    aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.facebook.com/profile.php?id=61590017867737" class="red-social" target="_blank"
+                    aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://github.com/quilogransantiago-sys/PDeISC.git" class="red-social" target="_blank"
+                    aria-label="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+            </div>
+            <p>© 2025 Diario Online - Información con responsabilidad</p>
+        </footer>
+    </div>
+
+    <script type="module" src="/scripts/main.js"></script>
+</body>
+
+</html>

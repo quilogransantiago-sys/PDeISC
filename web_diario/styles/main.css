@@ -1,0 +1,393 @@
+/* ===========================================
+   main.css - Estilos globales del diario online
+   Propósito: define variables, reset, layout, modo claro/oscuro, responsive y animaciones.
+   Módulos usados: ninguno externo.
+   Funciones principales: estilos de tarjetas, grilla, botón modo, expansión.
+   =========================================== */
+
+/* ----- RESET y variables ----- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Modo claro (por defecto) */
+:root {
+    --fondo-body: #f5f7fa;
+    --fondo-tarjeta: #ffffff;
+    --texto-principal: #1e293b;
+    --texto-secundario: #475569;
+    --borde-tarjeta: #e2e8f0;
+    --sombra: 0 4px 12px rgba(0, 0, 0, 0.05);
+    --sombra-hover: 0 8px 24px rgba(0, 0, 0, 0.1);
+    --color-tema: #3b82f6;
+    --color-tema-hover: #2563eb;
+    --separador: #e2e8f0;
+}
+
+.modo-oscuro {
+    --fondo-body: #0f172a;
+    --fondo-tarjeta: #1e293b;
+    --texto-principal: #f1f5f9;
+    --texto-secundario: #cbd5e1;
+    --borde-tarjeta: #334155;
+    --sombra: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --sombra-hover: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --color-tema: #60a5fa;
+    --color-tema-hover: #3b82f6;
+    --separador: #334155;
+}
+
+body {
+    background-color: var(--fondo-body);
+    color: var(--texto-principal);
+    font-family: system-ui, 'Segoe UI', 'Roboto', sans-serif;
+    line-height: 1.5;
+    transition: background-color 0.3s ease, color 0.2s ease;
+}
+
+.contenedor-principal {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem;
+    width: 100%;
+}
+
+/* ----- CABECERA ----- */
+.cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-bottom: 2px solid var(--separador);
+    margin-bottom: 2rem;
+}
+
+.titulo-sitio {
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--color-tema), #8b5cf6);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+/* Reemplazar estilos de .boton-modo */
+.boton-modo {
+    background: var(--fondo-tarjeta);
+    border: 1px solid var(--borde-tarjeta);
+    color: var(--texto-principal);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: var(--sombra);
+}
+
+.boton-modo:hover {
+    background: var(--color-tema);
+    color: white;
+    transform: scale(1.05);
+    border-color: var(--color-tema);
+}
+
+.boton-modo i {
+    transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+
+/* Animación al hacer click (se añade y quita clase desde JS) */
+.boton-modo.animar i {
+    transform: rotate(360deg) scale(1.2);
+}
+
+/* ----- SECCIÓN NOTICIAS ----- */
+.titulo-seccion {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: var(--texto-principal);
+}
+
+.grilla-noticias {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.8rem;
+}
+
+/* ----- TARJETA DE NOTICIA ----- */
+.tarjeta-noticia {
+    background: var(--fondo-tarjeta);
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: var(--sombra);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    border: 1px solid var(--borde-tarjeta);
+    display: flex;
+    flex-direction: column;
+}
+
+.tarjeta-noticia:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--sombra-hover);
+}
+
+.imagen-noticia {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    background: var(--separador);
+}
+
+.contenido-noticia {
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.tema-noticia {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-tema);
+}
+
+.titulo-noticia {
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.resumen-noticia {
+    color: var(--texto-secundario);
+    font-size: 0.9rem;
+}
+
+/* ----- CONTENIDO EXPANDIBLE ----- */
+.expandible {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out, padding 0.2s ease;
+    background-color: var(--fondo-tarjeta);
+    border-top: none;
+    padding: 0 1.2rem;
+    margin: 0;
+}
+
+.expandible.expandido {
+    max-height: 300px;
+    /* suficiente para texto extra */
+    padding-bottom: 1.2rem;
+    border-top: 1px solid var(--separador);
+    margin-top: 0.2rem;
+}
+
+.texto-expandido {
+    font-size: 0.9rem;
+    color: var(--texto-secundario);
+    line-height: 1.5;
+    margin-top: 0.8rem;
+}
+
+/* Indicador visual de click */
+.tarjeta-noticia:active {
+    transform: scale(0.98);
+}
+
+/* ----- PIE DE PÁGINA ----- */
+.pie {
+    margin-top: 3rem;
+    padding: 1.5rem 0;
+    text-align: center;
+    border-top: 1px solid var(--separador);
+    font-size: 0.8rem;
+    color: var(--texto-secundario);
+}
+
+
+
+/* ===== MENÚ HAMBURGUESA ===== */
+.boton-hamburguesa {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 24px;
+    padding: 0;
+    z-index: 1000;
+}
+
+.boton-hamburguesa span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: var(--texto-principal);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+/* Menú lateral (overlay) */
+.menu-lateral {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 260px;
+    height: 100%;
+    background-color: var(--fondo-tarjeta);
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease;
+    z-index: 1001;
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--borde-tarjeta);
+}
+
+.menu-lateral.abierto {
+    left: 0;
+}
+
+.cerrar-menu {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--texto-principal);
+    margin-bottom: 1.5rem;
+}
+
+.lista-temas {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.boton-tema {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 0.75rem 1rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--texto-principal);
+    cursor: pointer;
+    border-radius: 0.5rem;
+    transition: background 0.2s;
+}
+
+.boton-tema:hover {
+    background: var(--color-tema);
+    color: white;
+}
+
+.boton-tema.activo {
+    background: var(--color-tema);
+    color: white;
+}
+
+/* Overlay para fondo oscuro al abrir menú */
+.overlay-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: none;
+}
+
+.overlay-menu.visible {
+    display: block;
+}
+
+
+
+.grupo-titulo {
+    flex: 1;
+}
+
+/* ===== FOOTER CON REDES SOCIALES ===== */
+
+.redes-sociales {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1rem;
+}
+
+.red-social {
+    color: var(--texto-secundario);
+    font-size: 1.8rem;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--fondo-tarjeta);
+    border: 1px solid var(--borde-tarjeta);
+}
+
+.red-social:hover {
+    background-color: var(--color-tema);
+    color: white;
+    transform: translateY(-3px);
+}
+
+/* ----- RESPONSIVE (mobile) ----- */
+@media (max-width: 768px) {
+    .contenedor-principal {
+        padding: 0.75rem;
+    }
+
+    .grilla-noticias {
+        grid-template-columns: 1fr;
+        /* una columna en móvil */
+        gap: 1.2rem;
+    }
+
+    .cabecera {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .titulo-sitio {
+        font-size: 1.5rem;
+    }
+
+    .expandible.expandido {
+        max-height: 400px;
+        /* más espacio en móvil si es necesario */
+    }
+
+    .redes-sociales {
+        gap: 1.2rem;
+    }
+
+    .red-social {
+        font-size: 1.5rem;
+        width: 42px;
+        height: 42px;
+    }
+}
