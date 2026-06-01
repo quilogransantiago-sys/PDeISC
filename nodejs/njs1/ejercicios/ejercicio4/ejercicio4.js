@@ -1,9 +1,11 @@
-const calculos = require("./calculos");
+// ejercicio4.js
 
-let suma = calculos.sumar(5, 3);
-let resta = calculos.restar(8, 6);
-let multiplicacion = calculos.multiplicar(3, 11);
-let division = calculos.dividir(30, 5);
+const { sumar, restar, multiplicar, dividir } = require('./calculos.js');
+
+const suma = sumar(5, 3);
+const resta = restar(8, 6);
+const multiplicacion = multiplicar(3, 11);
+const division = dividir(30, 5);
 
 console.log("5 + 3 = " + suma);
 console.log("8 - 6 = " + resta);

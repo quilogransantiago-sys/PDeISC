@@ -1,0 +1,189 @@
+/* style.css - versión completa con botón ícono animado */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root,
+[data-tema="claro"] {
+    --fondo: #f5f7fa;
+    --texto: #1a202c;
+    --card-bg: #ffffff;
+    --borde: #e2e8f0;
+    --encabezado-bg: #2d3748;
+    --encabezado-texto: #ffffff;
+    --fila-hover: #edf2f7;
+    --boton-bg: #4a5568;
+    --boton-hover: #2d3748;
+}
+
+[data-tema="oscuro"] {
+    --fondo: #1a202c;
+    --texto: #e2e8f0;
+    --card-bg: #2d3748;
+    --borde: #4a5568;
+    --encabezado-bg: #0f172a;
+    --encabezado-texto: #f7fafc;
+    --fila-hover: #374151;
+    --boton-bg: #718096;
+    --boton-hover: #4a5568;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--fondo);
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, 'Segoe UI', 'Roboto', sans-serif;
+    color: var(--texto);
+    display: flex;
+    flex-direction: column;
+}
+
+.contenedor {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0.75rem;
+    gap: 0.75rem;
+}
+
+.cabecera {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    background-color: var(--card-bg);
+    border: 1px solid var(--borde);
+    border-radius: 0.75rem;
+    padding: 0.5rem 1rem;
+}
+
+h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Botón con ícono redondo, animación suave */
+.boton-tema {
+    background-color: var(--boton-bg);
+    border: none;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.boton-tema:hover {
+    background-color: var(--boton-hover);
+    transform: scale(1.1);
+}
+
+.boton-tema:active {
+    transform: scale(0.95);
+}
+
+#theme-icon {
+    font-size: 1.3rem;
+    display: inline-block;
+    transition: transform 0.3s ease, rotate 0.3s ease;
+    line-height: 1;
+}
+
+/* Rotación suave al cambiar de ícono (se aplica desde JS) */
+#theme-icon.rotar {
+    transform: rotate(360deg);
+}
+
+/* Grid 2x2 como se solicitó */
+.grid-tablas {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    align-items: start;
+}
+
+.tabla-wrapper {
+    background-color: var(--card-bg);
+    border-radius: 0.75rem;
+    border: 1px solid var(--borde);
+    overflow-x: auto;
+    height: auto;
+}
+
+.tabla-wrapper h2 {
+    font-size: 1rem;
+    margin: 0;
+    padding: 0.6rem 1rem;
+    background-color: var(--encabezado-bg);
+    color: var(--encabezado-texto);
+    border-bottom: 1px solid var(--borde);
+    text-align: center;
+}
+
+.tabla-operaciones {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.tabla-operaciones th,
+.tabla-operaciones td {
+    padding: 0.5rem 0.7rem;
+    border-bottom: 1px solid var(--borde);
+    text-align: left;
+}
+
+.tabla-operaciones th {
+    background-color: var(--encabezado-bg);
+    color: var(--encabezado-texto);
+    font-weight: 600;
+}
+
+.tabla-operaciones tr:hover {
+    background-color: var(--fila-hover);
+}
+
+@media (max-width: 768px) {
+    .grid-tablas {
+        grid-template-columns: 1fr;
+    }
+
+    .cabecera {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .boton-tema {
+        width: 2.2rem;
+        height: 2.2rem;
+    }
+
+    #theme-icon {
+        font-size: 1.1rem;
+    }
+
+    h1 {
+        font-size: 1.2rem;
+    }
+}
+
+.pie {
+    text-align: center;
+    font-size: 0.7rem;
+    padding: 0.3rem;
+    opacity: 0.6;
+}
