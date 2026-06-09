@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo Cálculo</title>
+    <script>
+        (function () {
+            const tema = localStorage.getItem('tema');
+            const prefiereOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (tema === 'oscuro' || (tema === null && prefiereOscuro)) {
+                document.documentElement.classList.add('modo-oscuro');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="/styles/main.css">
+    <script type="module" src="/scripts/main.js"></script>
+</head>
+
+<body>
+    <div class="contenedor">
+        <header class="encabezado">
+            <div class="logo-titulo">
+                <h1>Módulo Cálculo</h1>
+                <button id="btn-tema" class="btn-tema">Modo oscuro</button>
+            </div>
+        </header>
+        <main class="principal">
+            <section class="tarjeta">
+                <h2>Operaciones básicas</h2>
+                <div id="resultados-calculo"></div>
+            </section>
+        </main>
+        <footer class="pie">
+            <p>Funciones: sumar, restar, multiplicar, dividir, promedio</p>
+        </footer>
+    </div>
+    <script type="module">
+        import { sumar, restar, multiplicar, dividir, promedio } from '/modules/calculo.js';
+        const a = 20, b = 5;
+        const numeros = [10, 20, 30, 40];
+        const resultados = `
+      <p>${a} + ${b} = ${sumar(a, b)}</p>
+      <p>${a} - ${b} = ${restar(a, b)}</p>
+      <p>${a} * ${b} = ${multiplicar(a, b)}</p>
+      <p>${a} / ${b} = ${dividir(a, b)}</p>
+      <p>Promedio de [${numeros}] = ${promedio(numeros)}</p>
+    `;
+        document.getElementById('resultados-calculo').innerHTML = resultados;
+    </script>
+</body>
+
+</html>

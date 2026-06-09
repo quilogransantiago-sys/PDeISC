@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertidor a Mayúsculas</title>
+    <script>
+        (function () {
+            const tema = localStorage.getItem('tema');
+            const prefiereOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (tema === 'oscuro' || (tema === null && prefiereOscuro)) {
+                document.documentElement.classList.add('modo-oscuro');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="/styles/main.css">
+    <script type="module" src="/scripts/main.js"></script>
+</head>
+
+<body>
+    <div class="contenedor">
+        <header class="encabezado">
+            <div class="logo-titulo">
+                <h1>Convertidor a Mayúsculas (upper-case)</h1>
+                <button id="btn-tema" class="btn-tema">Modo oscuro</button>
+            </div>
+        </header>
+        <main class="principal">
+            <section class="tarjeta">
+                <h2>Ingrese texto</h2>
+                <input type="text" id="texto-input" placeholder="Ejemplo: hola mundo" class="campo">
+                <button id="convertir-btn" class="btn-primario">Convertir</button>
+                <div id="resultado-upper" class="resultado"></div>
+            </section>
+        </main>
+        <footer class="pie">
+            <p>Usa el paquete "upper-case" instalado con NPM en el servidor</p>
+        </footer>
+    </div>
+    <script type="module">
+        const input = document.getElementById('texto-input');
+        const btn = document.getElementById('convertir-btn');
+        const resultadoDiv = document.getElementById('resultado-upper');
+
+        btn.addEventListener('click', async () => {
+            const texto = input.value;
+            if (texto === "") {
+                resultadoDiv.innerHTML = '<p class="error">Escriba algún texto.</p>';
+                return;
+            }
+            try {
+                const respuesta = await fetch('/api/convertir-mayusculas', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ texto })
+                });
+                const datos = await respuesta.json();
+                if (datos.error) {
+                    resultadoDiv.innerHTML = `<p class="error">${datos.error}</p>`;
+                } else {
+                    resultadoDiv.innerHTML = `
+            <p><strong>Original:</strong> ${datos.original}</p>
+            <p><strong>Mayúsculas:</strong> ${datos.mayusculas}</p>
+          `;
+                }
+            } catch (err) {
+                resultadoDiv.innerHTML = '<p class="error">Error de conexión.</p>';
+            }
+        });
+    </script>
+</body>
+
+</html>

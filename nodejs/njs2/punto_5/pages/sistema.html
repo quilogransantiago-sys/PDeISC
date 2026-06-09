@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema - HTTP + FS</title>
+    <script>
+        (function () {
+            const tema = localStorage.getItem('tema');
+            const prefiereOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (tema === 'oscuro' || (tema === null && prefiereOscuro)) {
+                document.documentElement.classList.add('modo-oscuro');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="/styles/main.css">
+    <script type="module" src="/scripts/main.js"></script>
+</head>
+
+<body>
+    <div class="contenedor">
+        <header class="encabezado">
+            <div class="logo-titulo">
+                <h1>HTTP + File System</h1>
+                <button id="btn-tema" class="btn-tema">Modo oscuro</button>
+            </div>
+        </header>
+        <main class="principal">
+            <section class="tarjeta">
+                <h2>Contenido de package.json (leído con fs)</h2>
+                <button id="leer-btn" class="btn-primario">Leer archivo</button>
+                <pre id="contenido-archivo" class="codigo">Presiona el botón para cargar.</pre>
+            </section>
+        </main>
+        <footer class="pie">
+            <p>El servidor Express usa internamente HTTP y FS para servir páginas y leer archivos.</p>
+        </footer>
+    </div>
+    <script type="module">
+        const leerBtn = document.getElementById('leer-btn');
+        const pre = document.getElementById('contenido-archivo');
+
+        leerBtn.addEventListener('click', async () => {
+            try {
+                const resp = await fetch('/api/leer-archivo');
+                const datos = await resp.json();
+                if (datos.error) {
+                    pre.textContent = datos.error;
+                } else {
+                    pre.textContent = JSON.stringify(datos.contenido, null, 2);
+                }
+            } catch (err) {
+                pre.textContent = 'Error al cargar el archivo.';
+            }
+        });
+    </script>
+</body>
+
+</html>

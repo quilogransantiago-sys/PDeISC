@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo Tiempo</title>
+    <script>
+        (function () {
+            const tema = localStorage.getItem('tema');
+            const prefiereOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (tema === 'oscuro' || (tema === null && prefiereOscuro)) {
+                document.documentElement.classList.add('modo-oscuro');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="/styles/main.css">
+    <script type="module" src="/scripts/main.js"></script>
+</head>
+
+<body>
+    <div class="contenedor">
+        <header class="encabezado">
+            <div class="logo-titulo">
+                <h1>Módulo Tiempo</h1>
+                <button id="btn-tema" class="btn-tema">Modo oscuro</button>
+            </div>
+        </header>
+        <main class="principal">
+            <section class="tarjeta">
+                <h2>Fecha y hora actual</h2>
+                <div id="info-tiempo" class="info-dinamica">
+                    <p>Cargando...</p>
+                </div>
+            </section>
+        </main>
+        <footer class="pie">
+            <p>Función: obtenerFechaHoraActual, formatearFecha, diferenciaHoras</p>
+        </footer>
+    </div>
+    <script type="module">
+        import { obtenerFechaHoraActual, formatearFecha, diferenciaHoras } from '/modules/tiempo.js';
+        const ahora = new Date();
+        const futuro = new Date(ahora.getTime() + 2 * 60 * 60 * 1000); // +2 horas
+        const diff = diferenciaHoras(futuro, ahora);
+        document.getElementById('info-tiempo').innerHTML = `
+      <p><strong>Local:</strong> ${obtenerFechaHoraActual()}</p>
+      <p><strong>Formateada:</strong> ${formatearFecha(ahora)}</p>
+      <p><strong>Diferencia entre ahora y +2h:</strong> ${diff} horas</p>
+    `;
+    </script>
+</body>
+
+</html>

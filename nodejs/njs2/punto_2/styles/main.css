@@ -1,0 +1,159 @@
+/**
+ * main.css
+ * Estilos globales, responsivos, con variables CSS para modo claro/oscuro.
+ * No se usan anchos fijos; el diseño ocupa todo el ancho en desktop.
+ * Mobile: flex columnas, padding adecuado.
+ */
+
+/* Variables modo claro (por defecto) */
+:root {
+    --fondo: #f8f9fa;
+    --texto: #212529;
+    --tarjeta-fondo: #ffffff;
+    --borde: #dee2e6;
+    --sombra: rgba(0, 0, 0, 0.05);
+    --btn-fondo: #e9ecef;
+    --btn-texto: #212529;
+    --btn-hover: #ced4da;
+    --codigo-fondo: #f1f3f5;
+}
+
+/* Variables modo oscuro (se activan con la clase .modo-oscuro en html) */
+.modo-oscuro {
+    --fondo: #121212;
+    --texto: #e9ecef;
+    --tarjeta-fondo: #1e1e2f;
+    --borde: #2c2c3a;
+    --sombra: rgba(0, 0, 0, 0.3);
+    --btn-fondo: #2c2c3a;
+    --btn-texto: #e9ecef;
+    --btn-hover: #3a3a4a;
+    --codigo-fondo: #2a2a35;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--fondo);
+    color: var(--texto);
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    line-height: 1.5;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.contenedor {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    width: 100%;
+}
+
+/* Encabezado */
+.encabezado {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--borde);
+}
+
+.encabezado h1 {
+    font-size: 1.6rem;
+    font-weight: 600;
+}
+
+.btn-tema {
+    background-color: var(--btn-fondo);
+    color: var(--btn-texto);
+    border: 1px solid var(--borde);
+    padding: 0.5rem 1.2rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.btn-tema:hover {
+    background-color: var(--btn-hover);
+    transform: scale(0.97);
+}
+
+/* Principal */
+.principal {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.tarjeta {
+    background-color: var(--tarjeta-fondo);
+    border: 1px solid var(--borde);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    flex: 1 1 300px;
+    box-shadow: 0 4px 8px var(--sombra);
+    transition: background 0.2s;
+}
+
+.tarjeta h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: var(--texto);
+}
+
+.tarjeta p,
+.tarjeta li {
+    margin-bottom: 0.75rem;
+}
+
+code {
+    background-color: var(--codigo-fondo);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.5rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+}
+
+ul {
+    padding-left: 1.5rem;
+}
+
+/* Pie de página */
+.pie {
+    text-align: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--borde);
+    font-size: 0.85rem;
+    color: var(--texto);
+    opacity: 0.8;
+}
+
+/* Responsive móvil: apila columnas */
+@media (max-width: 768px) {
+    .encabezado {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .principal {
+        flex-direction: column;
+    }
+
+    .tarjeta {
+        flex-basis: auto;
+    }
+
+    .encabezado h1 {
+        font-size: 1.3rem;
+    }
+}
