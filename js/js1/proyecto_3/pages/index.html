@@ -3,125 +3,104 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Gestión de Personas</title>
-    <!-- Prevenir flash de modo oscuro: script inline antes de CSS -->
-    <script>
-        (function () {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark-mode');
-            } else {
-                document.documentElement.classList.remove('dark-mode');
-            }
-        })();
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhone Store - 3 métodos de almacenaje</title>
     <link rel="stylesheet" href="/styles/main.css">
+    <script>(function () { let tema = localStorage.getItem('tema'); if (tema === 'oscuro' || (!tema && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.classList.add('dark'); } })();</script>
 </head>
 
 <body>
-    <div class="app-container">
-        <!-- Cabecera con botón de tema -->
-        <header class="main-header">
-            <h1>Almacén de Personas</h1>
-            <button id="theme-toggle" class="theme-btn" aria-label="Cambiar tema">Modo oscuro</button>
+    <div class="contenedor">
+        <header class="encabezado">
+            <h1>iPhone Store</h1>
+            <button id="btnTema" class="boton-tema">🌙 Oscuro</button>
         </header>
 
-        <!-- Formulario de carga -->
-        <section class="form-section">
-            <h2>Registrar nueva persona</h2>
-            <form id="person-form" novalidate>
-                <div class="form-grid">
-                    <div class="form-field">
-                        <label for="nombre">Nombre *</label>
-                        <input type="text" id="nombre" name="nombre" placeholder="Ej: Juan" autocomplete="off">
-                        <span class="error-msg" data-for="nombre"></span>
-                    </div>
-                    <div class="form-field">
-                        <label for="apellido">Apellido *</label>
-                        <input type="text" id="apellido" name="apellido" placeholder="Ej: Pérez">
-                        <span class="error-msg" data-for="apellido"></span>
-                    </div>
-                    <div class="form-field">
-                        <label for="edad">Edad *</label>
-                        <input type="number" id="edad" name="edad" placeholder="18">
-                        <span class="error-msg" data-for="edad"></span>
-                    </div>
-                    <div class="form-field">
-                        <label for="fechaNac">Fecha de nacimiento *</label>
-                        <input type="date" id="fechaNac" name="fechaNac">
-                        <span class="error-msg" data-for="fechaNac"></span>
-                    </div>
-                    <div class="form-field">
-                        <label for="sexo">Sexo *</label>
-                        <select id="sexo" name="sexo">
-                            <option value="">Seleccione</option>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Femenino">Femenino</option>
-                        </select>
-                        <span class="error-msg" data-for="sexo"></span>
-                    </div>
-                    <div class="form-field">
-                        <label for="documento">Documento *</label>
-                        <input type="text" id="documento" name="documento" placeholder="Solo números">
-                        <span class="error-msg" data-for="documento"></span>
-                    </div>
-                    <div class="form-field">
-                        <label for="estadoCivil">Estado civil *</label>
-                        <select id="estadoCivil" name="estadoCivil">
-                            <option value="">Seleccione</option>
-                            <option value="Soltero/a">Soltero/a</option>
-                            <option value="Casado/a">Casado/a</option>
-                            <option value="Divorciado/a">Divorciado/a</option>
-                            <option value="Viudo/a">Viudo/a</option>
-                            <option value="Otro">Otro</option>
-                        </select>
-                        <span class="error-msg" data-for="estadoCivil"></span>
-                    </div>
-                    <div class="form-field">
-                        <label for="nacionalidad">Nacionalidad *</label>
-                        <input type="text" id="nacionalidad" name="nacionalidad" placeholder="Ej: Argentina">
-                        <span class="error-msg" data-for="nacionalidad"></span>
-                    </div>
-                    <div class="form-field">
-                        <label for="telefono">Teléfono *</label>
-                        <input type="tel" id="telefono" name="telefono" placeholder="Ej: 123456789">
-                        <span class="error-msg" data-for="telefono"></span>
-                    </div>
-                    <div class="form-field">
-                        <label for="mail">Correo electrónico *</label>
-                        <input type="email" id="mail" name="mail" placeholder="ejemplo@dominio.com">
-                        <span class="error-msg" data-for="mail"></span>
-                    </div>
-                    <div class="form-field full-width">
-                        <div class="hijos-check-group">
-                            <input type="checkbox" id="tieneHijos" name="tieneHijos">
-                            <label for="tieneHijos">¿Tiene hijos?</label>
-                        </div>
-                        <div id="hijos-cantidad-container" style="display: none;">
-                            <label for="cantidadHijos">Cantidad de hijos *</label>
-                            <input type="number" id="cantidadHijos" name="cantidadHijos" min="1" step="1">
-                            <span class="error-msg" data-for="cantidadHijos"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-actions">
-                    <button type="submit" class="btn-submit">Guardar persona</button>
-                    <button type="reset" class="btn-reset">Limpiar formulario</button>
-                </div>
-                <div id="global-message" class="global-message"></div>
-            </form>
-        </section>
+        <div class="contenedor-principal">
+            <!-- Formulario -->
+            <div class="seccion-formulario">
+                <h2>Configura tu iPhone</h2>
+                <form id="formVenta">
+                    <div class="campo"><label>Nombre y Apellido *</label><input type="text" id="nombre" class="validar"
+                            data-tipo="nombre"><span class="error" id="error-nombre"></span></div>
+                    <div class="campo"><label>Email *</label><input type="email" id="email" class="validar"
+                            data-tipo="email"><span class="error" id="error-email"></span></div>
+                    <div class="campo"><label>DNI *</label><input type="text" id="dni" class="validar"
+                            data-tipo="dni"><span class="error" id="error-dni"></span></div>
 
-        <!-- Listado de personas -->
-        <section class="list-section">
-            <h2>Personas registradas</h2>
-            <div id="people-list-container">
-                <div class="loading">Cargando listado...</div>
+                    <div class="campo"><label>Tipo Cliente</label><select id="tipoCliente">
+                            <option value="minorista">Minorista (+30%)</option>
+                            <option value="mayorista">Mayorista (+10% / mínimo 3 und)</option>
+                        </select></div>
+
+                    <div class="campo"><label>Condición</label><select id="condicion">
+                            <option value="sellado">Sellado (+17.5%)</option>
+                            <option value="usado">Usado</option>
+                        </select></div>
+
+                    <div class="campo" id="campoGrado"><label>Grado (Usado)</label><select id="grado">
+                            <option value="A">Grado A (precio base)</option>
+                            <option value="B">Grado B (-10%)</option>
+                            <option value="C">Grado C (-35%)</option>
+                        </select></div>
+
+                    <div class="campo"><label>Modelo</label><select id="modelo"></select><span class="error"
+                            id="error-modelo"></span></div>
+
+                    <div class="campo"><label>Almacenamiento</label><select id="almacenamiento"></select><span
+                            class="error" id="error-almacenamiento"></span></div>
+
+                    <div class="campo" id="campoBateria"><label>Batería (%)</label><select id="bateria">
+                            <option value="100">100% (+$40)</option>
+                            <option value="95">90-99% ($0)</option>
+                            <option value="87">85-89% (-$30)</option>
+                            <option value="82">80-84% (-$60)</option>
+                            <option value="50">Menos 80% (-$100)</option>
+                        </select></div>
+
+                    <div class="campo"><label>Cantidad</label><input type="number" id="cantidad" min="1" value="1"><span
+                            class="error" id="error-cantidad"></span></div>
+
+                    <!-- 3 botones de guardado -->
+                    <div class="acciones">
+                        <button type="button" id="guardarLocalStorage" class="btn-metodo">💾 Guardar en
+                            localStorage</button>
+                        <button type="button" id="guardarSessionStorage" class="btn-metodo">🔄 Guardar en
+                            sessionStorage</button>
+                        <button type="button" id="guardarMemoria" class="btn-metodo">🧠 Guardar en memoria</button>
+                        <button type="button" id="btnCancelarEdicion" style="display:none">Cancelar edición</button>
+                    </div>
+                </form>
+                <div id="mensajeGlobal" class="mensaje-global"></div>
             </div>
-        </section>
-    </div>
 
+            <!-- Listado de ventas (unificado con indicador de método) -->
+            <div class="seccion-listado">
+                <h2>📋 Todas las Ventas</h2>
+                <div id="listaVentas" class="lista-ventas"></div>
+
+                <!-- Explicación de métodos -->
+                <div class="demo-almacenaje">
+                    <h3>💾 ¿Cómo funciona cada método?</h3>
+                    <ul class="lista-metodos">
+                        <li><strong>localStorage</strong> → Los datos persisten aunque cierres el navegador. (✅
+                            Permanente)</li>
+                        <li><strong>sessionStorage</strong> → Se borran al cerrar la pestaña o el navegador. (🔄
+                            Temporal)</li>
+                        <li><strong>Memoria (array)</strong> → Se pierden al recargar la página. (🧠 Volátil)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Precios en vivo -->
+        <div class="precios-vivos">
+            <div class="precio-tarjeta"><span class="label">Precio por Unidad:</span><span id="precioUnidad"
+                    class="valor">$0</span></div>
+            <div class="precio-tarjeta"><span class="label">Precio Total:</span><span id="precioTotal"
+                    class="valor">$0</span></div>
+        </div>
+    </div>
     <script type="module" src="/scripts/main.js"></script>
 </body>
 

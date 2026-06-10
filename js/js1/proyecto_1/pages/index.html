@@ -3,94 +3,98 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Demostración: Lectura de Formularios en JavaScript</title>
-    <link rel="stylesheet" href="/styles/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>ABM Usuarios | Demo Lectura Formularios JS</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <!-- Script anti-flash para modo oscuro (se ejecuta inmediatamente) -->
     <script>
         (function () {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') {
-                document.documentElement.classList.add('dark-theme');
+            const temaGuardado = localStorage.getItem('tema');
+            const prefiereOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (temaGuardado === 'oscuro' || (!temaGuardado && prefiereOscuro)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
             }
         })();
     </script>
 </head>
 
 <body>
-    <div class="app">
-        <header class="header">
-            <h1>Lectura de Formularios en JavaScript</h1>
-            <button id="theme-toggle" class="theme-toggle" aria-label="Cambiar tema">Modo oscuro</button>
+    <div class="contenedor">
+        <header class="encabezado">
+            <h1>📋 Gestión de Usuarios</h1>
+            <button id="btnTema" class="boton-tema" aria-label="Cambiar tema">🌙 Modo oscuro</button>
         </header>
 
-        <div class="dashboard">
-            <!-- Columna izquierda: formulario -->
-            <div class="form-column">
-                <form id="user-form" class="form">
-                    <div class="form-field">
-                        <label for="name">Nombre completo:</label>
-                        <input type="text" id="name" name="fullName" placeholder="Ej: Ana Garcia" required>
-                        <small class="error-message" id="name-error"></small>
+        <main>
+            <!-- Formulario para ABM (Alta / Modificación) -->
+            <section class="seccion-formulario">
+                <h2>Formulario de usuario</h2>
+                <form id="formUsuario" class="form-usuario">
+                    <input type="hidden" id="usuarioId" value="">
+
+                    <div class="campo">
+                        <label for="nombre">Nombre completo:</label>
+                        <input type="text" id="nombre" name="nombre" required placeholder="Ej: Ana Martínez">
                     </div>
 
-                    <div class="form-field">
-                        <label for="email">Correo electronico:</label>
-                        <input type="email" id="email" name="email" placeholder="usuario@ejemplo.com" required>
-                        <small class="error-message" id="email-error"></small>
+                    <div class="campo">
+                        <label for="email">Correo electrónico:</label>
+                        <input type="email" id="email" name="email" required placeholder="ejemplo@dominio.com">
                     </div>
 
-                    <div class="form-field">
-                        <label for="age">Edad:</label>
-                        <input type="number" id="age" name="age" placeholder="25" min="1" max="120">
-                        <small class="error-message" id="age-error"></small>
+                    <div class="campo">
+                        <label for="edad">Edad:</label>
+                        <input type="number" id="edad" name="edad" min="0" max="120" required>
                     </div>
 
-                    <!-- Reemplaza todo el bloque de intereses por este -->
-                    <div class="form-field">
-                        <label>Intereses:</label>
-                        <div class="checkboxes" id="interests-container">
-                            <label><input type="checkbox" name="interests" value="tecnologia"> Tecnologia</label>
-                            <label><input type="checkbox" name="interests" value="deportes"> Deportes</label>
-                            <label><input type="checkbox" name="interests" value="musica"> Musica</label>
-                            <label><input type="checkbox" name="interests" value="lectura"> Lectura</label>
-
-                            <!-- Sección Otro/s -->
-                            <div class="other-interest">
-                                <label>
-                                    <input type="checkbox" id="otherCheckbox"> Otro/s
-                                </label>
-                                <input type="text" id="otherText" class="other-input" placeholder="Escribe tu interes"
-                                    disabled>
-                            </div>
-                        </div>
-                        <small class="error-message" id="interests-error"></small>
+                    <div class="campo checkbox">
+                        <label>
+                            <input type="checkbox" id="activo" name="activo"> Usuario activo
+                        </label>
                     </div>
 
-                    <div class="button-group">
-                        <button type="button" id="btn-elements" class="btn btn-primary">1. Leer con
-                            form.elements</button>
-                        <button type="button" id="btn-formdata" class="btn btn-primary">2. Leer con FormData</button>
-                        <button type="button" id="btn-query" class="btn btn-primary">3. Leer con querySelector</button>
-                        <button type="reset" class="btn btn-secondary">Limpiar</button>
+                    <div class="acciones-form">
+                        <button type="submit" class="btn btn-primario" id="btnGuardar">Guardar usuario</button>
+                        <button type="button" class="btn btn-secundario" id="btnCancelar">Cancelar edición</button>
                     </div>
                 </form>
-            </div>
+            </section>
 
-            <!-- Columna derecha: resultados y lista de usuarios -->
-            <div class="info-column">
-                <div class="result-box">
-                    <h2>Resultado de la lectura</h2>
-                    <pre id="result-area" class="result-content">Esperando accion...</pre>
+            <!-- Sección de demostración de los tres métodos de lectura -->
+            <section class="seccion-demo">
+                <h2>📖 Demostración: formas de leer formularios</h2>
+                <div class="demo-botones">
+                    <button id="demoDirecto" class="btn demo-btn">1. Método directo (DOM)</button>
+                    <button id="demoFormData" class="btn demo-btn">2. Método FormData</button>
+                    <button id="demoDelegacion" class="btn demo-btn">3. Método por delegación (event.target)</button>
                 </div>
+                <div id="demoResultado" class="demo-resultado">
+                    <p>Presiona un botón para ver cómo se lee el formulario con cada técnica.</p>
+                </div>
+                <p class="demo-explicacion">
+                    <strong>Nota:</strong> El método por delegación se usa también en los botones
+                    <strong>Editar</strong> y <strong>Eliminar</strong> de la lista de usuarios (más abajo).
+                </p>
+            </section>
 
-                <div class="users-box">
-                    <h2>Usuarios registrados</h2>
-                    <div id="users-list" class="users-list">
-                        <p class="empty-message">No hay usuarios registrados.</p>
-                    </div>
+            <!-- Listado de usuarios (ABM) -->
+            <section class="seccion-listado">
+                <h2>👥 Lista de usuarios</h2>
+                <div id="contenedorLista" class="lista-usuarios">
+                    <!-- Los usuarios se cargarán dinámicamente -->
+                    <p class="cargando">Cargando usuarios...</p>
                 </div>
-            </div>
-        </div>
+            </section>
+
+            <div id="mensajes" class="mensajes"></div>
+        </main>
+
+        <footer class="pie">
+            <p>Demostración de lectura de formularios con JavaScript puro | Sin recargas, persistencia en localStorage
+            </p>
+        </footer>
     </div>
 
     <script type="module" src="/scripts/main.js"></script>

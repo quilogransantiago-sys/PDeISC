@@ -1,0 +1,407 @@
+/* styles/main.css
+   Propósito: Estilos profesionales, sin márgenes laterales, con scrolls adecuados.
+   Mejoras: botón tema con íconos, lista de usuarios con scroll interno.
+*/
+
+:root {
+    --fondo: #f8fafc;
+    --texto: #0f172a;
+    --card: #ffffff;
+    --borde: #e2e8f0;
+    --primario: #3b82f6;
+    --primario-hover: #2563eb;
+    --secundario: #64748b;
+    --secundario-hover: #475569;
+    --peligro: #ef4444;
+    --peligro-hover: #dc2626;
+    --exito: #10b981;
+    --sombra: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --radio: 8px;
+}
+
+html.dark {
+    --fondo: #0f172a;
+    --texto: #f1f5f9;
+    --card: #1e293b;
+    --borde: #334155;
+    --primario: #60a5fa;
+    --primario-hover: #3b82f6;
+    --secundario: #94a3b8;
+    --secundario-hover: #cbd5e1;
+    --peligro: #f87171;
+    --peligro-hover: #ef4444;
+    --exito: #34d399;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    background-color: var(--fondo);
+    color: var(--texto);
+    font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.contenedor {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    width: 100%;
+}
+
+.encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--borde);
+    flex-shrink: 0;
+}
+
+/* Botón de tema mejorado */
+.boton-tema {
+    background: var(--card);
+    border: 1px solid var(--borde);
+    border-radius: 2rem;
+    padding: 0.5rem 1.2rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--texto);
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    box-shadow: var(--sombra);
+}
+
+.boton-tema:hover {
+    background: var(--borde);
+    transform: scale(1.02);
+}
+
+.boton-tema:active {
+    transform: scale(0.98);
+}
+
+.pie {
+    flex-shrink: 0;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    text-align: center;
+    font-size: 0.8rem;
+    border-top: 1px solid var(--borde);
+    color: var(--secundario);
+}
+
+main {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 4px;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 992px) {
+    main {
+        grid-template-columns: repeat(3, 1fr);
+        align-items: start;
+    }
+}
+
+.seccion-formulario,
+.seccion-demo,
+.seccion-listado {
+    background: var(--card);
+    border-radius: var(--radio);
+    padding: 1.5rem;
+    box-shadow: var(--sombra);
+    border: 1px solid var(--borde);
+    height: fit-content;
+}
+
+@media (max-width: 991px) {
+
+    .seccion-formulario,
+    .seccion-demo,
+    .seccion-listado {
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (min-width: 992px) {
+
+    .seccion-formulario,
+    .seccion-demo,
+    .seccion-listado {
+        margin-bottom: 0;
+    }
+}
+
+/* Establecer altura máxima y scroll en la lista de usuarios */
+.lista-usuarios {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    max-height: 400px;
+    /* altura máxima antes de scroll */
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+/* Personalizar scroll para que se vea moderno */
+.lista-usuarios::-webkit-scrollbar {
+    width: 6px;
+}
+
+.lista-usuarios::-webkit-scrollbar-track {
+    background: var(--borde);
+    border-radius: 10px;
+}
+
+.lista-usuarios::-webkit-scrollbar-thumb {
+    background: var(--primario);
+    border-radius: 10px;
+}
+
+/* Formulario */
+.form-usuario {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.campo.checkbox {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+label {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+input {
+    padding: 0.6rem;
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    background: var(--fondo);
+    color: var(--texto);
+    font-size: 1rem;
+}
+
+input:focus {
+    outline: 2px solid var(--primario);
+    outline-offset: 1px;
+}
+
+.acciones-form {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.btn {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: var(--radio);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.btn-primario {
+    background: var(--primario);
+    color: white;
+}
+
+.btn-primario:hover {
+    background: var(--primario-hover);
+}
+
+.btn-secundario {
+    background: var(--secundario);
+    color: white;
+}
+
+.btn-secundario:hover {
+    background: var(--secundario-hover);
+}
+
+.demo-btn {
+    background: var(--card);
+    border: 1px solid var(--borde);
+    color: var(--texto);
+}
+
+.demo-btn:hover {
+    background: var(--borde);
+}
+
+.demo-botones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.demo-resultado {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: var(--fondo);
+    border-radius: var(--radio);
+    border-left: 4px solid var(--primario);
+    font-family: monospace;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+}
+
+.demo-explicacion {
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: var(--secundario);
+}
+
+.tarjeta-usuario {
+    background: var(--fondo);
+    border: 1px solid var(--borde);
+    border-radius: var(--radio);
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.info-usuario {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: baseline;
+}
+
+.info-usuario strong {
+    color: var(--primario);
+}
+
+.estado-activo {
+    background: var(--exito);
+    color: #0f172a;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.estado-inactivo {
+    background: var(--secundario);
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+}
+
+.acciones-usuario {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-editar {
+    background: var(--primario);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+}
+
+.btn-eliminar {
+    background: var(--peligro);
+    color: white;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+}
+
+.mensajes {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    max-width: 300px;
+    z-index: 1000;
+}
+
+.mensaje {
+    background: var(--card);
+    border-left: 4px solid var(--primario);
+    padding: 0.75rem 1rem;
+    margin-top: 0.5rem;
+    border-radius: var(--radio);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .form-usuario {
+        grid-template-columns: 1fr;
+    }
+
+    .tarjeta-usuario {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .acciones-usuario {
+        align-self: flex-end;
+    }
+
+    .encabezado {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .demo-botones {
+        flex-direction: column;
+    }
+
+    .demo-botones .btn {
+        width: 100%;
+    }
+
+    .lista-usuarios {
+        max-height: 300px;
+        /* un poco menos en móvil */
+    }
+}
+
+.cargando {
+    text-align: center;
+    color: var(--secundario);
+    padding: 2rem;
+}
