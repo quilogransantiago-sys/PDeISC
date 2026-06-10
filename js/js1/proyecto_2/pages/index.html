@@ -3,140 +3,159 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Apple iPhone Store - Mayorista / Minorista</title>
-    <link rel="stylesheet" href="/styles/styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Cotizador iPhone | Mayorista & Minorista</title>
+    <!-- Script para evitar parpadeo en modo oscuro -->
     <script>
         (function () {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'dark') document.documentElement.classList.add('dark-theme');
+            const storedTheme = localStorage.getItem('theme');
+            if (storedTheme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+            } else {
+                document.documentElement.classList.remove('dark-mode');
+            }
         })();
     </script>
+    <link rel="stylesheet" href="/styles/main.css">
 </head>
 
 <body>
-    <div class="app">
-        <header class="header">
-            <h1>Venta de iPhones (Mayorista / Minorista)</h1>
-            <button id="theme-toggle" class="theme-toggle">Modo oscuro</button>
+    <div class="app-container">
+        <header class="main-header">
+            <h1>Cotizador iPhone</h1>
+            <button id="themeToggle" class="theme-toggle">🌙 Modo oscuro</button>
         </header>
 
-        <div class="dashboard">
-            <!-- Formulario -->
+        <div class="layout-grid">
+            <!-- COLUMNA IZQUIERDA: FORMULARIO -->
             <div class="form-column">
-                <form id="sale-form" class="form">
-                    <div class="form-field">
-                        <label>Modelo *</label>
-                        <select id="model" required>
-                            <option value="">Seleccionar</option>
-                        </select>
-                        <small class="error-message" id="model-error"></small>
-                    </div>
+                <form id="quoteForm" class="quote-form">
+                    <fieldset>
+                        <legend>Datos del cliente</legend>
+                        <div class="form-group">
+                            <label for="fullname">Nombre y apellido *</label>
+                            <input type="text" id="fullname" name="fullname">
+                            <div class="error-message" id="nameError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Correo electrónico *</label>
+                            <input type="email" id="email" name="email">
+                            <div class="error-message" id="emailError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="dni">DNI *</label>
+                            <input type="text" id="dni" name="dni">
+                            <div class="error-message" id="dniError"></div>
+                        </div>
+                    </fieldset>
 
-                    <div class="form-field">
-                        <label>Color *</label>
-                        <select id="color" required disabled>
-                            <option value="">Primero selecciona modelo</option>
-                        </select>
-                        <small class="error-message" id="color-error"></small>
-                    </div>
-
-                    <div class="form-field">
-                        <label>Capacidad *</label>
-                        <select id="capacity" required disabled>
-                            <option value="">Primero selecciona modelo</option>
-                        </select>
-                        <small class="error-message" id="capacity-error"></small>
-                    </div>
-
-                    <div class="form-field">
-                        <label>Tipo de venta *</label>
-                        <select id="saleType" required>
-                            <option value="">Seleccionar</option>
-                            <option value="minorista">Minorista (venta al público, +30% sobre costo)</option>
-                            <option value="mayorista">Mayorista (precio costo, mínimo 10 unidades)</option>
-                        </select>
-                        <small class="error-message" id="saleType-error"></small>
-                    </div>
-
-                    <div class="form-field">
-                        <label>Cantidad (unidades) *</label>
-                        <input type="number" id="quantity" min="1" value="1" required>
-                        <small class="error-message" id="quantity-error"></small>
-                    </div>
-
-                    <div class="form-field">
-                        <label>Condición *</label>
-                        <select id="condition" required>
-                            <option value="">Seleccionar</option>
-                            <option value="nuevo">Nuevo (sellado)</option>
-                            <option value="reacondicionado">Reacondicionado (como nuevo)</option>
-                        </select>
-                        <small class="error-message" id="condition-error"></small>
-                    </div>
-
-                    <div class="form-field">
-                        <label>Garantía (meses)</label>
-                        <input type="number" id="warranty" min="0" max="24" step="1">
-                        <small class="error-message" id="warranty-error"></small>
-                    </div>
-
-                    <div class="form-field">
-                        <label>Precio total (USD) *</label>
-                        <input type="text" id="totalPrice" readonly disabled>
-                        <small class="hint">Se calcula automáticamente</small>
-                    </div>
-
-                    <div class="form-field">
-                        <label>Notas adicionales</label>
-                        <textarea id="notes" rows="2" placeholder="Opcional: IMEI, accesorios incluidos..."></textarea>
-                    </div>
-
-                    <div class="button-group">
-                        <button type="submit" class="btn btn-primary">Registrar venta</button>
-                        <button type="button" id="clear-all" class="btn btn-secondary">Eliminar todas</button>
-                    </div>
+                    <fieldset>
+                        <legend>Configuración del equipo</legend>
+                        <div class="form-group">
+                            <label for="model">Modelo *</label>
+                            <select id="model" name="model"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="saleType">Tipo de venta *</label>
+                            <select id="saleType" name="saleType">
+                                <option value="retail">Minorista (+30%)</option>
+                                <option value="wholesale">Mayorista (+10% - mínimo 4 unidades)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantity">Cantidad *</label>
+                            <input type="number" id="quantity" name="quantity" min="1" value="1">
+                            <div class="error-message" id="quantityError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="storage">Capacidad (GB) *</label>
+                            <select id="storage" name="storage">
+                                <option value="64">64 GB</option>
+                                <option value="128" selected>128 GB</option>
+                                <option value="256">256 GB</option>
+                                <option value="512">512 GB</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="condition">Condición *</label>
+                            <select id="condition" name="condition">
+                                <option value="sealed">Sellado (+18%)</option>
+                                <option value="gradeA">Usado grado A (0%)</option>
+                                <option value="gradeB">Usado grado B (-10%)</option>
+                                <option value="gradeC">Usado grado C (-35%)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="battery">Estado de batería *</label>
+                            <select id="battery" name="battery">
+                                <option value="100">100% (+$40)</option>
+                                <option value="95">90-99% ($0)</option>
+                                <option value="87">85-89% (-$30)</option>
+                                <option value="82">80-84% (-$60)</option>
+                                <option value="70">Menos de 80% (-$100)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="color">Color</label>
+                            <select id="color" name="color">
+                                <option>Negro</option>
+                                <option>Blanco</option>
+                                <option>Azul</option>
+                                <option>Verde</option>
+                                <option>Rosa</option>
+                            </select>
+                        </div>
+                    </fieldset>
                 </form>
             </div>
 
-            <!-- Columna derecha: lista y almacenes -->
-            <div class="info-column">
-                <div class="items-list-box">
-                    <h2>Ventas registradas</h2>
-                    <div id="sales-list" class="items-list">
-                        <p class="empty-message">No hay ventas. Realice una.</p>
+            <!-- COLUMNA DERECHA: RESULTADOS Y ALMACENAMIENTO -->
+            <div class="results-column">
+                <div class="price-panel">
+                    <h2>Cotización en tiempo real</h2>
+                    <div id="priceBreakdown" class="price-breakdown"></div>
+                    <div class="total-price">
+                        <span>Total USD:</span>
+                        <span id="totalPrice">0.00</span>
                     </div>
                 </div>
 
-                <div class="storage-panel">
-                    <h3>Almacenamiento (3 métodos)</h3>
-                    <div class="storage-cards">
-                        <div class="storage-card">
-                            <strong>localStorage</strong> <span id="ls-count">0</span> ventas
-                            <button id="load-ls" class="btn-small">Cargar</button>
-                            <p class="hint">Persiste al cerrar navegador</p>
-                        </div>
-                        <div class="storage-card">
-                            <strong>sessionStorage</strong> <span id="ss-count">0</span> ventas
-                            <button id="load-ss" class="btn-small">Cargar</button>
-                            <p class="hint">Se borra al cerrar pestaña</p>
-                        </div>
-                        <div class="storage-card">
-                            <strong>Cookies</strong> <span id="cookie-count">0</span> ventas
-                            <button id="load-cookie" class="btn-small">Cargar</button>
-                            <p class="hint">Expiran en 7 días</p>
-                        </div>
+                <div class="storage-section">
+                    <h3>Guardar cotización actual</h3>
+                    <div class="storage-buttons">
+                        <button id="saveCookieBtn" class="btn-storage">🍪 Guardar en Cookies</button>
+                        <button id="saveLocalBtn" class="btn-storage">💾 Guardar en localStorage</button>
+                        <button id="saveSessionBtn" class="btn-storage">📑 Guardar en sessionStorage</button>
+                        <button id="saveIndexedBtn" class="btn-storage">🗄️ Guardar en IndexedDB</button>
                     </div>
-                    <div class="demo-instructions">
-                        <p>✔️ Cada venta se guarda en los 3 almacenes.</p>
-                        <p>📌 Abre otra pestaña: sessionStorage estará vacío; pulsa "Cargar" desde localStorage para
-                            sincronizar.</p>
-                        <p>🍪 Ver cookies en DevTools > Application > Cookies.</p>
+
+                    <div class="storage-displays">
+                        <div class="storage-card">
+                            <h4>Cookies <small>(expiran 7 días)</small></h4>
+                            <div id="cookieList" class="storage-list">No hay datos</div>
+                            <button id="clearCookiesBtn" class="btn-clear">Borrar cookies</button>
+                        </div>
+                        <div class="storage-card">
+                            <h4>localStorage <small>(persistente)</small></h4>
+                            <div id="localList" class="storage-list">No hay datos</div>
+                            <button id="clearLocalBtn" class="btn-clear">Borrar localStorage</button>
+                        </div>
+                        <div class="storage-card">
+                            <h4>sessionStorage <small>(solo esta pestaña)</small></h4>
+                            <div id="sessionList" class="storage-list">No hay datos</div>
+                            <button id="clearSessionBtn" class="btn-clear">Borrar sessionStorage</button>
+                        </div>
+                        <div class="storage-card">
+                            <h4>IndexedDB <small>(persistente)</small></h4>
+                            <div id="indexedList" class="storage-list">Cargando...</div>
+                            <button id="clearIndexedBtn" class="btn-clear">Borrar IndexedDB</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <script type="module" src="/scripts/main.js"></script>
 </body>
 

@@ -1,0 +1,268 @@
+/* ============================================
+   main.css - Estilos globales y tema oscuro/claro
+   Variables CSS, diseño responsive, sin márgenes laterales
+   ============================================ */
+
+/* Reset básico y variables globales */
+:root {
+    /* Modo claro (por defecto) */
+    --bg-body: #f5f7fb;
+    --bg-card: #ffffff;
+    --text-primary: #1e293b;
+    --text-secondary: #334155;
+    --border: #e2e8f0;
+    --btn-primary: #2563eb;
+    --btn-primary-hover: #1d4ed8;
+    --btn-storage: #f1f5f9;
+    --btn-storage-hover: #e2e8f0;
+    --price-bg: #f8fafc;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+:root.dark-mode {
+    --bg-body: #0f172a;
+    --bg-card: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --border: #334155;
+    --btn-primary: #3b82f6;
+    --btn-primary-hover: #2563eb;
+    --btn-storage: #334155;
+    --btn-storage-hover: #475569;
+    --price-bg: #0f172a;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-primary);
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.app-container {
+    width: 100%;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+/* Layout principal: dos columnas en desktop, una en móvil */
+.layout-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .layout-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* Header */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.main-header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.theme-toggle {
+    background: var(--btn-storage);
+    border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+.theme-toggle:hover {
+    background: var(--btn-storage-hover);
+}
+
+/* Formulario */
+.quote-form {
+    background: var(--bg-card);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+}
+
+fieldset {
+    border: none;
+    margin-bottom: 1.5rem;
+    padding: 0;
+}
+
+legend {
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--btn-primary);
+    display: inline-block;
+    width: auto;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    font-size: 0.9rem;
+}
+
+input,
+select {
+    background: var(--bg-body);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 0.6rem 0.75rem;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+    transition: border 0.2s;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--btn-primary);
+}
+
+.error-message {
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+/* Panel de precios */
+.price-panel {
+    background: var(--bg-card);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+}
+
+.price-panel h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+}
+
+.price-breakdown {
+    background: var(--price-bg);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    border-left: 3px solid var(--btn-primary);
+}
+
+.total-price {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    padding-top: 0.5rem;
+    border-top: 2px solid var(--border);
+}
+
+/* Almacenamiento */
+.storage-section {
+    background: var(--bg-card);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+}
+
+.storage-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.btn-storage,
+.btn-clear {
+    background: var(--btn-storage);
+    border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--text-primary);
+    transition: all 0.2s;
+}
+
+.btn-storage:hover,
+.btn-clear:hover {
+    background: var(--btn-storage-hover);
+}
+
+.btn-clear {
+    background: #ef444410;
+    border-color: #ef4444;
+    color: #ef4444;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.8rem;
+}
+
+.storage-displays {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.storage-card {
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+}
+
+.storage-card h4 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.storage-list {
+    background: var(--bg-body);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    max-height: 150px;
+    overflow-y: auto;
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--border);
+}
+
+.storage-list div {
+    padding: 0.25rem 0;
+    border-bottom: 1px dashed var(--border);
+}

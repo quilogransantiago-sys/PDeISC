@@ -1,334 +1,334 @@
-import SaleManager from '/modules/saleManager.js';
-import { iphoneModels, getColorsForModel, getCapacitiesForModel, getModelById } from '/modules/iphoneData.js';
+/**
+ * main.js - Controlador principal
+ * Importa módulos de precios y almacenamiento.
+ * Maneja validaciones, cálculo dinámico, y modo oscuro.
+ */
 
-// Inicializar gestor de ventas
-const saleManager = new SaleManager();
+import { modelCatalog, calculateTotalPrice } from '/modules/priceCalculator.js';
+import * as cookieStorage from '/modules/storage-cookies.js';
+import * as localStorageMod from '/modules/storage-local.js';
+import * as sessionStorageMod from '/modules/storage-session.js';
+import * as indexedDBStorage from '/modules/storage-indexeddb.js';
 
+// -------------------------------
 // Elementos DOM
+// -------------------------------
 const modelSelect = document.getElementById('model');
-const colorSelect = document.getElementById('color');
-const capacitySelect = document.getElementById('capacity');
-const saleTypeSelect = document.getElementById('saleType');
+const saleType = document.getElementById('saleType');
 const quantityInput = document.getElementById('quantity');
+const storageSelect = document.getElementById('storage');
 const conditionSelect = document.getElementById('condition');
-const warrantyInput = document.getElementById('warranty');
-const totalPriceInput = document.getElementById('totalPrice');
-const notesTextarea = document.getElementById('notes');
-const salesListDiv = document.getElementById('sales-list');
-const themeToggle = document.getElementById('theme-toggle');
-const lsCountSpan = document.getElementById('ls-count');
-const ssCountSpan = document.getElementById('ss-count');
-const cookieCountSpan = document.getElementById('cookie-count');
+const batterySelect = document.getElementById('battery');
+const colorSelect = document.getElementById('color');
+const totalSpan = document.getElementById('totalPrice');
+const breakdownDiv = document.getElementById('priceBreakdown');
+const quantityErrorDiv = document.getElementById('quantityError');
 
-// Cargar modelos en el select
+// Campos de cliente y sus errores
+const fullnameInput = document.getElementById('fullname');
+const emailInput = document.getElementById('email');
+const dniInput = document.getElementById('dni');
+const nameError = document.getElementById('nameError');
+const emailError = document.getElementById('emailError');
+const dniError = document.getElementById('dniError');
+
+// Elementos de listado
+const cookieListDiv = document.getElementById('cookieList');
+const localListDiv = document.getElementById('localList');
+const sessionListDiv = document.getElementById('sessionList');
+const indexedListDiv = document.getElementById('indexedList');
+
+// Botones
+const saveCookieBtn = document.getElementById('saveCookieBtn');
+const saveLocalBtn = document.getElementById('saveLocalBtn');
+const saveSessionBtn = document.getElementById('saveSessionBtn');
+const saveIndexedBtn = document.getElementById('saveIndexedBtn');
+const clearCookiesBtn = document.getElementById('clearCookiesBtn');
+const clearLocalBtn = document.getElementById('clearLocalBtn');
+const clearSessionBtn = document.getElementById('clearSessionBtn');
+const clearIndexedBtn = document.getElementById('clearIndexedBtn');
+const themeToggle = document.getElementById('themeToggle');
+
+// -------------------------------
+// 1. Validaciones
+// -------------------------------
+function validateName() {
+    const value = fullnameInput.value.trim();
+    const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/;
+    if (!value) {
+        nameError.textContent = 'El nombre es obligatorio.';
+        return false;
+    }
+    if (!regex.test(value)) {
+        nameError.textContent = 'Solo letras y espacios.';
+        return false;
+    }
+    nameError.textContent = '';
+    return true;
+}
+
+function validateEmail() {
+    const value = emailInput.value.trim();
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!value) {
+        emailError.textContent = 'El correo es obligatorio.';
+        return false;
+    }
+    if (!regex.test(value)) {
+        emailError.textContent = 'Correo inválido (ej: nombre@dominio.com).';
+        return false;
+    }
+    emailError.textContent = '';
+    return true;
+}
+
+function validateDNI() {
+    const value = dniInput.value.trim();
+    const regex = /^\d+$/;
+    if (!value) {
+        dniError.textContent = 'El DNI es obligatorio.';
+        return false;
+    }
+    if (!regex.test(value)) {
+        dniError.textContent = 'Solo números, sin puntos.';
+        return false;
+    }
+    dniError.textContent = '';
+    return true;
+}
+
+function validateQuantity() {
+    const qty = parseInt(quantityInput.value);
+    const type = saleType.value;
+    if (type === 'wholesale' && qty < 4) {
+        quantityErrorDiv.textContent = '⚠️ Mayorista requiere mínimo 4 unidades.';
+        return false;
+    }
+    if (qty < 1) {
+        quantityErrorDiv.textContent = 'Cantidad mínima 1.';
+        return false;
+    }
+    quantityErrorDiv.textContent = '';
+    return true;
+}
+
+function isFormValid() {
+    const nameOk = validateName();
+    const emailOk = validateEmail();
+    const dniOk = validateDNI();
+    const qtyOk = validateQuantity();
+    return nameOk && emailOk && dniOk && qtyOk;
+}
+
+// -------------------------------
+// 2. Cargar modelos en el select
+// -------------------------------
 function populateModels() {
-    modelSelect.innerHTML = '<option value="">Seleccionar</option>';
-    iphoneModels.forEach(model => {
+    if (!modelSelect) return;
+    modelSelect.innerHTML = '';
+    console.log('Cargando modelos:', modelCatalog.length); // Debug
+    modelCatalog.forEach(model => {
         const option = document.createElement('option');
         option.value = model.id;
-        option.textContent = `${model.name} (${model.releaseYear}) - Desde $${model.basePrice}`;
+        option.textContent = `${model.name} - $${model.basePrice} (base ${model.baseStorage}GB)`;
         modelSelect.appendChild(option);
     });
-}
-
-// Actualizar colores según modelo seleccionado
-function updateColors() {
-    const modelId = modelSelect.value;
-    colorSelect.innerHTML = '<option value="">Seleccionar color</option>';
-    colorSelect.disabled = !modelId;
-    if (!modelId) return;
-    const colors = getColorsForModel(modelId);
-    colors.forEach(color => {
+    if (modelSelect.options.length === 0) {
         const option = document.createElement('option');
-        option.value = color;
-        option.textContent = color;
-        colorSelect.appendChild(option);
-    });
-}
-
-// Actualizar capacidades según modelo
-function updateCapacities() {
-    const modelId = modelSelect.value;
-    capacitySelect.innerHTML = '<option value="">Seleccionar capacidad</option>';
-    capacitySelect.disabled = !modelId;
-    if (!modelId) return;
-    const capacities = getCapacitiesForModel(modelId);
-    capacities.forEach(cap => {
-        const option = document.createElement('option');
-        option.value = cap;
-        option.textContent = cap;
-        capacitySelect.appendChild(option);
-    });
-}
-
-// Calcular garantía por defecto según condición y modelo
-function setDefaultWarranty() {
-    const condition = conditionSelect.value;
-    const modelId = modelSelect.value;
-    if (!condition) return;
-    if (condition === 'nuevo') {
-        warrantyInput.value = 12;
-    } else {
-        warrantyInput.value = 6;
-    }
-    // Si es modelo muy reciente (año >= 2023) y nuevo, garantía 24 meses
-    if (condition === 'nuevo' && modelId) {
-        const model = getModelById(modelId);
-        if (model && model.releaseYear >= 2023) warrantyInput.value = 24;
+        option.textContent = 'Error: no hay modelos';
+        modelSelect.appendChild(option);
     }
 }
 
-// Calcular precio total en tiempo real
-function calculateTotalPrice() {
-    const modelId = modelSelect.value;
-    const saleType = saleTypeSelect.value;
-    const quantity = parseInt(quantityInput.value);
-    const condition = conditionSelect.value;
-
-    if (!modelId || !saleType || isNaN(quantity) || quantity <= 0 || !condition) {
-        totalPriceInput.value = '';
-        return;
-    }
-
-    const model = getModelById(modelId);
-    if (!model) return;
-
-    let unitPrice = model.basePrice;
-    // Aplicar markup para minorista
-    if (saleType === 'minorista') {
-        unitPrice = unitPrice * 1.30; // +30%
-    }
-    // Ajuste por condición: reacondicionado tiene 20% de descuento sobre el precio final
-    if (condition === 'reacondicionado') {
-        unitPrice = unitPrice * 0.80;
-    }
-    const total = unitPrice * quantity;
-    totalPriceInput.value = total.toFixed(2);
-}
-
-// Validar cantidad según tipo de venta
-function validateQuantity() {
-    const saleType = saleTypeSelect.value;
-    let qty = parseInt(quantityInput.value);
-    const errorSpan = document.getElementById('quantity-error');
-    if (!saleType) return true;
-    if (saleType === 'mayorista') {
-        if (isNaN(qty) || qty < 10) {
-            errorSpan.textContent = 'Mayorista requiere mínimo 10 unidades.';
-            return false;
-        } else {
-            errorSpan.textContent = '';
-            return true;
-        }
-    } else {
-        if (isNaN(qty) || qty < 1) {
-            errorSpan.textContent = 'Cantidad mínima 1.';
-            return false;
-        } else {
-            errorSpan.textContent = '';
-            return true;
-        }
-    }
-}
-
-// Validación completa antes de enviar
-function validateForm() {
-    let isValid = true;
-    // Limpiar errores previos
-    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-
-    if (!modelSelect.value) {
-        document.getElementById('model-error').textContent = 'Seleccione un modelo.';
-        isValid = false;
-    }
-    if (!colorSelect.value) {
-        document.getElementById('color-error').textContent = 'Seleccione un color válido para el modelo.';
-        isValid = false;
-    }
-    if (!capacitySelect.value) {
-        document.getElementById('capacity-error').textContent = 'Seleccione capacidad.';
-        isValid = false;
-    }
-    if (!saleTypeSelect.value) {
-        document.getElementById('saleType-error').textContent = 'Seleccione tipo de venta.';
-        isValid = false;
-    }
-    if (!validateQuantity()) isValid = false;
-    if (!conditionSelect.value) {
-        document.getElementById('condition-error').textContent = 'Seleccione condición.';
-        isValid = false;
-    }
-    const warranty = parseInt(warrantyInput.value);
-    if (isNaN(warranty) || warranty < 0 || warranty > 24) {
-        document.getElementById('warranty-error').textContent = 'Garantía entre 0 y 24 meses.';
-        isValid = false;
-    }
-    if (!totalPriceInput.value || parseFloat(totalPriceInput.value) <= 0) {
-        // Si no hay precio, recalcular
-        calculateTotalPrice();
-        if (!totalPriceInput.value) isValid = false;
-    }
-    return isValid;
-}
-
-// Obtener objeto de venta actual
-function getCurrentSale() {
-    const model = getModelById(modelSelect.value);
+// -------------------------------
+// 3. Obtener datos del formulario y actualizar precio
+// -------------------------------
+function getCurrentFormData() {
     return {
-        model: model.name,
         modelId: modelSelect.value,
-        color: colorSelect.value,
-        capacity: capacitySelect.value,
-        saleType: saleTypeSelect.value,
-        quantity: parseInt(quantityInput.value),
+        saleType: saleType.value,
+        quantity: parseInt(quantityInput.value) || 1,
+        selectedStorage: parseInt(storageSelect.value),
         condition: conditionSelect.value,
-        warranty: parseInt(warrantyInput.value),
-        totalPrice: parseFloat(totalPriceInput.value),
-        notes: notesTextarea.value.trim(),
-        unitPrice: (parseFloat(totalPriceInput.value) / parseInt(quantityInput.value)).toFixed(2),
-        date: new Date().toLocaleString()
+        batteryValue: batterySelect.value,
+        color: colorSelect.value
     };
 }
 
-// Actualizar lista de ventas en UI
-function updateSalesList() {
-    const sales = saleManager.getAll();
-    if (sales.length === 0) {
-        salesListDiv.innerHTML = '<p class="empty-message">No hay ventas registradas.</p>';
-    } else {
-        salesListDiv.innerHTML = sales.map(sale => `
-      <div class="item-card" data-id="${sale.id}">
-        <p class="item-name">${escapeHtml(sale.model)} - ${sale.capacity} - ${escapeHtml(sale.color)}</p>
-        <p>Venta: ${sale.saleType === 'minorista' ? 'Minorista' : 'Mayorista'} | Cantidad: ${sale.quantity} | Total: $${sale.totalPrice}</p>
-        <p>Condición: ${sale.condition === 'nuevo' ? 'Nuevo' : 'Reacondicionado'} | Garantía: ${sale.warranty} meses</p>
-        <p>Precio unitario: $${sale.unitPrice} | Fecha: ${sale.date}</p>
-        ${sale.notes ? `<p>Notas: ${escapeHtml(sale.notes)}</p>` : ''}
-        <button class="delete-btn" data-id="${sale.id}">Eliminar venta</button>
-      </div>
-    `).join('');
-        document.querySelectorAll('.delete-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                saleManager.remove(parseInt(btn.dataset.id));
-                updateSalesList();
-                updateCounters();
-            });
-        });
+function updatePriceDisplay() {
+    // Primero validar cantidad para mostrar error visual
+    const qtyValid = validateQuantity();
+    const params = getCurrentFormData();
+
+    if (!qtyValid) {
+        totalSpan.textContent = '0.00';
+        breakdownDiv.innerHTML = '<span class="error-message">Cantidad no válida para el tipo de venta.</span>';
+        return;
+    }
+
+    const { total, breakdown, error } = calculateTotalPrice(params);
+    if (error) {
+        totalSpan.textContent = 'Error';
+        breakdownDiv.innerHTML = `<span class="error-message">${error}</span>`;
+        return;
+    }
+
+    totalSpan.textContent = total.toFixed(2);
+    breakdownDiv.innerHTML = `
+        <div>💰 Precio base: $${breakdown.basePrice}</div>
+        <div>💾 Extra capacidad: $${breakdown.storageExtra}</div>
+        <div>📈 Margen (${breakdown.marginPercent}%): $${((breakdown.basePrice + breakdown.storageExtra) * breakdown.marginPercent / 100).toFixed(2)}</div>
+        <div>🔧 Condición (x${breakdown.conditionMultiplier.toFixed(2)})</div>
+        <div>🔋 Ajuste batería: $${breakdown.batteryAdjust}</div>
+        <div>📦 Cantidad: ${breakdown.quantity} x $${breakdown.unitFinal.toFixed(2)}</div>
+    `;
+}
+
+// -------------------------------
+// 4. Construir objeto cotización
+// -------------------------------
+function buildQuoteObject() {
+    if (!isFormValid()) return null;
+    const params = getCurrentFormData();
+    const { total, breakdown, error } = calculateTotalPrice(params);
+    if (error) return null;
+
+    const modelObj = modelCatalog.find(m => m.id === params.modelId);
+    return {
+        timestamp: new Date().toISOString(),
+        cliente: {
+            fullname: fullnameInput.value.trim(),
+            email: emailInput.value.trim(),
+            dni: dniInput.value.trim()
+        },
+        producto: {
+            modelo: modelObj ? modelObj.name : params.modelId,
+            capacidadGB: params.selectedStorage,
+            condicion: conditionSelect.options[conditionSelect.selectedIndex]?.text,
+            bateria: batterySelect.options[batterySelect.selectedIndex]?.text,
+            color: colorSelect.value
+        },
+        venta: {
+            tipo: saleType.value === 'retail' ? 'Minorista' : 'Mayorista',
+            cantidad: params.quantity
+        },
+        totalUSD: total
+    };
+}
+
+// -------------------------------
+// 5. Guardar y mostrar mensajes (sin alert)
+// -------------------------------
+function showMessage(msg, isError = false) {
+    const msgDiv = document.createElement('div');
+    msgDiv.textContent = msg;
+    msgDiv.style.position = 'fixed';
+    msgDiv.style.bottom = '1rem';
+    msgDiv.style.right = '1rem';
+    msgDiv.style.backgroundColor = isError ? '#dc2626' : '#10b981';
+    msgDiv.style.color = 'white';
+    msgDiv.style.padding = '0.5rem 1rem';
+    msgDiv.style.borderRadius = '0.5rem';
+    msgDiv.style.zIndex = '1000';
+    document.body.appendChild(msgDiv);
+    setTimeout(() => msgDiv.remove(), 2500);
+}
+
+async function saveCurrentTo(method) {
+    if (!isFormValid()) {
+        showMessage('Corrige los errores del formulario antes de guardar.', true);
+        return;
+    }
+    const quote = buildQuoteObject();
+    if (!quote) {
+        showMessage('No se puede guardar la cotización (error en datos).', true);
+        return;
+    }
+
+    if (method === 'cookie') cookieStorage.addQuote(quote);
+    else if (method === 'local') localStorageMod.addQuote(quote);
+    else if (method === 'session') sessionStorageMod.addQuote(quote);
+    else if (method === 'indexed') await indexedDBStorage.addQuote(quote);
+
+    refreshAllStorageLists();
+    showMessage('Cotización guardada correctamente');
+}
+
+// -------------------------------
+// 6. Refrescar listas de almacenamiento
+// -------------------------------
+async function refreshAllStorageLists() {
+    const cookieQuotes = cookieStorage.getQuotes();
+    cookieListDiv.innerHTML = cookieQuotes.length ? cookieQuotes.map(q => `<div>${new Date(q.timestamp).toLocaleString()} - ${q.cliente.fullname} - $${q.totalUSD}</div>`).join('') : 'No hay datos';
+
+    const localQuotes = localStorageMod.getQuotes();
+    localListDiv.innerHTML = localQuotes.length ? localQuotes.map(q => `<div>${new Date(q.timestamp).toLocaleString()} - ${q.cliente.fullname} - $${q.totalUSD}</div>`).join('') : 'No hay datos';
+
+    const sessionQuotes = sessionStorageMod.getQuotes();
+    sessionListDiv.innerHTML = sessionQuotes.length ? sessionQuotes.map(q => `<div>${new Date(q.timestamp).toLocaleString()} - ${q.cliente.fullname} - $${q.totalUSD}</div>`).join('') : 'No hay datos';
+
+    try {
+        const indexedQuotes = await indexedDBStorage.getQuotes();
+        indexedListDiv.innerHTML = indexedQuotes.length ? indexedQuotes.map(q => `<div>${new Date(q.timestamp).toLocaleString()} - ${q.cliente.fullname} - $${q.totalUSD}</div>`).join('') : 'No hay datos';
+    } catch (e) {
+        indexedListDiv.innerHTML = 'Error cargando IndexedDB';
     }
 }
 
-function updateCounters() {
-    const counts = saleManager.getCounts();
-    lsCountSpan.textContent = counts.localStorage;
-    ssCountSpan.textContent = counts.sessionStorage;
-    cookieCountSpan.textContent = counts.cookies;
+// -------------------------------
+// 7. Borrar datos
+// -------------------------------
+function clearCookie() { cookieStorage.clearQuotes(); refreshAllStorageLists(); showMessage('Cookies borradas'); }
+function clearLocal() { localStorageMod.clearQuotes(); refreshAllStorageLists(); showMessage('localStorage borrado'); }
+function clearSession() { sessionStorageMod.clearQuotes(); refreshAllStorageLists(); showMessage('sessionStorage borrado'); }
+async function clearIndexed() { await indexedDBStorage.clearQuotes(); refreshAllStorageLists(); showMessage('IndexedDB borrado'); }
+
+// -------------------------------
+// 8. Modo oscuro/claro (corregido)
+// -------------------------------
+function initTheme() {
+    const isDark = document.documentElement.classList.contains('dark-mode');
+    themeToggle.textContent = isDark ? '☀️ Modo claro' : '🌙 Modo oscuro';
+    themeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark-mode');
+        const nowDark = document.documentElement.classList.contains('dark-mode');
+        localStorage.setItem('theme', nowDark ? 'dark' : 'light');
+        themeToggle.textContent = nowDark ? '☀️ Modo claro' : '🌙 Modo oscuro';
+    });
 }
 
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m]));
+// -------------------------------
+// 9. Eventos e inicialización
+// -------------------------------
+function attachEvents() {
+    const inputs = ['model', 'saleType', 'quantity', 'storage', 'condition', 'battery', 'color'];
+    inputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', updatePriceDisplay);
+    });
+    fullnameInput.addEventListener('input', () => { validateName(); updatePriceDisplay(); });
+    emailInput.addEventListener('input', () => { validateEmail(); updatePriceDisplay(); });
+    dniInput.addEventListener('input', () => { validateDNI(); updatePriceDisplay(); });
+    quantityInput.addEventListener('input', () => { validateQuantity(); updatePriceDisplay(); });
+    saleType.addEventListener('change', () => { validateQuantity(); updatePriceDisplay(); });
+
+    saveCookieBtn.addEventListener('click', () => saveCurrentTo('cookie'));
+    saveLocalBtn.addEventListener('click', () => saveCurrentTo('local'));
+    saveSessionBtn.addEventListener('click', () => saveCurrentTo('session'));
+    saveIndexedBtn.addEventListener('click', () => saveCurrentTo('indexed'));
+
+    clearCookiesBtn.addEventListener('click', clearCookie);
+    clearLocalBtn.addEventListener('click', clearLocal);
+    clearSessionBtn.addEventListener('click', clearSession);
+    clearIndexedBtn.addEventListener('click', clearIndexed);
 }
 
-// Eventos dinámicos
-modelSelect.addEventListener('change', () => {
-    updateColors();
-    updateCapacities();
-    setDefaultWarranty();
-    calculateTotalPrice();
-});
-colorSelect.addEventListener('change', calculateTotalPrice);
-capacitySelect.addEventListener('change', calculateTotalPrice);
-saleTypeSelect.addEventListener('change', () => {
-    validateQuantity();
-    calculateTotalPrice();
-});
-quantityInput.addEventListener('input', () => {
-    validateQuantity();
-    calculateTotalPrice();
-});
-conditionSelect.addEventListener('change', () => {
-    setDefaultWarranty();
-    calculateTotalPrice();
-});
-warrantyInput.addEventListener('input', () => {
-    let val = parseInt(warrantyInput.value);
-    if (isNaN(val)) warrantyInput.value = 0;
-    if (val < 0) warrantyInput.value = 0;
-    if (val > 24) warrantyInput.value = 24;
-});
-
-// Envío del formulario
-document.getElementById('sale-form').addEventListener('submit', (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-        const sale = getCurrentSale();
-        saleManager.add(sale);
-        updateSalesList();
-        updateCounters();
-        // Reiniciar campos opcionales pero mantener selecciones
-        notesTextarea.value = '';
-        quantityInput.value = 1;
-        // Recalcular precio
-        calculateTotalPrice();
-        // Limpiar errores
-        document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
-    }
-});
-
-document.getElementById('clear-all').addEventListener('click', () => {
-    if (confirm('¿Eliminar todas las ventas registradas?')) {
-        saleManager.clearAll();
-        updateSalesList();
-        updateCounters();
-    }
-});
-
-document.getElementById('load-ls').addEventListener('click', () => {
-    saleManager.loadFromLocalStorage();
-    updateSalesList();
-    updateCounters();
-});
-document.getElementById('load-ss').addEventListener('click', () => {
-    saleManager.loadFromSessionStorage();
-    updateSalesList();
-    updateCounters();
-});
-document.getElementById('load-cookie').addEventListener('click', () => {
-    saleManager.loadFromCookies();
-    updateSalesList();
-    updateCounters();
-});
-
-// Tema oscuro
-function applyTheme() {
-    const isDark = localStorage.getItem('theme') === 'dark';
-    if (isDark) {
-        document.documentElement.classList.add('dark-theme');
-        themeToggle.textContent = 'Modo claro';
-    } else {
-        document.documentElement.classList.remove('dark-theme');
-        themeToggle.textContent = 'Modo oscuro';
-    }
+async function init() {
+    populateModels();
+    attachEvents();
+    initTheme();
+    updatePriceDisplay();
+    await refreshAllStorageLists();
 }
-function toggleTheme() {
-    const isDark = document.documentElement.classList.contains('dark-theme');
-    if (isDark) {
-        document.documentElement.classList.remove('dark-theme');
-        localStorage.setItem('theme', 'light');
-        themeToggle.textContent = 'Modo oscuro';
-    } else {
-        document.documentElement.classList.add('dark-theme');
-        localStorage.setItem('theme', 'dark');
-        themeToggle.textContent = 'Modo claro';
-    }
-}
-themeToggle.addEventListener('click', toggleTheme);
-applyTheme();
 
-// Inicializar todo
-populateModels();
-updateColors();
-updateCapacities();
-setDefaultWarranty();
-updateSalesList();
-updateCounters();
-calculateTotalPrice();
+init();
