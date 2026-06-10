@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Events - Demostración</title>
+    <script>
+        (function () {
+            const temaGuardado = localStorage.getItem('tema');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const temaActivo = temaGuardado || (prefersDark ? 'oscuro' : 'claro');
+            document.documentElement.setAttribute('data-tema', temaActivo);
+        })();
+    </script>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+
+<body>
+    <div class="contenedor-principal">
+        <header class="encabezado">
+            <h1>📝 Eventos de Formulario</h1>
+            <button id="btnModoOscuro" class="btn-tema">🌙 Modo oscuro</button>
+        </header>
+        <div class="demo-area">
+            <h2>Formulario de ejemplo</h2>
+            <form id="demoForm">
+                <label>Nombre: <input type="text" id="nombre" placeholder="Escribe tu nombre"></label><br><br>
+                <label>Email: <input type="email" id="email" placeholder="email@ejemplo.com"></label><br><br>
+                <label>Preferencia:
+                    <select id="preferencia">
+                        <option value="">Selecciona...</option>
+                        <option value="op1">Opción 1</option>
+                        <option value="op2">Opción 2</option>
+                    </select>
+                </label><br><br>
+                <button type="submit">Enviar</button>
+                <button type="reset">Resetear</button>
+            </form>
+            <div id="logForm" class="mensajes-evento"></div>
+        </div>
+        <a href="/" class="boton-volver">← Volver al índice</a>
+    </div>
+    <script src="/scripts/form.js" type="module"></script>
+    <script src="/scripts/main.js" type="module"></script>
+</body>
+
+</html>

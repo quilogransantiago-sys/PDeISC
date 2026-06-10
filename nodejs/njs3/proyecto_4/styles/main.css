@@ -1,3 +1,42 @@
+/**
+ * main.css - Diseño full width sin espacios vacíos
+ * Desktop: elementos en fila ocupando todo el ancho
+ * Mobile: columna con botones apilados
+ */
+
+:root,
+[data-tema="claro"] {
+    --fondo: #f8f9fa;
+    --texto: #212529;
+    --card-fondo: #ffffff;
+    --borde: #dee2e6;
+    --btn-fondo: #e9ecef;
+    --btn-texto: #495057;
+    --btn-hover: #dee2e6;
+    --btn-primario: #0d6efd;
+    --btn-primario-hover: #0b5ed7;
+    --mensaje-info: #e3f2fd;
+    --mensaje-texto: #0c5460;
+    --sombra: rgba(0, 0, 0, 0.05);
+    --enlace: #0d6efd;
+}
+
+[data-tema="oscuro"] {
+    --fondo: #121212;
+    --texto: #e9ecef;
+    --card-fondo: #1e1e1e;
+    --borde: #2c2c2c;
+    --btn-fondo: #2c2c2c;
+    --btn-texto: #e9ecef;
+    --btn-hover: #3a3a3a;
+    --btn-primario: #3b82f6;
+    --btn-primario-hover: #2563eb;
+    --mensaje-info: #1e2a3a;
+    --mensaje-texto: #b3e4ff;
+    --sombra: rgba(0, 0, 0, 0.3);
+    --enlace: #60a5fa;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,125 +44,172 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: #f0f2f5;
-    padding: 20px;
+    background-color: var(--fondo);
+    color: var(--texto);
+    font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+    transition: background 0.2s, color 0.2s;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
-
-h1,
-h2,
-h3 {
-    text-align: center;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.botones-creacion,
-.botones-modificacion {
+/* Contenedor principal: sin espacios laterales, solo padding interno */
+.contenedor-principal {
+    width: 100%;
+    padding: 1.5rem;
     display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-    margin: 20px 0;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
-button {
-    background: #e0e0e0;
-    border: 1px solid #aaa;
-    padding: 8px 16px;
-    border-radius: 4px;
+/* Encabezado ocupa todo el ancho */
+.encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    border-bottom: 2px solid var(--borde);
+    padding-bottom: 0.75rem;
+}
+
+.btn-tema {
+    background: var(--btn-fondo);
+    color: var(--btn-texto);
+    border: 1px solid var(--borde);
+    padding: 0.5rem 1.2rem;
+    border-radius: 2rem;
     cursor: pointer;
-    font-size: 0.9rem;
-    transition: background 0.2s;
+    font-weight: 500;
+    transition: all 0.2s;
 }
 
-button:hover {
-    background: #ccc;
+.panel-mensajes {
+    background: var(--mensaje-info);
+    color: var(--mensaje-texto);
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    border-left: 4px solid var(--btn-primario);
+    width: 100%;
 }
 
-.area-nodos {
-    margin: 20px 0;
-    padding: 15px;
-    background: #fafafa;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-}
-
-.lista-enlaces {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 10px;
-}
-
-.lista-enlaces a {
-    display: inline-block;
-    padding: 5px 10px;
-    background: #e9ecef;
-    border-radius: 4px;
-    text-decoration: none;
-    color: #0066cc;
-    border: 1px solid #ccc;
-}
-
-.lista-enlaces a:hover {
-    background: #d0d7de;
-}
-
-.mensaje-log {
-    margin-top: 25px;
-    padding: 15px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    max-height: 200px;
-    overflow-y: auto;
-}
-
-.mensaje-log ul {
-    list-style: none;
-    padding-left: 0;
-}
-
-.mensaje-log li {
-    padding: 4px 0;
-    border-bottom: 1px solid #eee;
-    font-family: monospace;
-    font-size: 0.85rem;
-}
-
-.volver {
-    text-align: center;
-    margin-top: 20px;
+.seccion-acciones,
+.seccion-lista {
+    background: var(--card-fondo);
+    border: 1px solid var(--borde);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    width: 100%;
+    box-shadow: 0 2px 8px var(--sombra);
 }
 
 .btn {
-    background: #e0e0e0;
-    padding: 8px 16px;
-    text-decoration: none;
-    color: black;
-    border-radius: 4px;
+    background: var(--btn-fondo);
+    color: var(--btn-texto);
+    border: 1px solid var(--borde);
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-@media (max-width: 700px) {
+.btn-primario {
+    background: var(--btn-primario);
+    color: white;
+    border: none;
+}
 
-    .botones-creacion,
-    .botones-modificacion {
-        flex-direction: column;
-        align-items: stretch;
+.btn-primario:hover {
+    background: var(--btn-primario-hover);
+}
+
+.btn-modificar {
+    background: transparent;
+    border: 1px solid var(--btn-primario);
+    color: var(--btn-primario);
+    padding: 0.3rem 0.8rem;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+/* Lista de enlaces: ocupa todo el ancho */
+.lista-enlaces {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+/* Cada elemento enlace: distribución horizontal aprovechando el espacio */
+.item-enlace {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--fondo);
+    border-radius: 0.75rem;
+    border: 1px solid var(--borde);
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.info-enlace {
+    flex: 1;
+    min-width: 150px;
+    overflow: hidden;
+}
+
+.info-enlace a {
+    color: var(--enlace);
+    text-decoration: none;
+    font-weight: 500;
+    word-break: break-all;
+}
+
+.info-enlace a:hover {
+    text-decoration: underline;
+}
+
+.acciones-enlace {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+/* Formulario inline temporal */
+.form-agregar-temporal {
+    margin-top: 1rem;
+    width: 100%;
+}
+
+/* Responsive: en móvil los botones se apilan y los textos ocupan todo */
+@media (max-width: 768px) {
+    .contenedor-principal {
+        padding: 1rem;
     }
 
-    button {
-        width: 100%;
+    .item-enlace {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .acciones-enlace {
+        justify-content: flex-end;
+    }
+
+    .btn-modificar {
+        white-space: normal;
+    }
+
+    .encabezado {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .seccion-acciones,
+    .seccion-lista {
+        padding: 1rem;
     }
 }

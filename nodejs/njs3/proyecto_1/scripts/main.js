@@ -1,86 +1,140 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const zonaH1 = document.getElementById('zonaH1');
-    const zonaImagen = document.getElementById('zonaImagen');
-    let h1Dinamico = null;
-    let imgDinamica = null;
+/**
+ * Archivo: main.js
+ * Propósito: Controlador principal de eventos del DOM.
+ * Módulos utilizados: imageManager.js
+ * Funciones principales: agregarH1, cambiarTextoH1, cambiarColorH1, 
+ *                        y delegación de imagen al módulo externo.
+ */
 
-    function crearOActualizarH1(texto, color = '#2c3e66') {
-        if (!h1Dinamico) {
-            h1Dinamico = document.createElement('h1');
-            zonaH1.appendChild(h1Dinamico);
+import {
+    agregarImagen,
+    cambiarImagen,
+    cambiarTamanioImagen,
+    obtenerEstadoImagen
+} from '/modules/imageManager.js';
+
+// --- Referencias DOM ---
+const areaMensajes = document.getElementById('areaMensajes');
+const contenedorH1 = document.getElementById('contenedorH1');
+let h1Elemento = null;  // Referencia al H1 creado
+
+// --- Función para mostrar mensajes de feedback (sin alert) ---
+function mostrarMensaje(texto, esError = false) {
+    areaMensajes.innerHTML = `<span style="color: ${esError ? '#dc3545' : 'inherit'}">${texto}</span>`;
+    // Limpiar mensaje después de 3 segundos
+    setTimeout(() => {
+        if (areaMensajes.innerHTML.includes(texto)) {
+            areaMensajes.innerHTML = '';
         }
-        h1Dinamico.textContent = texto;
-        h1Dinamico.style.color = color;
-        return h1Dinamico;
+    }, 3000);
+}
+
+// --- 1. Agregar H1 con texto "Hola DOM" ---
+export function agregarH1() {
+    if (h1Elemento) {
+        mostrarMensaje('⚠️ El H1 ya fue agregado. Usa los otros botones para modificarlo.', true);
+        return;
     }
+    h1Elemento = document.createElement('h1');
+    h1Elemento.textContent = 'Hola DOM';
+    h1Elemento.style.transition = 'color 0.2s';
+    contenedorH1.appendChild(h1Elemento);
+    mostrarMensaje('✅ H1 agregado: "Hola DOM"');
+}
 
-    function cambiarTextoH1() {
-        if (!h1Dinamico) crearOActualizarH1('Hola DOM');
-        h1Dinamico.textContent = 'Chau DOM';
+// --- 2. Cambiar texto del H1 a "Chau DOM" ---
+export function cambiarTextoH1() {
+    if (!h1Elemento) {
+        mostrarMensaje('❌ Primero debes agregar el H1 usando el botón "Agregar H1".', true);
+        return;
     }
+    h1Elemento.textContent = 'Chau DOM';
+    mostrarMensaje('✏️ Texto cambiado a "Chau DOM"');
+}
 
-    function cambiarColorH1() {
-        if (!h1Dinamico) crearOActualizarH1('Hola DOM');
-        const colores = ['#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6', '#1abc9c'];
-        const colorAleatorio = colores[Math.floor(Math.random() * colores.length)];
-        h1Dinamico.style.color = colorAleatorio;
+// --- 3. Cambiar color del H1 (ciclo de colores) ---
+const colores = ['#0d6efd', '#dc3545', '#198754', '#ffc107', '#6f42c1'];
+let indiceColor = 0;
+export function cambiarColorH1() {
+    if (!h1Elemento) {
+        mostrarMensaje('❌ No hay H1 para cambiar color. Agrégalo primero.', true);
+        return;
     }
+    indiceColor = (indiceColor + 1) % colores.length;
+    h1Elemento.style.color = colores[indiceColor];
+    mostrarMensaje(`🎨 Color cambiado a ${colores[indiceColor]}`);
+}
 
-    const misImagenes = [
-        'https://www.eldiarioweb.com/wp-content/uploads/2026/04/turismo-World-Travel-Awards-para-mar-del-plata.png',
-        'https://img.jamesedition.com/listing_images/2026/04/25/10/33/54/518f50c2-147e-4e18-87bf-a76354171560/je/507x312xc.jpg',
-        'https://th.bing.com/th?id=OIF.4eiYTDoO6%2fv3ZduyWyez6g&rs=1&pid=ImgDetMain&o=7&rm=3',
-        'https://media.urgente24.com/p/66b90e8ecb8b7f96bec0ae2b9ae8d8f7/adjuntos/319/imagenes/002/819/0002819148/imagepng.png',
-        'https://c.tenor.com/yFe8fgyL_RoAAAAC/hombre-morado-bailando.gif'
-    ];
-    let indiceImagenActual = 0;
+// --- Funciones para imagen (delegan al módulo imageManager) ---
+export function manejarAgregarImagen() {
+    const resultado = agregarImagen();
+    if (resultado.exito) {
+        mostrarMensaje(resultado.mensaje);
+    } else {
+        mostrarMensaje(resultado.mensaje, true);
+    }
+}
 
-    // ---- Función para agregar/quitar imagen (toggle) ----
-    function agregarImagen() {
-        if (imgDinamica) {
-            // Si ya existe, la eliminamos
-            imgDinamica.remove();
-            imgDinamica = null;
+export function manejarCambiarImagen() {
+    const resultado = cambiarImagen();
+    if (resultado.exito) {
+        mostrarMensaje(resultado.mensaje);
+    } else {
+        mostrarMensaje(resultado.mensaje, true);
+    }
+}
+
+export function manejarCambiarTamanio() {
+    const estado = obtenerEstadoImagen();
+    if (!estado.existe) {
+        mostrarMensaje('❌ No hay imagen para cambiar tamaño. Agrega una imagen primero.', true);
+        return;
+    }
+    const resultado = cambiarTamanioImagen();
+    mostrarMensaje(resultado.mensaje);
+}
+
+// --- Modo oscuro/claro con localStorage y variables CSS ---
+function inicializarModoOscuro() {
+    const btnTema = document.getElementById('btnModoOscuro');
+    const root = document.documentElement;
+
+    // Actualizar texto del botón según tema actual
+    const actualizarTextoBoton = () => {
+        const temaActual = root.getAttribute('data-tema');
+        if (temaActual === 'oscuro') {
+            btnTema.textContent = '☀️ Modo claro';
         } else {
-            // Creamos la imagen con la primera de la lista
-            imgDinamica = document.createElement('img');
-            imgDinamica.src = misImagenes[0];
-            imgDinamica.alt = 'Imagen dinámica';
-            imgDinamica.style.width = '400px';
-            zonaImagen.appendChild(imgDinamica);
-            indiceImagenActual = 0;
+            btnTema.textContent = '🌙 Modo oscuro';
         }
-    }
+    };
 
-    // ---- Función para cambiar a la siguiente imagen ----
-    function cambiarImagen() {
-        if (!imgDinamica) {
-            alert('Primero agrega una imagen con el botón "Agregar imagen"');
-            return;
-        }
-        // Pasamos a la siguiente imagen (volviendo a 0 si llegamos al final)
-        indiceImagenActual = (indiceImagenActual + 1) % misImagenes.length;
-        imgDinamica.src = misImagenes[indiceImagenActual];
-    }
+    actualizarTextoBoton();
 
-    // ---- Función para cambiar tamaño ----
-    function cambiarTamanioImagen() {
-        if (!imgDinamica) {
-            alert('Primero agrega una imagen');
-            return;
-        }
-        let anchoActual = parseInt(imgDinamica.style.width);
-        if (isNaN(anchoActual)) anchoActual = 300;
-        let nuevoAncho = (anchoActual >= 450) ? 300 : anchoActual + 100;
-        imgDinamica.style.width = nuevoAncho + 'px';
-    }
+    btnTema.addEventListener('click', () => {
+        const temaActual = root.getAttribute('data-tema');
+        const nuevoTema = temaActual === 'oscuro' ? 'claro' : 'oscuro';
+        root.setAttribute('data-tema', nuevoTema);
+        localStorage.setItem('tema', nuevoTema);
+        actualizarTextoBoton();
+        mostrarMensaje(`Tema cambiado a ${nuevoTema === 'oscuro' ? 'oscuro 🌙' : 'claro ☀️'}`);
+    });
+}
 
-    document.getElementById('btnAgregarH1').addEventListener('click', () => crearOActualizarH1('Hola DOM'));
-    document.getElementById('btnCambiarTexto').addEventListener('click', cambiarTextoH1);
-    document.getElementById('btnCambiarColor').addEventListener('click', cambiarColorH1);
-    document.getElementById('btnAgregarImg').addEventListener('click', () => agregarImagen());
-    document.getElementById('btnCambiarImg').addEventListener('click', cambiarImagen);
-    document.getElementById('btnCambiarTamanio').addEventListener('click', cambiarTamanioImagen);
+// --- Registrar event listeners al cargar el DOM ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Botones H1
+    document.getElementById('btnAgregarH1').addEventListener('click', agregarH1);
+    document.getElementById('btnCambiarTextoH1').addEventListener('click', cambiarTextoH1);
+    document.getElementById('btnCambiarColorH1').addEventListener('click', cambiarColorH1);
 
-    crearOActualizarH1('Presiona un botón', '#888');
+    // Botones Imagen
+    document.getElementById('btnAgregarImagen').addEventListener('click', manejarAgregarImagen);
+    document.getElementById('btnCambiarImagen').addEventListener('click', manejarCambiarImagen);
+    document.getElementById('btnCambiarTamanio').addEventListener('click', manejarCambiarTamanio);
+
+    // Modo oscuro
+    inicializarModoOscuro();
+
+    mostrarMensaje('🎉 Interfaz lista. Usa los botones para manipular el DOM.');
 });

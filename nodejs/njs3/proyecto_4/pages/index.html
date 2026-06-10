@@ -4,40 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Punto 4 - Crear y modificar nodos &lt;a&gt;</title>
+    <title>Gestión de nodos &lt;a&gt;</title>
+    <!-- Prevenir flash modo oscuro -->
+    <script>
+        (function () {
+            const temaGuardado = localStorage.getItem('tema');
+            const prefiereOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const temaActivo = temaGuardado || (prefiereOscuro ? 'oscuro' : 'claro');
+            document.documentElement.setAttribute('data-tema', temaActivo);
+        })();
+    </script>
     <link rel="stylesheet" href="/styles/main.css">
 </head>
 
 <body>
-    <div class="container">
-        <h1>Creación y modificación de nodos &lt;a&gt;</h1>
+    <div class="contenedor-principal">
+        <header class="encabezado">
+            <h1>Gestión de enlaces (nodos &lt;a&gt;)</h1>
+            <button id="btnModoOscuro" class="btn-tema">🌙 Modo oscuro</button>
+        </header>
 
-        <div class="botones-creacion">
-            <button id="crear1">🔗 Crear Google</button>
-            <button id="crear2">🔗 Crear YouTube</button>
-            <button id="crear3">🔗 Crear GitHub</button>
-            <button id="crear4">🔗 Crear Twitter</button>
-            <button id="crear5">🔗 Crear LinkedIn</button>
+        <div id="panelMensajes" class="panel-mensajes"></div>
+
+        <div class="seccion-acciones">
+            <button id="btnAgregarEnlace" class="btn btn-primario">➕ Agregar nuevo enlace</button>
         </div>
 
-        <div class="botones-modificacion">
-            <button id="modificarHref">✏️ Modificar href de todos (cambiar a 'https://example.com')</button>
-            <button id="modificarTexto">✏️ Modificar texto de todos (agregar ' - Modificado')</button>
-            <button id="modificarTarget">✏️ Modificar target de todos (abrir en nueva pestaña)</button>
-        </div>
-
-        <div id="areaNodos" class="area-nodos">
-            <h2>Enlaces creados:</h2>
-            <div id="listaEnlaces" class="lista-enlaces"></div>
-        </div>
-
-        <div id="mensajeLog" class="mensaje-log">
-            <h3>Registro de cambios:</h3>
-            <ul id="logList"></ul>
-        </div>
-
-        <div class="volver">
-            <a href="/" class="btn">Reiniciar (recargar página)</a>
+        <div class="seccion-lista">
+            <h2>Lista de enlaces</h2>
+            <div id="contenedorEnlaces" class="lista-enlaces"></div>
         </div>
     </div>
 

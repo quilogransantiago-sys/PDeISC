@@ -1,0 +1,211 @@
+/**
+ * main.css - Estilos globales para todas las páginas
+ * Modo claro/oscuro, diseño responsive sin márgenes laterales en desktop
+ */
+:root,
+[data-tema="claro"] {
+    --fondo: #f8f9fa;
+    --texto: #212529;
+    --card-fondo: #ffffff;
+    --borde: #dee2e6;
+    --btn-fondo: #e9ecef;
+    --btn-texto: #495057;
+    --btn-hover: #dee2e6;
+    --btn-primario: #0d6efd;
+    --btn-primario-hover: #0b5ed7;
+    --mensaje-info: #e3f2fd;
+    --mensaje-texto: #0c5460;
+    --sombra: rgba(0, 0, 0, 0.05);
+}
+
+[data-tema="oscuro"] {
+    --fondo: #121212;
+    --texto: #e9ecef;
+    --card-fondo: #1e1e1e;
+    --borde: #2c2c2c;
+    --btn-fondo: #2c2c2c;
+    --btn-texto: #e9ecef;
+    --btn-hover: #3a3a3a;
+    --btn-primario: #3b82f6;
+    --mensaje-info: #1e2a3a;
+    --mensaje-texto: #b3e4ff;
+    --sombra: rgba(0, 0, 0, 0.3);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: system-ui, 'Segoe UI', sans-serif;
+    line-height: 1.5;
+    transition: background 0.2s, color 0.2s;
+}
+
+.contenedor-principal {
+    width: 100%;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    border-bottom: 2px solid var(--borde);
+    padding-bottom: 1rem;
+}
+
+.btn-tema {
+    background: var(--btn-fondo);
+    color: var(--btn-texto);
+    border: 1px solid var(--borde);
+    padding: 0.5rem 1.2rem;
+    border-radius: 2rem;
+    cursor: pointer;
+}
+
+.descripcion {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.grid-navegacion {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.tarjeta-nav {
+    flex: 1 1 250px;
+    background: var(--card-fondo);
+    border: 1px solid var(--borde);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px var(--sombra);
+}
+
+.tarjeta-nav:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px var(--sombra);
+}
+
+.icono {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.tarjeta-nav h3 {
+    margin-bottom: 0.5rem;
+}
+
+.tarjeta-nav p {
+    font-size: 0.85rem;
+    opacity: 0.8;
+}
+
+/* Estilos comunes para áreas de demostración */
+.demo-area {
+    background: var(--card-fondo);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    border: 1px solid var(--borde);
+    box-shadow: 0 2px 8px var(--sombra);
+}
+
+.caja-interactiva {
+    background: var(--fondo);
+    border: 2px dashed var(--borde);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    text-align: center;
+    margin: 1rem 0;
+    transition: background 0.2s;
+}
+
+.mensajes-evento {
+    background: var(--mensaje-info);
+    color: var(--mensaje-texto);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    font-family: monospace;
+    font-size: 0.9rem;
+    min-height: 80px;
+    overflow-y: auto;
+}
+
+.boton-volver {
+    display: inline-block;
+    margin-top: 1rem;
+    background: var(--btn-fondo);
+    color: var(--btn-texto);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .contenedor-principal {
+        padding: 1rem;
+    }
+
+    .encabezado {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .grid-navegacion {
+        flex-direction: column;
+    }
+}
+
+/* Botón específico para contar hijos - diseño mejorado */
+.btn-contar {
+    background-color: var(--card-fondo);
+    border: 1px solid var(--btn-primario);
+    color: var(--btn-primario);
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 2px var(--sombra);
+}
+
+.btn-contar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: var(--btn-primario);
+    transition: width 0.3s ease;
+}
+
+.btn-contar:hover {
+    background-color: var(--btn-primario);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.2);
+}
+
+.btn-contar:hover::after {
+    width: 100%;
+}
+
+.btn-contar:active {
+    transform: translateY(1px);
+}

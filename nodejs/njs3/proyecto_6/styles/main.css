@@ -1,3 +1,46 @@
+/**
+ * main.css
+ * Layout con dos columnas (formulario y listado) en desktop,
+ * apilado en móvil, scroll en listado, modo claro/oscuro.
+ */
+
+:root,
+[data-tema="claro"] {
+    --fondo: #f8f9fa;
+    --texto: #212529;
+    --card-fondo: #ffffff;
+    --borde: #dee2e6;
+    --btn-fondo: #e9ecef;
+    --btn-texto: #495057;
+    --btn-hover: #dee2e6;
+    --btn-primario: #0d6efd;
+    --btn-primario-hover: #0b5ed7;
+    --btn-secundario: #6c757d;
+    --btn-secundario-hover: #5c636a;
+    --mensaje-info: #e3f2fd;
+    --mensaje-texto: #0c5460;
+    --error: #dc3545;
+    --sombra: rgba(0, 0, 0, 0.05);
+}
+
+[data-tema="oscuro"] {
+    --fondo: #121212;
+    --texto: #e9ecef;
+    --card-fondo: #1e1e1e;
+    --borde: #2c2c2c;
+    --btn-fondo: #2c2c2c;
+    --btn-texto: #e9ecef;
+    --btn-hover: #3a3a3a;
+    --btn-primario: #3b82f6;
+    --btn-primario-hover: #2563eb;
+    --btn-secundario: #495057;
+    --btn-secundario-hover: #5c636a;
+    --mensaje-info: #1e2a3a;
+    --mensaje-texto: #b3e4ff;
+    --error: #f87171;
+    --sombra: rgba(0, 0, 0, 0.3);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,135 +48,300 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: #f0f2f5;
-    padding: 20px;
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+    transition: background 0.2s, color 0.2s;
+    padding: 1rem;
 }
 
-.container {
-    max-width: 800px;
+.contenedor-principal {
+    max-width: 1400px;
     margin: 0 auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
-
-h1,
-h2 {
-    text-align: center;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.form-registro {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 1rem;
 }
 
+.encabezado,
+.panel-mensajes {
+    width: 100%;
+}
+
+.encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    border-bottom: 2px solid var(--borde);
+    padding-bottom: 0.5rem;
+}
+
+.btn-tema {
+    background: var(--btn-fondo);
+    color: var(--btn-texto);
+    border: 1px solid var(--borde);
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-tema:hover {
+    background: var(--btn-hover);
+}
+
+.panel-mensajes {
+    background: var(--mensaje-info);
+    color: var(--mensaje-texto);
+    padding: 0.75rem;
+    border-left: 4px solid var(--btn-primario);
+    border-radius: 0.5rem;
+}
+
+/* Layout de dos columnas */
+.contenedor-doble {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.seccion-formulario {
+    background: var(--card-fondo);
+    border: 1px solid var(--borde);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    flex: 1 1 400px;
+    box-shadow: 0 2px 4px var(--sombra);
+}
+
+.seccion-listado {
+    background: var(--card-fondo);
+    border: 1px solid var(--borde);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    flex: 1 1 400px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 4px var(--sombra);
+    max-height: 70vh;
+}
+
+.seccion-listado h2 {
+    flex-shrink: 0;
+    margin-bottom: 0.75rem;
+}
+
+.contenedor-lista {
+    overflow-y: auto;
+    padding-right: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+/* Estilos formulario */
 .campo {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+    margin-bottom: 1rem;
 }
 
 .campo label {
-    font-weight: bold;
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
 }
 
-input[type="text"],
-input[type="number"],
-input[type="email"],
-select {
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
+.campo input[type="text"],
+.campo input[type="email"],
+.campo input[type="number"],
+.campo select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--borde);
+    border-radius: 0.5rem;
+    background: var(--fondo);
+    color: var(--texto);
 }
 
 .radio-group,
 .checkbox-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 5px;
+    gap: 1rem;
+    margin-top: 0.25rem;
 }
 
-.botones {
+.radio-group label,
+.checkbox-group label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: normal;
+}
+
+.error {
+    color: var(--error);
+    font-size: 0.8rem;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+.botones-form {
     display: flex;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 10px;
-}
-
-button {
-    background: #e0e0e0;
-    border: 1px solid #aaa;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background 0.2s;
-}
-
-button:hover {
-    background: #ccc;
-}
-
-button.reset {
-    background: #f8d7da;
-    border-color: #f5c6cb;
-}
-
-.resultado-panel {
-    margin-top: 30px;
-    padding: 15px;
-    background: #d4edda;
-    border: 1px solid #c3e6cb;
-    border-radius: 8px;
-    text-align: left;
-}
-
-.datos-mostrados {
-    background: white;
-    padding: 10px;
-    border-radius: 4px;
-    margin: 10px 0;
-}
-
-.cerrar-btn {
-    background: #6c757d;
-    color: white;
-    border: none;
-}
-
-.volver {
-    text-align: center;
-    margin-top: 20px;
+    gap: 0.75rem;
+    margin-top: 1rem;
 }
 
 .btn {
-    background: #e0e0e0;
-    padding: 6px 12px;
-    text-decoration: none;
-    color: black;
-    border-radius: 4px;
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-@media (max-width: 600px) {
+.btn-primario {
+    background: var(--btn-primario);
+    color: white;
+}
+
+.btn-primario:hover {
+    background: var(--btn-primario-hover);
+}
+
+.btn-secundario {
+    background: var(--btn-secundario);
+    color: white;
+}
+
+.btn-secundario:hover {
+    background: var(--btn-secundario-hover);
+}
+
+.btn-editar,
+.btn-eliminar {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.8rem;
+}
+
+.btn-editar {
+    background: var(--btn-primario);
+    color: white;
+}
+
+.btn-eliminar {
+    background: var(--error);
+    color: white;
+}
+
+/* Tarjeta de registro */
+.tarjeta-registro {
+    background: var(--fondo);
+    border: 1px solid var(--borde);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.info-registro {
+    flex: 1;
+}
+
+.info-registro p {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+}
+
+.acciones-registro {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.texto-vacio {
+    text-align: center;
+    color: var(--texto);
+    opacity: 0.7;
+    font-style: italic;
+}
+
+/* Scroll personalizado */
+.contenedor-lista::-webkit-scrollbar {
+    width: 6px;
+}
+
+.contenedor-lista::-webkit-scrollbar-track {
+    background: var(--fondo);
+    border-radius: 3px;
+}
+
+.contenedor-lista::-webkit-scrollbar-thumb {
+    background: var(--borde);
+    border-radius: 3px;
+}
+
+/* Responsive móvil */
+@media (max-width: 768px) {
+    body {
+        padding: 0.5rem;
+    }
+
+    .contenedor-doble {
+        flex-direction: column;
+    }
+
+    .seccion-formulario,
+    .seccion-listado {
+        flex: 1 1 auto;
+        max-height: none;
+    }
+
+    .seccion-listado {
+        max-height: 50vh;
+    }
+
+    .encabezado {
+        flex-direction: column;
+        text-align: center;
+    }
 
     .radio-group,
     .checkbox-group {
         flex-direction: column;
-        gap: 8px;
+        gap: 0.3rem;
     }
+}
 
-    .botones {
-        flex-direction: column;
-    }
+/* Modal personalizado */
+#modalConfirmacion {
+    transition: all 0.2s;
+}
 
-    button {
-        width: 100%;
-    }
+#modalConfirmacion .btn-eliminar {
+    background-color: var(--error);
+    border: none;
+}
+
+#modalConfirmacion .btn-eliminar:hover {
+    opacity: 0.9;
+}
+
+/* Campos con error */
+.campo input.error-border,
+.campo select.error-border {
+    border-color: var(--error);
+    outline: none;
+}
+
+.error {
+    color: var(--error);
+    font-size: 0.75rem;
+    margin-top: 0.2rem;
 }

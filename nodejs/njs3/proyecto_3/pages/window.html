@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Window Events - Demostración</title>
+    <script>
+        (function () {
+            const temaGuardado = localStorage.getItem('tema');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const temaActivo = temaGuardado || (prefersDark ? 'oscuro' : 'claro');
+            document.documentElement.setAttribute('data-tema', temaActivo);
+        })();
+    </script>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+
+<body>
+    <div class="contenedor-principal">
+        <header class="encabezado">
+            <h1>🪟 Eventos de Ventana</h1>
+            <button id="btnModoOscuro" class="btn-tema">🌙 Modo oscuro</button>
+        </header>
+        <div class="demo-area">
+            <h2>Eventos de ventana</h2>
+            <p>Redimensiona la ventana o haz scroll en esta página.</p>
+            <div id="logWindow" class="mensajes-evento" style="height:200px;"></div>
+            <div
+                style="height: 800px; background: linear-gradient(transparent, var(--borde)); margin-top: 1rem; border-radius: 1rem; display: flex; align-items: center; justify-content: center;">
+                ⬇️ Haz scroll hacia abajo ⬇️
+            </div>
+        </div>
+
+        <!-- NUEVO: Botón para contar hijos del contenedor principal -->
+        <div style="margin-top: 2rem; text-align: center;">
+            <button id="btnContarHijos" class="btn btn-contar">🔢 Contar hijos del contenedor</button>
+            <div id="resultadoHijos" class="mensajes-evento" style="margin-top: 0.5rem;"></div>
+        </div>
+        <a href="/" class="boton-volver">← Volver al índice</a>
+    </div>
+    <script src="/scripts/window.js" type="module"></script>
+    <script src="/scripts/main.js" type="module"></script>
+    <script>
+        // Función para contar hijos del contenedor principal (excluyendo nodos de texto vacíos)
+        function contarHijos() {
+            const contenedor = document.querySelector('.contenedor-principal');
+            if (!contenedor) {
+                document.getElementById('resultadoHijos').innerHTML = '⚠️ No se encontró el contenedor principal.';
+                return;
+            }
+            // Obtener solo los elementos hijo (nodeType 1), ignorando textos y comentarios
+            const hijos = Array.from(contenedor.children);
+            const cantidad = hijos.length;
+            document.getElementById('resultadoHijos').innerHTML = `📊 El contenedor principal tiene <strong>${cantidad}</strong> hijo(s) directo(s).`;
+        }
+        document.getElementById('btnContarHijos').addEventListener('click', contarHijos);
+    </script>
+</body>
+
+</html>

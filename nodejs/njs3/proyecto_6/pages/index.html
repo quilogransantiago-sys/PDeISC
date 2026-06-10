@@ -4,82 +4,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Punto 6 - Formulario de registro</title>
+    <title>ABM - Registro de Personas</title>
+    <script>
+        (function () {
+            const temaGuardado = localStorage.getItem('tema');
+            const prefiereOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const temaActivo = temaGuardado || (prefiereOscuro ? 'oscuro' : 'claro');
+            document.documentElement.setAttribute('data-tema', temaActivo);
+        })();
+    </script>
     <link rel="stylesheet" href="/styles/main.css">
 </head>
 
 <body>
-    <div class="container">
-        <h1>📝 Formulario de registro</h1>
-        <p>Complete todos los campos (los obligatorios están marcados).</p>
+    <div class="contenedor-principal">
+        <header class="encabezado">
+            <h1>Gestión de Registros (ABM)</h1>
+            <button id="btnModoOscuro" class="btn-tema">🌙 Modo oscuro</button>
+        </header>
 
-        <form id="registroForm" class="form-registro">
-            <!-- Texto (nombre) -->
-            <div class="campo">
-                <label for="nombre">Nombre completo: *</label>
-                <input type="text" id="nombre" name="nombre" required>
+        <div id="panelMensajes" class="panel-mensajes"></div>
+
+        <!-- Contenedor con dos secciones: formulario y listado (horizontal en desktop) -->
+        <div class="contenedor-doble">
+            <!-- Sección formulario -->
+            <div class="seccion-formulario">
+                <h2>Formulario de registro</h2>
+                <form id="formRegistro">
+                    <!-- Campo texto -->
+                    <div class="campo">
+                        <label for="nombreCompleto">Nombre completo:</label>
+                        <input type="text" id="nombreCompleto" name="nombreCompleto" required
+                            placeholder="Ej: Juan Pérez">
+                        <span class="error" id="errorNombre"></span>
+                    </div>
+
+                    <!-- Campo email -->
+                    <div class="campo">
+                        <label for="email">Correo electrónico:</label>
+                        <input type="email" id="email" name="email" required placeholder="ejemplo@dominio.com">
+                        <span class="error" id="errorEmail"></span>
+                    </div>
+
+                    <!-- Campo number (edad) -->
+                    <div class="campo">
+                        <label for="edad">Edad:</label>
+                        <input type="number" id="edad" name="edad" min="0" max="120" required>
+                        <span class="error" id="errorEdad"></span>
+                    </div>
+
+                    <!-- Radio (género) -->
+                    <div class="campo">
+                        <label>Género:</label>
+                        <div class="radio-group">
+                            <label><input type="radio" name="genero" value="masculino" required> Masculino</label>
+                            <label><input type="radio" name="genero" value="femenino"> Femenino</label>
+                            <label><input type="radio" name="genero" value="otro"> Otro</label>
+                        </div>
+                        <span class="error" id="errorGenero"></span>
+                    </div>
+
+                    <!-- Select (país) -->
+                    <div class="campo">
+                        <label for="pais">País:</label>
+                        <select id="pais" name="pais" required>
+                            <option value="">Seleccione...</option>
+                            <option value="Argentina">Argentina</option>
+                            <option value="Chile">Chile</option>
+                            <option value="Uruguay">Uruguay</option>
+                            <option value="Brasil">Brasil</option>
+                            <option value="Colombia">Colombia</option>
+                        </select>
+                        <span class="error" id="errorPais"></span>
+                    </div>
+
+                    <!-- Checkbox (intereses) -->
+                    <div class="campo">
+                        <label>Intereses:</label>
+                        <div class="checkbox-group">
+                            <label><input type="checkbox" name="intereses" value="deporte"> Deporte</label>
+                            <label><input type="checkbox" name="intereses" value="cultura"> Cultura</label>
+                            <label><input type="checkbox" name="intereses" value="tecnologia"> Tecnología</label>
+                            <label><input type="checkbox" name="intereses" value="ciencia"> Ciencia</label>
+                        </div>
+                    </div>
+
+                    <!-- Campos ocultos para ID en edición -->
+                    <input type="hidden" id="registroId" value="">
+
+                    <div class="botones-form">
+                        <button type="submit" class="btn btn-primario">Guardar registro</button>
+                        <button type="button" id="btnCancelar" class="btn btn-secundario" style="display:none;">Cancelar
+                            edición</button>
+                    </div>
+                </form>
             </div>
 
-            <!-- Radio (sexo) -->
-            <div class="campo">
-                <label>Sexo: *</label>
-                <div class="radio-group">
-                    <label><input type="radio" name="sexo" value="Masculino" required> Masculino</label>
-                    <label><input type="radio" name="sexo" value="Femenino"> Femenino</label>
-                    <label><input type="radio" name="sexo" value="Otro"> Otro</label>
+            <!-- Sección listado (con scroll) -->
+            <div class="seccion-listado">
+                <h2>Lista de registros</h2>
+                <div id="contenedorLista" class="contenedor-lista">
+                    <!-- Aquí se mostrarán los registros -->
+                    <p class="texto-vacio">No hay registros. Complete el formulario para agregar.</p>
                 </div>
             </div>
-
-            <!-- Select (país) -->
-            <div class="campo">
-                <label for="pais">País: *</label>
-                <select id="pais" name="pais" required>
-                    <option value="">Seleccione...</option>
-                    <option value="Argentina">Argentina</option>
-                    <option value="Chile">Chile</option>
-                    <option value="Uruguay">Uruguay</option>
-                    <option value="Brasil">Brasil</option>
-                    <option value="España">España</option>
-                </select>
-            </div>
-
-            <!-- Checkbox (intereses) -->
-            <div class="campo">
-                <label>Intereses (puede elegir varios):</label>
-                <div class="checkbox-group">
-                    <label><input type="checkbox" name="intereses" value="Deportes"> Deportes</label>
-                    <label><input type="checkbox" name="intereses" value="Música"> Música</label>
-                    <label><input type="checkbox" name="intereses" value="Tecnología"> Tecnología</label>
-                    <label><input type="checkbox" name="intereses" value="Viajes"> Viajes</label>
-                </div>
-            </div>
-
-            <!-- Number (edad) -->
-            <div class="campo">
-                <label for="edad">Edad: *</label>
-                <input type="number" id="edad" name="edad" min="1" max="120" required>
-            </div>
-
-            <!-- Email -->
-            <div class="campo">
-                <label for="email">Correo electrónico: *</label>
-                <input type="email" id="email" name="email" required>
-            </div>
-
-            <div class="botones">
-                <button type="submit">Enviar registro</button>
-                <button type="reset" class="reset">Limpiar formulario</button>
-            </div>
-        </form>
-
-        <div id="resultadoPanel" class="resultado-panel" style="display: none;">
-            <h2>✅ Datos registrados</h2>
-            <div id="datosMostrados" class="datos-mostrados"></div>
-            <button id="btnCerrarResultado" class="cerrar-btn">Cerrar vista</button>
-        </div>
-
-        <div class="volver">
-            <a href="/" class="btn">Reiniciar (recargar página)</a>
         </div>
     </div>
 

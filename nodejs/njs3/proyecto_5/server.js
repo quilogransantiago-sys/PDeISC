@@ -1,21 +1,25 @@
+/**
+ * server.js
+ * Servidor Express con rutas estáticas para styles, scripts y modules.
+ */
 import express from 'express';
+import path from 'path';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = 3000;
 
-app.use('/styles', express.static(join(__dirname, 'styles')));
-app.use('/scripts', express.static(join(__dirname, 'scripts')));
-app.use('/modules', express.static(join(__dirname, 'modules')));
+app.use('/styles', express.static(path.join(__dirname, 'styles')));
+app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
+app.use('/modules', express.static(path.join(__dirname, 'modules')));
 
 app.get('/', (req, res) => {
-    res.sendFile(join(__dirname, 'pages', 'index.html'));
+    res.sendFile(path.join(__dirname, 'pages', 'index.html'));
 });
 
 app.listen(PORT, () => {
-    console.log(`Servidor Punto 5 corriendo en http://localhost:${PORT}`);
+    console.log(`✅ Servidor en http://localhost:${PORT}`);
 });

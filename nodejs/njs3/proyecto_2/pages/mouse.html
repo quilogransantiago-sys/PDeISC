@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mouse Events - Demostración</title>
+    <script>
+        (function () {
+            const temaGuardado = localStorage.getItem('tema');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const temaActivo = temaGuardado || (prefersDark ? 'oscuro' : 'claro');
+            document.documentElement.setAttribute('data-tema', temaActivo);
+        })();
+    </script>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+
+<body>
+    <div class="contenedor-principal">
+        <header class="encabezado">
+            <h1>🖱️ Eventos de Mouse</h1>
+            <button id="btnModoOscuro" class="btn-tema">🌙 Modo oscuro</button>
+        </header>
+        <div class="demo-area">
+            <h2>Área de prueba</h2>
+            <div id="cajaMouse" class="caja-interactiva">
+                Interactúa aquí (click, doble click, mover, entrar/salir)
+            </div>
+            <div id="logMouse" class="mensajes-evento">
+                Los eventos se mostrarán aquí...
+            </div>
+        </div>
+        <a href="/" class="boton-volver">← Volver al índice</a>
+    </div>
+    <script src="/scripts/mouse.js" type="module"></script>
+    <script src="/scripts/main.js" type="module"></script>
+</body>
+
+</html>

@@ -1,27 +1,32 @@
-// Importamos express (el servidor web)
+/**
+ * Archivo: server.js
+ * Propósito: Servidor Express que sirve archivos estáticos y la página principal.
+ * Módulos usados: express, path (nativo)
+ * Funciones principales: configuración de rutas estáticas, puerto de escucha.
+ */
+
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Creamos la aplicación
+// Obtener directorio actual en ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
-
-// Definimos el puerto
 const PORT = 3000;
 
-// Servir archivos estáticos desde las carpetas:
-// - /styles   para CSS
-// - /scripts  para JS
-// - /modules  para módulos (aunque ahora no lo usamos)
-// - /pages    para los HTML (pero lo haremos por separado)
-app.use('/styles', express.static('styles'));
-app.use('/scripts', express.static('scripts'));
-app.use('/modules', express.static('modules'));
+// Servir archivos estáticos desde carpetas específicas
+app.use('/styles', express.static(path.join(__dirname, 'styles')));
+app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
+app.use('/modules', express.static(path.join(__dirname, 'modules')));
 
-// Ruta principal: cuando entran a "/" enviamos el archivo index.html que está dentro de /pages
+// Ruta principal: sirve index.html desde la carpeta /pages
 app.get('/', (req, res) => {
-    res.sendFile(process.cwd() + '/pages/index.html');
+    res.sendFile(path.join(__dirname, 'pages', 'index.html'));
 });
 
-// Arrancamos el servidor
+// Iniciar servidor
 app.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
 });

@@ -1,4 +1,42 @@
-/* Reset básico */
+/**
+ * Archivo: main.css
+ * Propósito: Estilos profesionales, responsive, sin espacios laterales en desktop.
+ * Las secciones se muestran horizontalmente en pantalla grande y vertical en móvil.
+ */
+
+/* ----- Tema claro (por defecto) ----- */
+:root,
+[data-tema="claro"] {
+    --fondo: #f8f9fa;
+    --texto: #212529;
+    --card-fondo: #ffffff;
+    --borde: #dee2e6;
+    --btn-fondo: #e9ecef;
+    --btn-texto: #495057;
+    --btn-hover: #dee2e6;
+    --btn-primario: #0d6efd;
+    --btn-primario-hover: #0b5ed7;
+    --mensaje-info: #e3f2fd;
+    --mensaje-texto: #0c5460;
+    --sombra: rgba(0, 0, 0, 0.05);
+}
+
+/* ----- Tema oscuro ----- */
+[data-tema="oscuro"] {
+    --fondo: #121212;
+    --texto: #e9ecef;
+    --card-fondo: #1e1e1e;
+    --borde: #2c2c2c;
+    --btn-fondo: #2c2c2c;
+    --btn-texto: #e9ecef;
+    --btn-hover: #3a3a3a;
+    --btn-primario: #3b82f6;
+    --btn-primario-hover: #2563eb;
+    --mensaje-info: #1e2a3a;
+    --mensaje-texto: #b3e4ff;
+    --sombra: rgba(0, 0, 0, 0.3);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,84 +44,177 @@
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #f0f2f5;
-    padding: 20px;
+    background-color: var(--fondo);
+    color: var(--texto);
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+    line-height: 1.5;
+    transition: background-color 0.2s, color 0.2s;
 }
 
-.container {
-    max-width: 900px;
-    margin: 0 auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
+/* Contenedor principal: ocupa TODO el ancho, sin márgenes laterales */
+.contenedor-principal {
+    width: 100%;
+    padding: 1.5rem;
+    /* solo padding interior, no márgenes externos */
 }
 
-h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-}
-
-.botones {
+/* Disposición horizontal de las dos secciones en desktop */
+.contenedor-principal {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-bottom: 30px;
+    gap: 1.5rem;
 }
 
-button {
-    background: #e0e0e0;
-    border: 1px solid #aaa;
-    padding: 8px 16px;
-    font-size: 0.9rem;
-    border-radius: 4px;
+/* Cada sección ocupará espacio equitativo, mínimo 300px antes de saltar */
+.seccion-h1,
+.seccion-imagen {
+    flex: 1 1 300px;
+    background-color: var(--card-fondo);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px var(--sombra);
+    border: 1px solid var(--borde);
+}
+
+/* Encabezado (título + botón tema) debe ocupar todo el ancho (no dentro del flex de secciones) */
+.encabezado {
+    flex: 1 1 100%;
+    /* fuerza a que ocupe toda la fila */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--borde);
+}
+
+.encabezado h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+/* Panel de mensajes también ancho completo */
+.panel-mensajes {
+    flex: 1 1 100%;
+    background-color: var(--mensaje-info);
+    color: var(--mensaje-texto);
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-left: 4px solid var(--btn-primario);
+}
+
+.btn-tema {
+    background: var(--btn-fondo);
+    color: var(--btn-texto);
+    border: 1px solid var(--borde);
+    padding: 0.5rem 1.2rem;
+    border-radius: 2rem;
     cursor: pointer;
-    transition: background 0.2s;
+    font-weight: 500;
+    transition: all 0.2s;
 }
 
-button:hover {
-    background: #ccc;
+.btn-tema:hover {
+    background: var(--btn-hover);
+    transform: scale(1.02);
 }
 
-button:active {
-    background: #bbb;
+/* Títulos de sección */
+.seccion-h1 h2,
+.seccion-imagen h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    font-weight: 500;
 }
 
-.contenido {
-    border-top: 1px solid #ccc;
-    padding-top: 20px;
-    text-align: center;
+/* Botones */
+.botones-grupo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
 }
 
-#zonaH1 {
-    margin-bottom: 30px;
-    min-height: 80px;
+.btn {
+    background-color: var(--btn-fondo);
+    color: var(--btn-texto);
+    border: 1px solid var(--borde);
+    padding: 0.6rem 1.2rem;
+    border-radius: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 0 0 auto;
 }
 
-#zonaH1 h1 {
+.btn:hover {
+    background-color: var(--btn-hover);
+    transform: translateY(-1px);
+}
+
+/* Contenedores destino (para H1 dinámico e imagen) */
+.contenedor-destino {
+    min-height: 100px;
+    background-color: var(--fondo);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    border: 1px dashed var(--borde);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+#contenedorH1 h1 {
+    margin: 0;
     font-size: 2rem;
-    color: #2c3e66;
-    margin: 10px 0;
+    font-weight: 700;
+    text-align: center;
+    transition: color 0.2s;
 }
 
-#zonaImagen img {
+.contenedor-imagen img {
     max-width: 100%;
     height: auto;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 12px var(--sombra);
+    transition: width 0.2s, height 0.2s;
+    object-fit: cover;
 }
 
-/* Responsive simple */
-@media (max-width: 600px) {
-    .botones button {
-        width: 100%;
+/* ----- Responsive móvil: los elementos ya se apilan por el flex-wrap,
+   pero además ajustamos padding y botones a columna */
+@media (max-width: 768px) {
+    .contenedor-principal {
+        padding: 1rem;
     }
 
-    h1 {
+    .botones-grupo {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .encabezado {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .encabezado h1 {
         font-size: 1.4rem;
+    }
+
+    /* Opcional: separar un poco más las secciones */
+    .seccion-h1,
+    .seccion-imagen {
+        padding: 1.2rem;
     }
 }

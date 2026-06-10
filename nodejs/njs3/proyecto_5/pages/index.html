@@ -4,35 +4,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Punto 5 - Agregar HTML dinámico con innerHTML</title>
+    <title>innerHTML - Constructor de objetos HTML</title>
+    <script>
+        (function () {
+            const temaGuardado = localStorage.getItem('tema');
+            const prefiereOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const temaActivo = temaGuardado || (prefiereOscuro ? 'oscuro' : 'claro');
+            document.documentElement.setAttribute('data-tema', temaActivo);
+        })();
+    </script>
     <link rel="stylesheet" href="/styles/main.css">
 </head>
 
 <body>
-    <div class="container">
-        <h1>Agregar objetos HTML con innerHTML</h1>
+    <div class="contenedor-principal">
+        <header class="encabezado">
+            <h1>Constructor de objetos HTML con innerHTML</h1>
+            <button id="btnModoOscuro" class="btn-tema">🌙 Modo oscuro</button>
+        </header>
 
-        <div class="botones-agregar">
-            <button id="btnParrafo">➕ Agregar párrafo</button>
-            <button id="BtnImagen">🖼️ Agregar imagen</button>
-            <button id="btnLista">📋 Agregar lista</button>
-            <button id="btnTabla">📊 Agregar tabla</button>
-            <button id="btnDiv">🔲 Agregar div con borde</button>
-            <button id="btnLink">🔗 Agregar enlace</button>
-        </div>
+        <div id="panelMensajes" class="panel-mensajes"></div>
 
-        <div class="area-contenido">
-            <h2>Contenido agregado (innerHTML):</h2>
-            <div id="contenedorDinamico" class="contenedor-dinamico"></div>
-        </div>
+        <!-- Este div permite que los dos contenedores estén lado a lado en desktop -->
+        <div class="contenedor-doble">
+            <div class="seccion-botones">
+                <button data-tipo="parrafo" class="btn btn-agregar">➕ Agregar párrafo</button>
+                <button data-tipo="imagen" class="btn btn-agregar">🖼️ Agregar imagen</button>
+                <button data-tipo="lista" class="btn btn-agregar">📋 Agregar lista</button>
+                <button data-tipo="tabla" class="btn btn-agregar">📊 Agregar tabla</button>
+                <button data-tipo="video" class="btn btn-agregar">🎬 Agregar video</button>
+                <button id="btnLimpiar" class="btn btn-secundario">🗑️ Limpiar todo</button>
+            </div>
 
-        <div class="area-log">
-            <h3>Historial de acciones:</h3>
-            <ul id="logList"></ul>
-        </div>
-
-        <div class="botones-accion">
-            <button id="btnLimpiar">🗑️ Limpiar todo</button>
+            <div class="seccion-vista-previa">
+                <h2>Área de visualización</h2>
+                <div id="contenedorObjetos" class="contenedor-objetos">
+                    <!-- Los objetos HTML se agregan aquí -->
+                </div>
+            </div>
         </div>
     </div>
 

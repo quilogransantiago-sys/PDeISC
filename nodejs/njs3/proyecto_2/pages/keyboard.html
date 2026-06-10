@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard Events - Demostración</title>
+    <script>
+        (function () {
+            const temaGuardado = localStorage.getItem('tema');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const temaActivo = temaGuardado || (prefersDark ? 'oscuro' : 'claro');
+            document.documentElement.setAttribute('data-tema', temaActivo);
+        })();
+    </script>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+
+<body>
+    <div class="contenedor-principal">
+        <header class="encabezado">
+            <h1>⌨️ Eventos de Teclado</h1>
+            <button id="btnModoOscuro" class="btn-tema">🌙 Modo oscuro</button>
+        </header>
+        <div class="demo-area">
+            <h2>Presiona cualquier tecla</h2>
+            <input type="text" id="inputTeclado" placeholder="Escribe aquí..." class="caja-interactiva"
+                style="width:100%; padding:1rem;">
+            <div id="logTeclado" class="mensajes-evento"></div>
+        </div>
+        <a href="/" class="boton-volver">← Volver al índice</a>
+    </div>
+    <script src="/scripts/keyboard.js" type="module"></script>
+    <script src="/scripts/main.js" type="module"></script>
+</body>
+
+</html>

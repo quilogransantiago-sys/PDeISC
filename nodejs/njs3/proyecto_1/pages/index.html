@@ -3,31 +3,60 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Punto 1 - PdeISC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Eventos DHTML - Manipulación del DOM</title>
+
+    <!-- Prevenir flash de modo oscuro: script síncrono antes de cargar estilos -->
+    <script>
+        (function () {
+            const temaGuardado = localStorage.getItem('tema');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const temaActivo = temaGuardado || (prefersDark ? 'oscuro' : 'claro');
+            document.documentElement.setAttribute('data-tema', temaActivo);
+        })();
+    </script>
+
     <link rel="stylesheet" href="/styles/main.css">
+
+    <!-- Módulo principal tipo module -->
+    <script type="module" src="/scripts/main.js"></script>
 </head>
 
 <body>
-    <div class="container">
-        <h1> Punto 1 - PdeISC</h1>
+    <div class="contenedor-principal">
+        <header class="encabezado">
+            <h1>Manipulación del DOM con Eventos DHTML</h1>
+            <button id="btnModoOscuro" class="btn-tema" aria-label="Cambiar tema">🌙 Modo oscuro</button>
+        </header>
 
-        <div class="botones">
-            <button id="btnAgregarH1"> Agregar H1 (Hola DOM)</button>
-            <button id="btnCambiarTexto"> Cambiar texto a "Chau DOM"</button>
-            <button id="btnCambiarColor"> Cambiar color</button>
-            <button id="btnAgregarImg"> Agregar imagen</button>
-            <button id="btnCambiarImg"> Cambiar imagen</button>
-            <button id="btnCambiarTamanio"> Cambiar tamaño</button>
+        <div class="panel-mensajes" id="areaMensajes">
+            <!-- Los mensajes de feedback se mostrarán aquí -->
         </div>
 
-        <div class="contenido">
-            <div id="zonaH1"></div>
-            <div id="zonaImagen"></div>
+        <div class="seccion-h1">
+            <h2>Control del título H1</h2>
+            <div class="botones-grupo">
+                <button id="btnAgregarH1" class="btn">➕ Agregar H1 (Hola DOM)</button>
+                <button id="btnCambiarTextoH1" class="btn">✏️ Cambiar texto (Chau DOM)</button>
+                <button id="btnCambiarColorH1" class="btn">🎨 Cambiar color del H1</button>
+            </div>
+            <div id="contenedorH1" class="contenedor-destino">
+                <!-- Aquí se agregará dinámicamente el H1 -->
+            </div>
+        </div>
+
+        <div class="seccion-imagen">
+            <h2>Control de imagen</h2>
+            <div class="botones-grupo">
+                <button id="btnAgregarImagen" class="btn">🖼️ Agregar imagen</button>
+                <button id="btnCambiarImagen" class="btn">🔄 Cambiar imagen</button>
+                <button id="btnCambiarTamanio" class="btn">📏 Cambiar tamaño de imagen</button>
+            </div>
+            <div id="contenedorImagen" class="contenedor-destino contenedor-imagen">
+                <!-- Aquí se mostrará la imagen -->
+            </div>
         </div>
     </div>
-
-    <script src="/scripts/main.js" defer></script>
 </body>
 
 </html>

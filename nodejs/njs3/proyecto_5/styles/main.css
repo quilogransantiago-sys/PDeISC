@@ -1,3 +1,44 @@
+/**
+ * main.css - Layout con scroll interno en vista previa
+ * Desktop: botones izquierda, vista previa derecha con scroll
+ * Móvil: apilados, cada uno con scroll si es necesario
+ */
+
+:root,
+[data-tema="claro"] {
+    --fondo: #f8f9fa;
+    --texto: #212529;
+    --card-fondo: #ffffff;
+    --borde: #dee2e6;
+    --btn-fondo: #e9ecef;
+    --btn-texto: #495057;
+    --btn-hover: #dee2e6;
+    --btn-primario: #0d6efd;
+    --btn-primario-hover: #0b5ed7;
+    --btn-secundario: #6c757d;
+    --btn-secundario-hover: #5c636a;
+    --mensaje-info: #e3f2fd;
+    --mensaje-texto: #0c5460;
+    --sombra: rgba(0, 0, 0, 0.05);
+}
+
+[data-tema="oscuro"] {
+    --fondo: #121212;
+    --texto: #e9ecef;
+    --card-fondo: #1e1e1e;
+    --borde: #2c2c2c;
+    --btn-fondo: #2c2c2c;
+    --btn-texto: #e9ecef;
+    --btn-hover: #3a3a3a;
+    --btn-primario: #3b82f6;
+    --btn-primario-hover: #2563eb;
+    --btn-secundario: #495057;
+    --btn-secundario-hover: #5c636a;
+    --mensaje-info: #1e2a3a;
+    --mensaje-texto: #b3e4ff;
+    --sombra: rgba(0, 0, 0, 0.3);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,123 +46,220 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: #f0f2f5;
-    padding: 20px;
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.5;
+    transition: background 0.2s, color 0.2s;
+    padding: 1rem;
 }
 
-.container {
-    max-width: 1200px;
+/* Contenedor principal */
+.contenedor-principal {
+    max-width: 1400px;
     margin: 0 auto;
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
-
-h1,
-h2,
-h3 {
-    text-align: center;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.botones-agregar,
-.botones-accion {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-    margin: 20px 0;
-}
-
-button {
-    background: #e0e0e0;
-    border: 1px solid #aaa;
-    padding: 8px 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background 0.2s;
-}
-
-button:hover {
-    background: #ccc;
-}
-
-.area-contenido {
-    margin: 20px 0;
-    padding: 15px;
-    background: #fafafa;
-    border-radius: 8px;
-    border: 1px solid #e0e0e0;
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.contenedor-dinamico {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 1rem;
 }
 
-.contenedor-dinamico img {
+/* Encabezado y panel de mensajes */
+.encabezado,
+.panel-mensajes {
+    width: 100%;
+}
+
+.encabezado {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    border-bottom: 2px solid var(--borde);
+    padding-bottom: 0.5rem;
+}
+
+.btn-tema {
+    background: var(--btn-fondo);
+    color: var(--btn-texto);
+    border: 1px solid var(--borde);
+    padding: 0.4rem 1rem;
+    border-radius: 2rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-tema:hover {
+    background: var(--btn-hover);
+}
+
+.panel-mensajes {
+    background: var(--mensaje-info);
+    color: var(--mensaje-texto);
+    padding: 0.75rem;
+    border-left: 4px solid var(--btn-primario);
+    border-radius: 0.5rem;
+}
+
+/* Contenedor de los dos paneles principales (botones + vista previa) */
+.contenedor-doble {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+/* Panel izquierdo: botones */
+.seccion-botones {
+    background: var(--card-fondo);
+    border: 1px solid var(--borde);
+    border-radius: 1rem;
+    padding: 1rem;
+    flex: 0 0 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    box-shadow: 0 2px 4px var(--sombra);
+}
+
+.seccion-botones .btn {
+    width: 100%;
+    text-align: center;
+}
+
+/* Panel derecho: vista previa con scroll interno */
+.seccion-vista-previa {
+    background: var(--card-fondo);
+    border: 1px solid var(--borde);
+    border-radius: 1rem;
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 4px var(--sombra);
+    max-height: 70vh;
+    /* altura máxima relativa al viewport */
+}
+
+.seccion-vista-previa h2 {
+    flex-shrink: 0;
+    margin-bottom: 0.5rem;
+}
+
+/* Contenedor de objetos con scroll */
+.contenedor-objetos {
+    overflow-y: auto;
+    padding-right: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
+}
+
+/* Estilo personalizado del scrollbar (opcional) */
+.contenedor-objetos::-webkit-scrollbar {
+    width: 8px;
+}
+
+.contenedor-objetos::-webkit-scrollbar-track {
+    background: var(--fondo);
+    border-radius: 4px;
+}
+
+.contenedor-objetos::-webkit-scrollbar-thumb {
+    background: var(--borde);
+    border-radius: 4px;
+}
+
+.contenedor-objetos::-webkit-scrollbar-thumb:hover {
+    background: var(--btn-hover);
+}
+
+/* Cada objeto agregado */
+.objeto-html {
+    background: var(--fondo);
+    border: 1px solid var(--borde);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    transition: 0.1s;
+}
+
+.objeto-html img,
+.objeto-html iframe,
+.objeto-html video {
     max-width: 100%;
     height: auto;
-    border-radius: 6px;
+    border-radius: 0.5rem;
 }
 
-.contenedor-dinamico table {
-    border-collapse: collapse;
+.objeto-html table {
     width: 100%;
-    margin: 10px 0;
+    border-collapse: collapse;
 }
 
-.contenedor-dinamico th,
-.contenedor-dinamico td {
-    border: 1px solid #ccc;
-    padding: 6px;
+.objeto-html th,
+.objeto-html td {
+    border: 1px solid var(--borde);
+    padding: 0.5rem;
     text-align: left;
 }
 
-.contenedor-dinamico .mi-div {
-    border: 2px solid #2c3e66;
-    padding: 10px;
-    background: #e9ecef;
-    border-radius: 6px;
+/* Botones genéricos */
+.btn {
+    background: var(--btn-fondo);
+    color: var(--btn-texto);
+    border: none;
+    padding: 0.6rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.2s;
 }
 
-.area-log {
-    margin-top: 20px;
-    padding: 10px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    max-height: 200px;
-    overflow-y: auto;
+.btn:hover {
+    background: var(--btn-hover);
+    transform: translateY(-1px);
 }
 
-.area-log ul {
-    list-style: none;
-    padding-left: 0;
+.btn-agregar {
+    background: var(--btn-primario);
+    color: white;
 }
 
-.area-log li {
-    padding: 4px 0;
-    font-family: monospace;
-    font-size: 0.85rem;
-    border-bottom: 1px solid #ddd;
+.btn-agregar:hover {
+    background: var(--btn-primario-hover);
 }
 
-@media (max-width: 700px) {
+.btn-secundario {
+    background: var(--btn-secundario);
+    color: white;
+}
 
-    .botones-agregar,
-    .botones-accion {
-        flex-direction: column;
-        align-items: stretch;
+.btn-secundario:hover {
+    background: var(--btn-secundario-hover);
+}
+
+/* Responsive móvil */
+@media (max-width: 768px) {
+    body {
+        padding: 0.5rem;
     }
 
-    button {
+    .contenedor-doble {
+        flex-direction: column;
+    }
+
+    .seccion-botones {
+        flex: 1 1 auto;
         width: 100%;
+    }
+
+    .seccion-vista-previa {
+        max-height: 60vh;
+        /* un poco más pequeño en móvil */
+    }
+
+    .encabezado {
+        flex-direction: column;
+        text-align: center;
     }
 }
