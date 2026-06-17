@@ -1,0 +1,129 @@
+/* variables claro/oscuro */
+:root {
+    --bg: #f5f5f5;
+    --text: #222;
+    --card: #fff;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --border: #ccc;
+}
+
+.dark {
+    --bg: #1a1a1a;
+    --text: #eee;
+    --card: #2d2d2d;
+    --shadow: rgba(0, 0, 0, 0.6);
+    --border: #555;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+}
+
+#theme-toggle {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    /* desktop horizontal */
+    width: 100%;
+    padding: 1.5rem;
+    gap: 1.5rem;
+}
+
+#tiempo,
+#calculadora {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px var(--shadow);
+    padding: 1.5rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+#reloj {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+#clima {
+    font-size: 1.2rem;
+    display: flex;
+    gap: 1rem;
+}
+
+#calculadora {
+    gap: 1rem;
+}
+
+#calculadora input,
+#calculadora select {
+    padding: 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    width: 100%;
+    max-width: 200px;
+}
+
+#calculadora button {
+    padding: 0.5rem 2rem;
+    border: none;
+    border-radius: 6px;
+    background: #3b82f6;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#resultado {
+    font-size: 1.5rem;
+    font-weight: bold;
+    min-height: 3rem;
+}
+
+/* móvil: columna */
+@media (max-width:768px) {
+    main {
+        flex-direction: column;
+    }
+
+    #tiempo,
+    #calculadora {
+        min-height: 150px;
+    }
+}

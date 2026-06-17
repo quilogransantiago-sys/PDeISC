@@ -1,38 +1,25 @@
-/**
- * main.js
- * Controla el modo claro/oscuro y carga el menú hamburguesa (módulo).
- * Se ejecuta en todas las páginas.
- */
+// Script principal: control de tema oscuro y carga del menú hamburguesa.
+import { construirMenu } from '../modules/menu.js';
 
-import { crearMenuHamburguesa } from './menuHamburguesa.js';
+// Obtener el nombre de la página actual (sin extensión) para resaltar en el menú
+const ruta = window.location.pathname;
+let paginaActual = '';
+if (ruta === '/') paginaActual = '';
+else if (ruta.startsWith('/')) paginaActual = ruta.slice(1);
 
-// Modo oscuro/claro
-const botonTema = document.getElementById('btn-tema');
+// Construir el menú
+const contenedorMenu = document.getElementById('menu-container');
+if (contenedorMenu) {
+    construirMenu(paginaActual);
+}
+
+// Tema oscuro/claro
+const btnTema = document.getElementById('tema-btn');
 const html = document.documentElement;
 
-function aplicarTema(oscuro) {
-    if (oscuro) {
-        html.classList.add('modo-oscuro');
-        localStorage.setItem('tema', 'oscuro');
-        if (botonTema) botonTema.textContent = 'Modo claro';
-    } else {
-        html.classList.remove('modo-oscuro');
-        localStorage.setItem('tema', 'claro');
-        if (botonTema) botonTema.textContent = 'Modo oscuro';
-    }
-}
+btnTema.addEventListener('click', () => {
+    html.classList.toggle('dark');
+    localStorage.setItem('darkMode', html.classList.contains('dark'));
+});
 
-function alternarTema() {
-    const esOscuro = html.classList.contains('modo-oscuro');
-    aplicarTema(!esOscuro);
-}
-
-if (botonTema) {
-    botonTema.addEventListener('click', alternarTema);
-    // Sincronizar texto al cargar
-    const esOscuroActual = html.classList.contains('modo-oscuro');
-    botonTema.textContent = esOscuroActual ? 'Modo claro' : 'Modo oscuro';
-}
-
-// Crear menú hamburguesa (módulo)
-crearMenuHamburguesa();
+// Aplicar tema guardado (ya se hizo en el anti-flash del <head>)

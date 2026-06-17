@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clima - Menú</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <script>
+        (function () {
+            const oscuro = localStorage.getItem('darkMode') === 'true';
+            if (oscuro) document.documentElement.classList.add('dark');
+        })();
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>Clima Actual</h1>
+        <button id="tema-btn">Tema</button>
+        <div id="menu-container"></div>
+    </header>
+    <main>
+        <section>
+            <h2>Clima automático</h2>
+            <p id="temp-clima">--°C</p>
+            <p id="desc-clima">--</p>
+            <span class="etiqueta">wttr.in</span>
+        </section>
+    </main>
+    <script type="module">
+        import { obtenerClima } from '../modules/tiempo.js';
+        import { construirMenu } from '../modules/menu.js';
+        construirMenu('clima');
+
+        obtenerClima()
+            .then(({ temp, desc }) => {
+                document.getElementById('temp-clima').textContent = temp + '°C';
+                document.getElementById('desc-clima').textContent = desc;
+            })
+            .catch(() => {
+                document.getElementById('temp-clima').textContent = 'Error';
+                document.getElementById('desc-clima').textContent = 'No se pudo obtener';
+            });
+
+        // Tema oscuro (igual)
+        const btnTema = document.getElementById('tema-btn');
+        const html = document.documentElement;
+        btnTema.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('darkMode', html.classList.contains('dark'));
+        });
+    </script>
+</body>
+
+</html>

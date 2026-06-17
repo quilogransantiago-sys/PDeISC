@@ -3,55 +3,36 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Servidor HTTP + FS | Demo</title>
-    <!-- Script para evitar flash de modo oscuro (se ejecuta inmediatamente) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP + FS - Componente</title>
+    <link rel="stylesheet" href="/styles/style.css">
     <script>
+        // Anti-flash para modo oscuro
         (function () {
-            const temaGuardado = localStorage.getItem('tema');
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const esOscuro = temaGuardado === 'oscuro' || (temaGuardado === null && prefersDark);
-            if (esOscuro) {
-                document.documentElement.classList.add('modo-oscuro');
-            } else {
-                document.documentElement.classList.remove('modo-oscuro');
-            }
+            const oscuro = localStorage.getItem('darkMode') === 'true';
+            if (oscuro) document.documentElement.classList.add('dark');
         })();
     </script>
-    <link rel="stylesheet" href="/styles/main.css">
-    <script type="module" src="/scripts/main.js" defer></script>
 </head>
 
 <body>
-    <div class="contenedor">
-        <header class="encabezado">
-            <h1>🌐 Servidor con módulos HTTP y File System</h1>
-            <button id="btn-tema" class="btn-tema" aria-label="Cambiar tema">Modo oscuro</button>
-        </header>
-        <main class="principal">
-            <section class="tarjeta">
-                <h2>Bienvenido</h2>
-                <p>Este sitio es servido por un servidor Node.js que utiliza los módulos nativos <code>http</code> y
-                    <code>fs</code>.</p>
-                <p>El archivo <strong>index.html</strong> se lee del sistema de archivos y se envía al navegador.</p>
-                <p>Los estilos CSS y el script JavaScript también son leídos mediante <code>fs.readFile</code> y
-                    enviados con el tipo MIME correcto.</p>
-            </section>
-            <section class="tarjeta">
-                <h2>Características técnicas</h2>
-                <ul>
-                    <li>Servidor HTTP puro (sin Express).</li>
-                    <li>Manejo de rutas y tipos MIME.</li>
-                    <li>Modo claro/oscuro persistente con localStorage.</li>
-                    <li>Diseño responsivo (sin anchos fijos, adaptado a móvil).</li>
-                    <li>Código 100% en español (comentarios, variables, textos).</li>
-                </ul>
-            </section>
-        </main>
-        <footer class="pie">
-            <p>Desarrollado con Node.js · Módulos http y fs</p>
-        </footer>
-    </div>
+    <header>
+        <h1>Servidor HTTP + File System</h1>
+        <button id="tema-btn">Cambiar tema</button>
+    </header>
+    <main>
+        <section class="tarjeta">
+            <h2>Módulo HTTP</h2>
+            <p>Servidor nativo que maneja peticiones y responde con archivos estáticos.</p>
+            <span class="etiqueta">http.createServer</span>
+        </section>
+        <section class="tarjeta">
+            <h2>Módulo FS</h2>
+            <p>Lee archivos del sistema con <code>fs.readFile</code> y los envía al cliente.</p>
+            <span class="etiqueta">fs.readFile</span>
+        </section>
+    </main>
+    <script type="module" src="/scripts/main.js"></script>
 </body>
 
 </html>

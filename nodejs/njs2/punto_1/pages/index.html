@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora · Reloj · Clima</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <script>
+        (function () {
+            const dark = localStorage.getItem('darkMode') === 'true';
+            if (dark) document.documentElement.classList.add('dark');
+        })();
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>Calculadora · Reloj · Clima</h1>
+        <button id="theme-toggle" aria-label="Cambiar tema">Tema</button>
+    </header>
+
+    <main>
+        <section id="tiempo">
+            <div id="reloj">--:--:--</div>
+            <div id="clima">
+                <span id="temp">--°C</span>
+                <span id="desc">--</span>
+            </div>
+        </section>
+
+        <section id="calculadora">
+            <input type="number" id="num1" placeholder="Número 1" step="any">
+            <select id="operador">
+                <option value="+">+</option>
+                <option value="-">-</option>
+                <option value="*">*</option>
+                <option value="/">/</option>
+            </select>
+            <input type="number" id="num2" placeholder="Número 2" step="any">
+            <button id="calcular">Calcular</button>
+            <output id="resultado">Resultado</output>
+        </section>
+    </main>
+
+    <script type="module" src="/scripts/main.js"></script>
+</body>
+
+</html>

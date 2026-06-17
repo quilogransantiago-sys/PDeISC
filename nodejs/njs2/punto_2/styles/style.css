@@ -1,0 +1,107 @@
+/* Variables y reset */
+:root {
+    --bg: #f0f2f5;
+    --text: #1e1e1e;
+    --card: #ffffff;
+    --sombra: rgba(0, 0, 0, 0.08);
+    --borde: #d0d0d0;
+}
+
+.dark {
+    --bg: #1a1a1a;
+    --text: #e8e8e8;
+    --card: #2c2c2c;
+    --sombra: rgba(0, 0, 0, 0.5);
+    --borde: #4a4a4a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: var(--card);
+    border-bottom: 1px solid var(--borde);
+}
+
+header h1 {
+    font-size: 1.5rem;
+    font-weight: 400;
+}
+
+#tema-btn {
+    background: none;
+    border: 1px solid var(--borde);
+    border-radius: 4px;
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    /* desktop horizontal */
+    width: 100%;
+    padding: 1.5rem;
+    gap: 1.5rem;
+}
+
+.tarjeta {
+    flex: 1;
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px var(--sombra);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 200px;
+}
+
+.tarjeta h2 {
+    font-weight: 300;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+}
+
+.tarjeta p {
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 300px;
+}
+
+.etiqueta {
+    background: var(--borde);
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-top: 1rem;
+    color: var(--text);
+}
+
+/* móvil: columna */
+@media (max-width:768px) {
+    main {
+        flex-direction: column;
+    }
+}

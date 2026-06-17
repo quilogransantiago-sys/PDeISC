@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora - Menú</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <script>
+        (function () {
+            const oscuro = localStorage.getItem('darkMode') === 'true';
+            if (oscuro) document.documentElement.classList.add('dark');
+        })();
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>Calculadora</h1>
+        <button id="tema-btn">Tema</button>
+        <div id="menu-container"></div>
+    </header>
+    <main>
+        <section style="flex-direction:column; gap:0.8rem;">
+            <h2>Operaciones básicas</h2>
+            <input type="number" id="num1" placeholder="Número 1" step="any">
+            <select id="operador">
+                <option value="+">+</option>
+                <option value="-">-</option>
+                <option value="*">*</option>
+                <option value="/">/</option>
+            </select>
+            <input type="number" id="num2" placeholder="Número 2" step="any">
+            <button id="calcular">Calcular</button>
+            <output id="resultado">Resultado</output>
+        </section>
+    </main>
+    <script type="module">
+        import { sumar, restar, multiplicar, dividir } from '../modules/calculo.js';
+        import { construirMenu } from '../modules/menu.js';
+        construirMenu('calculadora');
+
+        const num1 = document.getElementById('num1');
+        const num2 = document.getElementById('num2');
+        const operador = document.getElementById('operador');
+        const calcular = document.getElementById('calcular');
+        const resultado = document.getElementById('resultado');
+
+        calcular.addEventListener('click', () => {
+            const a = parseFloat(num1.value);
+            const b = parseFloat(num2.value);
+            if (isNaN(a) || isNaN(b)) {
+                resultado.textContent = 'Ingresa números válidos';
+                return;
+            }
+            let res;
+            switch (operador.value) {
+                case '+': res = sumar(a, b); break;
+                case '-': res = restar(a, b); break;
+                case '*': res = multiplicar(a, b); break;
+                case '/':
+                    if (b === 0) { resultado.textContent = 'No se puede dividir por 0'; return; }
+                    res = dividir(a, b); break;
+            }
+            resultado.textContent = '= ' + res;
+        });
+
+        // Tema oscuro (código común)
+        const btnTema = document.getElementById('tema-btn');
+        const html = document.documentElement;
+        btnTema.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('darkMode', html.classList.contains('dark'));
+        });
+    </script>
+</body>
+
+</html>

@@ -4,47 +4,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inicio | Proyecto Integrador</title>
+    <title>Inicio - Menú Hamburguesa</title>
+    <link rel="stylesheet" href="/styles/style.css">
     <script>
+        // Anti-flash para modo oscuro
         (function () {
-            const tema = localStorage.getItem('tema');
-            const prefiereOscuro = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            if (tema === 'oscuro' || (tema === null && prefiereOscuro)) {
-                document.documentElement.classList.add('modo-oscuro');
-            }
+            const oscuro = localStorage.getItem('darkMode') === 'true';
+            if (oscuro) document.documentElement.classList.add('dark');
         })();
     </script>
-    <link rel="stylesheet" href="/styles/main.css">
-    <script type="module" src="/scripts/main.js"></script>
 </head>
 
 <body>
-    <div class="contenedor">
-        <header class="encabezado">
-            <div class="logo-titulo">
-                <h1>Proyecto NJS2</h1>
-                <button id="btn-tema" class="btn-tema">Modo oscuro</button>
-            </div>
-        </header>
-        <main class="principal">
-            <section class="tarjeta">
-                <h2>Bienvenido</h2>
-                <p>Sitio que integra los 5 puntos solicitados:</p>
-                <ul>
-                    <li><strong>Punto 1:</strong> Módulos propios (tiempo, cálculo)</li>
-                    <li><strong>Punto 2:</strong> Módulos HTTP + FS (lectura de archivos)</li>
-                    <li><strong>Punto 3:</strong> Módulo URL (analizador)</li>
-                    <li><strong>Punto 4:</strong> Paquete NPM "upper-case"</li>
-                    <li><strong>Punto 5:</strong> Menú hamburguesa + 5 páginas</li>
-                </ul>
-                <p>Usa el menú (☰) para navegar.</p>
-            </section>
-        </main>
-        <footer class="pie">
-            <p>Desarrollado con Node.js, Express, módulos nativos y upper-case</p>
-        </footer>
-    </div>
-    <!-- El menú hamburguesa se inyecta aquí desde main.js -->
+    <header>
+        <h1>Punto 5</h1>
+        <button id="tema-btn">Tema</button>
+        <div id="menu-container"></div>
+    </header>
+    <main>
+        <section>
+            <h2>Bienvenido</h2>
+            <p>Este sitio demuestra un menú hamburguesa modular, modo oscuro y 5 páginas.</p>
+            <span class="etiqueta">Inicio</span>
+        </section>
+        <section>
+            <h2>Contenido</h2>
+            <p>Explora las secciones: Calculadora, Clima, Demo de Módulos y Contacto.</p>
+        </section>
+    </main>
+    <script type="module" src="/scripts/main.js"></script>
 </body>
 
 </html>

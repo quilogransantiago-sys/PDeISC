@@ -1,0 +1,251 @@
+/* Estilos globales con variables CSS para modo claro/oscuro */
+:root {
+    --bg-color: #f4f6f9;
+    --text-color: #1e1e2a;
+    --card-bg: #ffffff;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --border-color: #d0d5dd;
+    --hover-bg: #e9ecf2;
+    --menu-bg: #ffffff;
+}
+
+.dark {
+    --bg-color: #1a1a2e;
+    --text-color: #e8e8f0;
+    --card-bg: #2a2a3e;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --border-color: #4a4a5e;
+    --hover-bg: #3a3a4e;
+    --menu-bg: #222236;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+/* ----- HEADER Y TEMA ----- */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 2rem;
+    background-color: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+header h1 {
+    font-size: 1.4rem;
+    font-weight: 400;
+}
+
+#tema-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.3rem 0.9rem;
+    cursor: pointer;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    transition: background 0.2s;
+}
+
+#tema-btn:hover {
+    background: var(--hover-bg);
+}
+
+/* ----- CONTENEDOR DEL MENÚ (se inyecta aquí) ----- */
+#menu-container {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+/* ----- MENÚ DE NAVEGACIÓN (módulo) ----- */
+.menu-navegacion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.menu-hamburguesa {
+    display: none;
+    /* oculto en desktop */
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--text-color);
+    padding: 0.2rem 0.6rem;
+}
+
+.menu-lista {
+    display: flex;
+    list-style: none;
+    gap: 1.2rem;
+    align-items: center;
+}
+
+.menu-lista a {
+    text-decoration: none;
+    color: var(--text-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+}
+
+.menu-lista a:hover {
+    background: var(--hover-bg);
+}
+
+.menu-lista a.activo {
+    background: var(--border-color);
+    font-weight: 500;
+}
+
+/* ----- CONTENIDO PRINCIPAL ----- */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    /* desktop: horizontal */
+    width: 100%;
+    padding: 1.5rem 2rem;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+/* Cada sección/tarjeta dentro de main */
+main>section {
+    flex: 1 1 250px;
+    background: var(--card-bg);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    padding: 1.8rem;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+main>section h2 {
+    font-weight: 300;
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+}
+
+main>section p {
+    line-height: 1.6;
+    max-width: 400px;
+}
+
+main>section .etiqueta {
+    background: var(--border-color);
+    padding: 0.2rem 1rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-top: 1rem;
+}
+
+/* ----- FORMULARIOS (contacto) ----- */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    width: 100%;
+    max-width: 300px;
+}
+
+form label {
+    font-weight: 500;
+    text-align: left;
+}
+
+form input,
+form textarea {
+    padding: 0.6rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--bg-color);
+    color: var(--text-color);
+    font-family: inherit;
+}
+
+form button {
+    padding: 0.6rem;
+    border: none;
+    border-radius: 6px;
+    background: #2d6a9f;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+form button:hover {
+    background: #1d4a7a;
+}
+
+#mensaje-form {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    min-height: 1.5rem;
+}
+
+/* ----- RESPONSIVE: MÓVIL ----- */
+@media (max-width: 768px) {
+    header {
+        padding: 0.8rem 1rem;
+    }
+
+    main {
+        flex-direction: column;
+        /* columna en móvil */
+        padding: 1rem;
+    }
+
+    main>section {
+        flex: 1 1 auto;
+        width: 100%;
+        min-height: 150px;
+    }
+
+    /* Menú hamburguesa visible */
+    .menu-hamburguesa {
+        display: block;
+    }
+
+    .menu-lista {
+        display: none;
+        /* oculto por defecto */
+        flex-direction: column;
+        width: 100%;
+        background: var(--menu-bg);
+        padding: 0.5rem 0;
+        border-top: 1px solid var(--border-color);
+        gap: 0.3rem;
+    }
+
+    .menu-lista.abierto {
+        display: flex;
+    }
+
+    .menu-navegacion {
+        flex-wrap: wrap;
+    }
+}

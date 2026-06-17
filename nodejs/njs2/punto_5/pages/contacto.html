@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - Menú</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <script>
+        (function () {
+            const oscuro = localStorage.getItem('darkMode') === 'true';
+            if (oscuro) document.documentElement.classList.add('dark');
+        })();
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>Contacto</h1>
+        <button id="tema-btn">Tema</button>
+        <div id="menu-container"></div>
+    </header>
+    <main>
+        <section>
+            <h2>Envíanos un mensaje</h2>
+            <form id="form-contacto">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" required>
+                <label for="email">Correo</label>
+                <input type="email" id="email" required>
+                <label for="mensaje">Mensaje</label>
+                <textarea id="mensaje" rows="3" required></textarea>
+                <button type="submit">Enviar</button>
+            </form>
+            <div id="mensaje-form"></div>
+        </section>
+    </main>
+    <script type="module">
+        import { construirMenu } from '../modules/menu.js';
+        construirMenu('contacto');
+
+        const form = document.getElementById('form-contacto');
+        const mensajeDiv = document.getElementById('mensaje-form');
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('nombre').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const mensaje = document.getElementById('mensaje').value.trim();
+
+            if (!nombre || !email || !mensaje) {
+                mensajeDiv.textContent = 'Todos los campos son obligatorios.';
+                return;
+            }
+            // Simular envío (persistencia en memoria)
+            const datos = { nombre, email, mensaje };
+            console.log('Datos del formulario:', datos);
+            mensajeDiv.textContent = 'Mensaje enviado (simulado).';
+            form.reset();
+        });
+
+        // Tema oscuro
+        const btnTema = document.getElementById('tema-btn');
+        const html = document.documentElement;
+        btnTema.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('darkMode', html.classList.contains('dark'));
+        });
+    </script>
+</body>
+
+</html>

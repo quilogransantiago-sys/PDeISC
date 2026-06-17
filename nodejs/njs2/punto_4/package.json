@@ -3,14 +3,11 @@
   "version": "1.0.0",
   "type": "module",
   "description": "",
-  "main": "convertirMayusculas.js",
+  "main": "mayusculas.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "upper-case": "^2.0.2"
-  }
+  "license": "ISC"
 }

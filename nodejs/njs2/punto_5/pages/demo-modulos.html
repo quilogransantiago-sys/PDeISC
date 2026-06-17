@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Módulos - Menú</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <script>
+        (function () {
+            const oscuro = localStorage.getItem('darkMode') === 'true';
+            if (oscuro) document.documentElement.classList.add('dark');
+        })();
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>Demo: HTTP, FS, URL, upper-case</h1>
+        <button id="tema-btn">Tema</button>
+        <div id="menu-container"></div>
+    </header>
+    <main>
+        <section>
+            <h2>Información del servidor</h2>
+            <pre id="info-server">Cargando...</pre>
+            <span class="etiqueta">API /api/url-info</span>
+        </section>
+    </main>
+    <script type="module">
+        import { construirMenu } from '../modules/menu.js';
+        construirMenu('demo-modulos');
+
+        // Obtener datos del servidor (demostración de HTTP+FS+URL+upper-case)
+        fetch('/api/url-info')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('info-server').textContent =
+                    `Protocolo: ${data.protocolo}\n` +
+                    `Host: ${data.host}\n` +
+                    `Hostname (mayúsculas): ${data.hostnameMayus}\n` +
+                    `Pathname: ${data.pathname}\n` +
+                    `Query: ${JSON.stringify(data.query, null, 2)}\n` +
+                    `¿Index.html existe? ${data.archivoIndexExiste}`;
+            })
+            .catch(err => {
+                document.getElementById('info-server').textContent = 'Error al obtener datos';
+                console.error(err);
+            });
+
+        // Tema oscuro
+        const btnTema = document.getElementById('tema-btn');
+        const html = document.documentElement;
+        btnTema.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            localStorage.setItem('darkMode', html.classList.contains('dark'));
+        });
+    </script>
+</body>
+
+</html>
