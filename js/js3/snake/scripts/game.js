@@ -32,13 +32,14 @@ let snake = null;
 let crystals = [];
 let walls = [];
 let wallIntervals = [];
-let points = 0;
-let storedPoints = 0;
+let points = 0; // Puntos temporales que lleva la serpiente (sin depositar en la base)
+let storedPoints = 0; // Puntos depositados en la base
 let totalScore = 0;
 let currentSpeed = INIT_SPEED_MS;
 let gameInterval = null;
 let gameRunning = false;
 
+// Coordenadas y dimensiones de la base segura de la serpiente
 let baseX = 0, baseY = 0;
 let baseW = BASE_START_SIZE;
 let baseH = BASE_START_SIZE;
@@ -47,12 +48,18 @@ let timeLeft = TIMER_DURATION;
 let timerInterval = null;
 let infoDiv = null;
 
-// --- Detectar móvil ---
+/**
+ * Detecta si el dispositivo es móvil en base al ancho de pantalla.
+ * @returns {boolean}
+ */
 function isMobile() {
     return window.innerWidth <= 768;
 }
 
-// --- UI overlay ---
+/**
+ * Crea dinámicamente un panel flotante de estadísticas en la interfaz de usuario.
+ * @why Evita tener elementos HTML estáticos flotando en la pantalla de inicio del juego.
+ */
 function createInfoDiv() {
     infoDiv = document.createElement('div');
     infoDiv.id = 'infoDiv';
@@ -65,15 +72,21 @@ function createInfoDiv() {
     infoDiv.style.fontFamily = 'monospace';
     infoDiv.style.fontSize = '13px';
     infoDiv.style.zIndex = '10';
-    infoDiv.style.pointerEvents = 'none';
+    infoDiv.style.pointerEvents = 'none'; // Evita capturar clics que deberían ir al juego
     document.getElementById('gameArea').appendChild(infoDiv);
 }
 
+/**
+ * Actualiza la información y estadísticas mostradas en tiempo real en la pantalla.
+ * Incluye tiempo restante, cristales actuales/depositados, longitud, tamaño de la base y paredes en modo difícil.
+ */
 function updateUI() {
     if (!infoDiv) return;
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
     let wallsInfo = '';
+    
+    // Si estamos en modo difícil, muestra el número de paredes activas y el temporizador más corto de desaparición
     if (isHardMode) {
         if (walls.length > 0) {
             let minTimer = Infinity;
@@ -89,10 +102,24 @@ function updateUI() {
 }
 
 // --- Geometría y colisiones ---
+
+/**
+ * Verifica si una coordenada dada (celda) se encuentra dentro de la base segura de la serpiente.
+ * @param {Object} cell - Coordenada {x, y}.
+ * @returns {boolean}
+ */
 function isInsideBase(cell) {
     return cell.x >= baseX && cell.x < baseX + baseW && cell.y >= baseY && cell.y < baseY + baseH;
 }
 
+/**
+ * Determina si una coordenada {x, y} se encuentra en la zona restringida de la base.
+ * @param {number} x - Eje X.
+ * @param {number} y - Eje Y.
+ * @returns {boolean}
+ * @why Añade un margen de seguridad (`BASE_EXCLUSION_MARGIN`) alrededor de la base para evitar que
+ * se generen cristales o paredes bloqueando las inmediaciones o la salida de la base.
+ */
 function isForbiddenZone(x, y) {
     const margin = BASE_EXCLUSION_MARGIN;
     const minX = baseX - margin;
@@ -102,6 +129,11 @@ function isForbiddenZone(x, y) {
     return (x >= minX && x <= maxX && y >= minY && y <= maxY);
 }
 
+/**
+ * Obtiene todas las celdas del mapa que no están ocupadas por el cuerpo de la serpiente ni la zona de exclusión de la base.
+ * @param {boolean} forbiddenWalls - Si es verdadero, descarta también las celdas donde hay obstáculos de pared.
+ * @returns {Array} Listado de celdas libres {x, y}.
+ */
 function getFreeCells(forbiddenWalls = false) {
     const snakeBody = snake.getBody();
     const free = [];
@@ -116,6 +148,9 @@ function getFreeCells(forbiddenWalls = false) {
     return free;
 }
 
+/**
+ * Posiciona y orienta la serpiente de manera segura dentro de la base segura al iniciar o tras morir.
+ */
 function resetSnakeInsideBase() {
     let centerX = baseX + Math.floor(baseW / 2);
     let centerY = baseY + Math.floor(baseH / 2);
@@ -125,6 +160,7 @@ function resetSnakeInsideBase() {
         { x: centerX - 1, y: centerY },
         { x: centerX - 2, y: centerY }
     ];
+    // Asegurar que toda la serpiente inicial esté contenida dentro de los límites físicos de la base actual
     for (let seg of newSnake.body) {
         if (!isInsideBase(seg)) {
             newSnake.body = [
@@ -138,9 +174,13 @@ function resetSnakeInsideBase() {
     newSnake.direction = DIRS.RIGHT;
     newSnake.nextDirection = DIRS.RIGHT;
     snake = newSnake;
-    currentSpeed = INIT_SPEED_MS;
+    currentSpeed = INIT_SPEED_MS; // Restablecer velocidad inicial
 }
 
+/**
+ * Reduce el tamaño del cuerpo de la serpiente de vuelta a su tamaño inicial (3 segmentos).
+ * @why Esta es una recompensa al depositar los puntos: se reduce el riesgo de colisión al vaciar la cola.
+ */
 function shrinkSnakeToOriginal() {
     const head = snake.getHead();
     const dir = snake.direction;
@@ -154,6 +194,10 @@ function shrinkSnakeToOriginal() {
     snake.body = newBody;
 }
 
+/**
+ * Elimina cristales atrapados en la nueva zona de exclusión tras la expansión de la base.
+ * Reposiciona cristales nuevos en celdas libres.
+ */
 function removeCrystalsInForbiddenZone() {
     const before = crystals.length;
     crystals = crystals.filter(c => !isForbiddenZone(c.x, c.y));
@@ -163,16 +207,25 @@ function removeCrystalsInForbiddenZone() {
     }
 }
 
+/**
+ * Incrementa las dimensiones de la base segura en 2 celdas de ancho y alto (`BASE_GROWTH`).
+ * Ocurre cuando se alcanzan o superan los puntos depositados requeridos.
+ */
 function growBase() {
     if (storedPoints >= currentPointsToGrow) {
         baseW = Math.min(baseW + BASE_GROWTH, currentGridSize);
         baseH = Math.min(baseH + BASE_GROWTH, currentGridSize);
         storedPoints -= currentPointsToGrow;
-        removeCrystalsInForbiddenZone();
+        removeCrystalsInForbiddenZone(); // Reposicionar cristales que hayan quedado muy cerca de la nueva base
         updateUI();
     }
 }
 
+/**
+ * Verifica si se cumplen los requisitos de posición para depositar automáticamente los cristales.
+ * @why Decisión de diseño: Se requiere que al menos el 40% del cuerpo completo de la serpiente se
+ * encuentre físicamente dentro de la base para poder depositar los puntos y encoger la cola.
+ */
 function checkAutoDeposit() {
     const body = snake.getBody();
     const total = body.length;
@@ -183,7 +236,7 @@ function checkAutoDeposit() {
         storedPoints += points;
         points = 0;
         shrinkSnakeToOriginal();
-        currentSpeed = INIT_SPEED_MS;
+        currentSpeed = INIT_SPEED_MS; // Restablecer a la velocidad inicial tras el depósito seguro
         restartGameLoop();
         updateUI();
         if (storedPoints >= currentPointsToGrow) {
@@ -192,9 +245,13 @@ function checkAutoDeposit() {
     }
 }
 
+/**
+ * Ejecuta el procedimiento de muerte del jugador: resetea cristales a 0, recoloca a la serpiente y reanuda el juego.
+ * @why La base y la puntuación de depósitos (`storedPoints`) se preservan, permitiendo continuar.
+ */
 function respawnAfterDeath() {
     if (gameInterval) clearInterval(gameInterval);
-    points = 0;
+    points = 0; // Se pierden los cristales acumulados en el cuerpo
     resetSnakeInsideBase();
     gameRunning = true;
     updateUI();
@@ -202,6 +259,9 @@ function respawnAfterDeath() {
     restartGameLoop();
 }
 
+/**
+ * Detiene el temporizador anterior y establece el nuevo ciclo del juego con el intervalo de velocidad actual.
+ */
 function restartGameLoop() {
     if (gameInterval) clearInterval(gameInterval);
     if (!gameRunning) return;
@@ -209,10 +269,22 @@ function restartGameLoop() {
 }
 
 // --- Cristales ---
+
+/**
+ * Calcula la distancia en cuadrícula (distancia de Chebyshov) entre dos puntos.
+ * @param {Object} a - Coordenada {x, y}.
+ * @param {Object} b - Coordenada {x, y}.
+ * @returns {number}
+ */
 function distance(a, b) {
     return Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y));
 }
 
+/**
+ * Selecciona aleatoriamente un cristal del catálogo de tipos en base a sus probabilidades configuradas.
+ * En modo fácil siempre retorna el tipo común.
+ * @returns {number} Índice del tipo de cristal.
+ */
 function getRandomCrystalType() {
     if (isEasyMode) return 0;
     const rand = Math.random();
@@ -224,14 +296,21 @@ function getRandomCrystalType() {
     return 0;
 }
 
+/**
+ * Genera la población inicial de cristales distribuidos en posiciones válidas del mapa al inicio de la partida.
+ */
 function generateCrystals() {
     let freeCells = getFreeCells(true);
     if (freeCells.length === 0) return;
+    
+    // Barajado Fisher-Yates para asegurar aletoriedad
     for (let i = freeCells.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [freeCells[i], freeCells[j]] = [freeCells[j], freeCells[i]];
     }
+    
     const selected = [];
+    // Colocar cristales aplicando una separación mínima (`MIN_DIST`) para evitar aglomeraciones visuales
     for (const cell of freeCells) {
         if (selected.length >= currentNumCrystals) break;
         let tooClose = false;
@@ -246,6 +325,8 @@ function generateCrystals() {
             selected.push({ x: cell.x, y: cell.y, typeIndex: typeIdx });
         }
     }
+    
+    // Relleno de seguridad si la limitación de distancia no permitió colocar la cantidad deseada
     if (selected.length < currentNumCrystals) {
         for (const cell of freeCells) {
             if (selected.length >= currentNumCrystals) break;
@@ -258,27 +339,40 @@ function generateCrystals() {
     crystals = selected;
 }
 
+/**
+ * Intenta spawnear un cristal adicional en el mapa.
+ * @returns {boolean} Retorna verdadero si se pudo añadir con éxito.
+ */
 function addOneCrystal() {
     let freeCells = getFreeCells(true);
+    // Filtrar celdas que respeten la distancia mínima a los cristales existentes
     const validCells = freeCells.filter(cell => {
         return !crystals.some(c => distance(cell, c) < MIN_DIST);
     });
+    
     let newCrystal;
     if (validCells.length > 0) {
         const rand = Math.floor(Math.random() * validCells.length);
         const typeIdx = getRandomCrystalType();
         newCrystal = { x: validCells[rand].x, y: validCells[rand].y, typeIndex: typeIdx };
     } else if (freeCells.length > 0) {
+        // Ignorar distancia mínima si no hay celdas que la cumplan
         const rand = Math.floor(Math.random() * freeCells.length);
         const typeIdx = getRandomCrystalType();
         newCrystal = { x: freeCells[rand].x, y: freeCells[rand].y, typeIndex: typeIdx };
     } else {
-        return false;
+        return false; // Sin celdas libres disponibles
     }
     crystals.push(newCrystal);
     return true;
 }
 
+/**
+ * Comprueba si la cabeza de la serpiente choca con algún cristal para consumirlo.
+ * @why Si come, el intervalo de actualización del bucle aumenta (`speedDelay`),
+ * haciendo que la serpiente se desplace más lento para facilitar el control al crecer.
+ * @returns {boolean}
+ */
 function checkEatCrystal() {
     const head = snake.getHead();
     const index = crystals.findIndex(c => c.x === head.x && c.y === head.y);
@@ -288,12 +382,14 @@ function checkEatCrystal() {
         const pointsEarned = type.value;
         points += pointsEarned;
         totalScore += pointsEarned;
-        crystals.splice(index, 1);
+        crystals.splice(index, 1); // Remover el cristal ingerido
+        
+        // La ralentización es parte del equilibrio del juego
         if (!isEasyMode) {
             const delay = type.speedDelay || 0;
             currentSpeed = Math.min(currentSpeed + delay, MAX_SPEED_MS);
         }
-        addOneCrystal();
+        addOneCrystal(); // Repone un cristal inmediatamente
         updateUI();
         return true;
     }
@@ -301,18 +397,27 @@ function checkEatCrystal() {
 }
 
 // --- Paredes (modo difícil) ---
+
+/**
+ * Distribuye de forma aleatoria los obstáculos (paredes) por el mapa al arrancar el modo difícil.
+ */
 function generateWalls() {
     walls = [];
+    // Limpia cualquier intervalo activo anterior para evitar desbordes de memoria
     wallIntervals.forEach(interval => clearInterval(interval));
     wallIntervals = [];
     if (!isHardMode) return;
+    
     const freeCells = getFreeCells(true);
     if (freeCells.length < WALL_COUNT) return;
+    
     for (let i = freeCells.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [freeCells[i], freeCells[j]] = [freeCells[j], freeCells[i]];
     }
+    
     const selected = [];
+    // Ubicar paredes aplicando separación
     for (const cell of freeCells) {
         if (selected.length >= WALL_COUNT) break;
         let tooClose = false;
@@ -337,15 +442,27 @@ function generateWalls() {
     }
 }
 
+/**
+ * Crea una pared en la coordenada designada e inicia su ciclo de vida dinámico.
+ * @param {number} x - Eje X.
+ * @param {number} y - Eje Y.
+ * @why Decisión de diseño: Para que el juego sea interactivo y cambiante, las paredes expiran
+ * cada N segundos (`WALL_DURATION`), auto-eliminándose y reapareciendo en una nueva coordenada libre,
+ * lo que exige reaccionar dinámicamente.
+ */
 function createWallAt(x, y) {
     const wall = { x, y, timer: WALL_DURATION };
     walls.push(wall);
+    
+    // Temporizador de cuenta atrás en segundos
     const interval = setInterval(() => {
         wall.timer--;
         if (wall.timer <= 0) {
             clearInterval(interval);
             const index = walls.indexOf(wall);
             if (index !== -1) walls.splice(index, 1);
+            
+            // Reubicación asíncrona de una nueva pared
             const freeCells2 = getFreeCells(true);
             if (freeCells2.length > 0) {
                 const rand = Math.floor(Math.random() * freeCells2.length);
@@ -357,6 +474,10 @@ function createWallAt(x, y) {
     wallIntervals.push(interval);
 }
 
+/**
+ * Comprueba si la cabeza de la serpiente colisiona con alguna de las paredes.
+ * @returns {boolean}
+ */
 function checkWallCollision() {
     if (!isHardMode) return false;
     const head = snake.getHead();
@@ -364,6 +485,10 @@ function checkWallCollision() {
 }
 
 // --- Game loop ---
+
+/**
+ * Ciclo lógico del juego. Procesa el movimiento, verifica si come, comprueba colisiones letales y actualiza el renderizado.
+ */
 function gameTick() {
     if (!gameRunning) return;
     snake.updateDirection();
@@ -373,11 +498,13 @@ function gameTick() {
     const head = snake.getHead();
     const insideBase = isInsideBase(head);
 
+    // Muerte por colisión con obstáculo (solo fuera de la base segura)
     if (!insideBase && checkWallCollision()) {
         respawnAfterDeath();
         return;
     }
 
+    // Muerte por colisión consigo misma o fuera del mapa (solo fuera de la base)
     if (!insideBase) {
         if (snake.collidesWithSelf() || snake.isOutOfBounds()) {
             respawnAfterDeath();
@@ -386,6 +513,8 @@ function gameTick() {
     }
 
     checkAutoDeposit();
+    
+    // Si se ingiere un cristal, se refresca el loop inmediatamente para aplicar el cambio de intervalo de velocidad
     if (willEat) {
         restartGameLoop();
     }
@@ -393,6 +522,12 @@ function gameTick() {
 }
 
 // --- Dificultad ---
+
+/**
+ * Aplica los valores de inicialización en función de la dificultad seleccionada.
+ * Configura dimensiones de cuadrícula, densidad de cristales, dificultad de crecimiento de base y obstáculos.
+ * @param {string} diff
+ */
 function applyDifficulty(diff) {
     currentGridSize = 100;
     currentNumCrystals = 180;
@@ -408,7 +543,7 @@ function applyDifficulty(diff) {
         currentPointsToGrow = 50;
         currentCrystalTypes = [{ value: 1, color: '#aaaaaa', prob: 1 }];
     } else if (diff === 'normal') {
-        // valores por defecto
+        // Conserva configuraciones por defecto
     } else if (diff === 'dificil') {
         isHardMode = true;
         currentNumCrystals = 220;
@@ -419,6 +554,10 @@ function applyDifficulty(diff) {
 }
 
 // --- Reinicio y temporizador ---
+
+/**
+ * Restablece todas las variables de estado e inicializa los elementos para empezar un juego nuevo.
+ */
 function fullReset() {
     if (!infoDiv) createInfoDiv();
     if (gameInterval) clearInterval(gameInterval);
@@ -444,6 +583,10 @@ function fullReset() {
     startTimer();
 }
 
+/**
+ * Inicia la cuenta atrás del temporizador del juego (1 segundo por intervalo).
+ * Al agotarse el tiempo, finaliza la partida.
+ */
 function startTimer() {
     if (timerInterval) clearInterval(timerInterval);
     timerInterval = setInterval(() => {
@@ -458,6 +601,10 @@ function startTimer() {
 }
 
 // --- Fin de partida ---
+
+/**
+ * Finaliza la partida, limpia temporizadores, detiene el bucle y muestra el resumen de estadísticas.
+ */
 function endGame() {
     if (gameInterval) clearInterval(gameInterval);
     if (timerInterval) clearInterval(timerInterval);
@@ -473,12 +620,14 @@ function endGame() {
     document.getElementById('endGrowth').textContent = growthTimes;
     endScreen.classList.remove('hidden');
 
-    // Ocultar controles móviles
     if (isMobile()) {
         mobileControls.style.display = 'none';
     }
 }
 
+/**
+ * Vuelve al menú de inicio limpiando variables de estado y ocultando el juego.
+ */
 function goToStart() {
     endScreen.classList.add('hidden');
     gameContainer.style.display = 'none';
@@ -493,9 +642,18 @@ function goToStart() {
 goHomeBtn.addEventListener('click', goToStart);
 
 // --- Cámara y dibujo (centrado, sin límites, fondo negro) ---
+
+// Filas y columnas del tablero visibles en el área de visualización del Canvas (calculadas adaptativamente)
 let VISIBLE_COLS = 40;
 let VISIBLE_ROWS = 40;
 
+/**
+ * Calcula el desplazamiento (offset) en coordenadas de la esquina superior izquierda de la cámara.
+ * @why Decisión de diseño: Al mantener la cámara permanentemente centrada en la cabeza de la serpiente,
+ * el mapa se siente como un entorno continuo de exploración libre, evitando los problemas visuales
+ * de un mapa muy grande encajado en pantallas pequeñas.
+ * @returns {Object} Desplazamiento de cámara {camX, camY}.
+ */
 function getCameraOffset() {
     const head = snake.getHead();
     let camX = head.x - Math.floor(VISIBLE_COLS / 2);
@@ -503,6 +661,9 @@ function getCameraOffset() {
     return { camX, camY };
 }
 
+/**
+ * Adapta dinámicamente las dimensiones físicas de los canvas de juego y minimapa al tamaño del viewport.
+ */
 function resizeCanvas() {
     const container = document.getElementById('gameArea');
     const rect = container.getBoundingClientRect();
@@ -523,6 +684,9 @@ function resizeCanvas() {
     }
 }
 
+/**
+ * Renderiza el estado del juego completo en el Canvas principal considerando el desfase de la cámara.
+ */
 function draw() {
     if (!snake) return;
     VISIBLE_COLS = Math.floor(canvas.width / CELL_SIZE);
@@ -533,16 +697,17 @@ function draw() {
     const isDark = document.documentElement.classList.contains('dark');
     const { camX, camY } = getCameraOffset();
 
-    // Fondo negro (vacío)
+    // 1. Dibujar el fondo "negro infinito" (zona vacía fuera de la cuadrícula de juego)
     ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Dibujar el mapa dentro del viewport
+    // Desfase en píxeles del mapa de juego con respecto al canvas
     const mapOffsetX = -camX * CELL_SIZE;
     const mapOffsetY = -camY * CELL_SIZE;
     const mapPixelWidth = currentGridSize * CELL_SIZE;
     const mapPixelHeight = currentGridSize * CELL_SIZE;
 
+    // 2. Dibujar el fondo de la superficie del mapa de juego (limitado a lo visible)
     const srcX = Math.max(0, mapOffsetX);
     const srcY = Math.max(0, mapOffsetY);
     const srcW = Math.min(canvas.width, mapOffsetX + mapPixelWidth) - srcX;
@@ -552,7 +717,7 @@ function draw() {
         ctx.fillRect(srcX, srcY, srcW, srcH);
     }
 
-    // Grid (solo dentro del mapa)
+    // 3. Dibujar la cuadrícula o rejilla interna de juego
     ctx.strokeStyle = isDark ? '#2c3e50' : '#d0d0d0';
     ctx.lineWidth = 0.5;
     const startCol = Math.max(0, Math.floor(-mapOffsetX / CELL_SIZE));
@@ -575,7 +740,7 @@ function draw() {
         ctx.stroke();
     }
 
-    // Base
+    // 4. Dibujar la Base segura (verde traslúcido con borde sólido)
     const baseScreenX = (baseX - camX) * CELL_SIZE;
     const baseScreenY = (baseY - camY) * CELL_SIZE;
     const baseScreenW = baseW * CELL_SIZE;
@@ -589,7 +754,7 @@ function draw() {
         ctx.strokeRect(baseScreenX, baseScreenY, baseScreenW, baseScreenH);
     }
 
-    // Paredes
+    // 5. Dibujar los obstáculos (Paredes del modo difícil) con su cuenta atrás de segundos de vida
     if (isHardMode) {
         for (const w of walls) {
             const screenX = (w.x - camX) * CELL_SIZE;
@@ -607,7 +772,7 @@ function draw() {
         }
     }
 
-    // Cristales
+    // 6. Dibujar los Cristales (con brillo dependiente de su tipo/valor)
     for (const c of crystals) {
         const screenX = (c.x - camX) * CELL_SIZE;
         const screenY = (c.y - camY) * CELL_SIZE;
@@ -616,6 +781,7 @@ function draw() {
             const type = currentCrystalTypes[c.typeIndex];
             let color = type.color;
             let border = false;
+            // Ajuste de legibilidad para el modo claro
             if (!isDark) {
                 if (type.value === 1) color = '#666666';
                 else if (type.value === 5) { color = '#f0f0f0'; border = true; }
@@ -623,6 +789,7 @@ function draw() {
             }
             ctx.fillStyle = color;
             ctx.shadowBlur = (type.value === 15) ? 12 : 2;
+            ctx.shadowColor = color;
             ctx.fillRect(screenX, screenY, CELL_SIZE - 1, CELL_SIZE - 1);
             if (border) {
                 ctx.strokeStyle = '#333';
@@ -631,9 +798,9 @@ function draw() {
             }
         }
     }
-    ctx.shadowBlur = 0;
+    ctx.shadowBlur = 0; // Desactivar sombreado para no afectar el resto de dibujos
 
-    // Serpiente
+    // 7. Dibujar la Serpiente (Cabeza en verde oscuro, cuerpo en verde claro)
     snake.getBody().forEach((seg, idx) => {
         const screenX = (seg.x - camX) * CELL_SIZE;
         const screenY = (seg.y - camY) * CELL_SIZE;
@@ -644,9 +811,13 @@ function draw() {
         }
     });
 
+    // 8. Dibujar el Minimapa lateral
     drawMinimap();
 }
 
+/**
+ * Dibuja una representación simplificada del mapa entero a escala.
+ */
 function drawMinimap() {
     const w = minimapCanvas.width;
     const h = minimapCanvas.height;
@@ -662,14 +833,14 @@ function drawMinimap() {
     const cellW = Math.max(1, scaleX);
     const cellH = Math.max(1, scaleY);
 
-    // Base
+    // Dibujar base en el minimapa
     minimapCtx.fillStyle = isDark ? 'rgba(16,185,129,0.3)' : 'rgba(46,204,113,0.3)';
     minimapCtx.fillRect(baseX * scaleX, baseY * scaleY, baseW * scaleX, baseH * scaleY);
     minimapCtx.strokeStyle = isDark ? '#10b981' : '#2ecc71';
     minimapCtx.lineWidth = 1;
     minimapCtx.strokeRect(baseX * scaleX, baseY * scaleY, baseW * scaleX, baseH * scaleY);
 
-    // Cristales
+    // Dibujar cristales
     for (const c of crystals) {
         const type = currentCrystalTypes[c.typeIndex];
         let color = type.color;
@@ -682,7 +853,7 @@ function drawMinimap() {
         minimapCtx.fillRect(c.x * scaleX, c.y * scaleY, cellW, cellH);
     }
 
-    // Paredes
+    // Dibujar paredes
     if (isHardMode) {
         for (const w of walls) {
             minimapCtx.fillStyle = '#e74c3c';
@@ -690,7 +861,7 @@ function drawMinimap() {
         }
     }
 
-    // Serpiente
+    // Dibujar serpiente
     snake.getBody().forEach((seg, idx) => {
         minimapCtx.fillStyle = idx === 0 ? '#27ae60' : '#2ecc71';
         minimapCtx.fillRect(seg.x * scaleX, seg.y * scaleY, cellW, cellH);
@@ -702,6 +873,10 @@ function drawMinimap() {
 }
 
 // --- Controles (teclado + táctiles) ---
+
+/**
+ * Escucha las pulsaciones de teclado para direccionar la serpiente.
+ */
 function handleKey(e) {
     if (!gameRunning) return;
     const key = e.key;
@@ -718,6 +893,10 @@ function handleKey(e) {
 }
 
 // --- Tema ---
+
+/**
+ * Alterna el modo oscuro del juego y guarda la elección del usuario.
+ */
 function toggleTheme() {
     document.documentElement.classList.toggle('dark');
     const isDark = document.documentElement.classList.contains('dark');
@@ -727,6 +906,9 @@ function toggleTheme() {
     draw();
 }
 
+/**
+ * Inicializa el tema leyendo del almacenamiento local.
+ */
 function initTheme() {
     const isDark = localStorage.getItem('darkMode') === 'true';
     if (isDark) document.documentElement.classList.add('dark');
@@ -737,11 +919,18 @@ function initTheme() {
 }
 
 // --- Pantalla de inicio y modal ---
+
+/**
+ * Presenta el menú principal en pantalla.
+ */
 function showStartScreen() {
     startScreen.classList.remove('hidden');
     gameContainer.style.display = 'none';
 }
 
+/**
+ * Captura y procesa la selección de dificultad.
+ */
 function handleDifficultySelect(e) {
     const diff = e.target.dataset.diff;
     applyDifficulty(diff);
@@ -750,6 +939,9 @@ function handleDifficultySelect(e) {
     startGameAfterDifficulty();
 }
 
+/**
+ * Adapta el diseño UI según dispositivo móvil u ordenador e inicia el bucle de juego.
+ */
 function startGameAfterDifficulty() {
     startScreen.classList.add('hidden');
     gameContainer.style.display = 'block';
@@ -776,15 +968,25 @@ function startGameAfterDifficulty() {
     fullReset();
 }
 
+/**
+ * Oculta el modal de dificultad.
+ */
 function closeModal() {
     difficultyModal.classList.add('hidden');
 }
 
+/**
+ * Despliega el modal de dificultad.
+ */
 function startGame() {
     difficultyModal.classList.remove('hidden');
 }
 
 // --- Configurar botones táctiles ---
+
+/**
+ * Configura los eventos mousedown y touchstart para la cruz de control móvil virtual.
+ */
 function setupMobileControls() {
     const btns = mobileControls.querySelectorAll('.ctrl-btn');
     btns.forEach(btn => {

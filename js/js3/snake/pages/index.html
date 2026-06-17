@@ -3,17 +3,34 @@
 
 <head>
     <meta charset="UTF-8">
+    <!-- 
+      Decisión de Diseño: Configuración del Viewport.
+      Se fuerza maximum-scale=1.0 y user-scalable=no para evitar que los dispositivos móviles 
+      hagan zoom automático al pulsar repetidamente y con rapidez los controles de dirección táctiles.
+    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Snake - Base</title>
+    <!-- Estilos del juego (hoja de estilos principal) -->
     <link rel="stylesheet" href="/styles/style.css">
     <script>
+        /**
+         * Decisión de Diseño: Script inline bloqueante.
+         * @why Se ejecuta antes de que se dibuje el cuerpo (body) de la página. 
+         * Al añadir inmediatamente la clase 'dark' a la etiqueta html basándose en el localStorage, 
+         * se evita el "flicker" o destello blanco de transición que ocurre cuando una persona 
+         * tiene el modo oscuro activado y se carga el estilo base claro del navegador.
+         */
         const darkMode = localStorage.getItem('darkMode') === 'true';
         if (darkMode) document.documentElement.classList.add('dark');
     </script>
 </head>
 
 <body>
-    <!-- Pantalla de inicio -->
+    <!-- 
+      Pantalla de Inicio (startScreen)
+      - Contiene la bienvenida al juego, el botón de Play y la opción de cambiar de tema en la landing.
+      - Superpuesta a pantalla completa a través de position: fixed y z-index.
+    -->
     <div id="startScreen" class="start-screen">
         <div class="start-content">
             <h1>🐍 Snake Base</h1>
@@ -23,7 +40,12 @@
         </div>
     </div>
 
-    <!-- Modal de dificultad -->
+    <!-- 
+      Modal de Selección de Dificultad (difficultyModal)
+      - Se muestra al pulsar "Play".
+      - Permite elegir entre Fácil, Normal y Difícil.
+      - Utiliza la clase 'hidden' para controlar su visibilidad con transiciones de opacidad.
+    -->
     <div id="difficultyModal" class="modal hidden">
         <div class="modal-content">
             <h2>Selecciona Dificultad</h2>
@@ -32,50 +54,76 @@
                 <button class="diff-btn" data-diff="normal">Normal</button>
                 <button class="diff-btn" data-diff="dificil">Difícil</button>
             </div>
+            <!-- Botón para cerrar el modal sin seleccionar dificultad -->
             <button id="closeModalBtn" class="close-modal-btn">✕</button>
         </div>
     </div>
 
-    <!-- Pantalla de fin de partida -->
+    <!-- 
+      Pantalla de Fin de Partida (endScreen)
+      - Se activa automáticamente al expirar el tiempo (límite del temporizador).
+      - Muestra estadísticas clave: tamaño final de la base segura y cuántas veces creció.
+    -->
     <div id="endScreen" class="end-screen hidden">
         <div class="end-content">
-            <h2>⏱️ ¡Partida terminada!</h2>
+            <h2>¡Partida terminada!</h2>
             <div id="endStats">
                 <p>Tamaño final de la base: <strong id="endBaseSize">0x0</strong></p>
                 <p>Crecimiento: <strong id="endGrowth">0</strong> veces</p>
             </div>
-            <button id="goHomeBtn">🏠 Volver al inicio</button>
+            <button id="goHomeBtn">Volver al inicio</button>
         </div>
     </div>
 
-    <!-- Contenedor principal del juego -->
+    <!-- 
+      Contenedor Principal del Juego (gameContainer)
+      - Oculto por defecto mediante display:none hasta que se inicia la partida.
+      - Contiene toda la maquetación en dos columnas principales (sidebar izquierda y area de juego derecha).
+    -->
     <div id="gameContainer" style="display:none;">
         <div id="app">
+            <!-- 
+              Barra Lateral (sidebar)
+              - Contiene el título del mapa y el canvas dedicado al minimapa del juego completo.
+            -->
             <div id="sidebar">
                 <h3>Mapa</h3>
                 <canvas id="minimapCanvas"></canvas>
             </div>
+            
+            <!-- 
+              Área de Juego Principal (gameArea)
+              - Alberga el canvas principal donde se dibuja la vista de cámara centrada del juego.
+              - Botón flotante para cambiar de tema durante el juego (solo activo en escritorio).
+              - Panel de controles móviles en forma de cruz de botones.
+            -->
             <div id="gameArea">
                 <canvas id="snakeCanvas"></canvas>
                 <button id="themeToggle" class="theme-float">🌓</button>
-                <!-- Controles móviles -->
+                
+                <!-- 
+                  Controles Móviles (mobileControls)
+                  - Ocultos por defecto, activados en JS si se detecta ancho de pantalla móvil (<= 768px).
+                  - Diseño en cuadrícula CSS (grid) de 3x3 que posiciona los botones en cruz (arriba, abajo, izq, der).
+                -->
                 <div id="mobileControls" style="display:none;">
                     <div class="ctrl-grid">
-                        <div></div>
+                        <div></div> <!-- Espacio vacío de la grilla (col 1, fila 1) -->
                         <button class="ctrl-btn" data-dir="up">▲</button>
-                        <div></div>
+                        <div></div> <!-- Espacio vacío de la grilla (col 3, fila 1) -->
                         <button class="ctrl-btn" data-dir="left">◀</button>
-                        <div></div>
+                        <div></div> <!-- Espacio vacío central (col 2, fila 2) -->
                         <button class="ctrl-btn" data-dir="right">▶</button>
-                        <div></div>
+                        <div></div> <!-- Espacio vacío de la grilla (col 1, fila 3) -->
                         <button class="ctrl-btn" data-dir="down">▼</button>
-                        <div></div>
+                        <div></div> <!-- Espacio vacío de la grilla (col 3, fila 3) -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Lógica principal del juego importada como módulo ES6 -->
     <script type="module" src="/scripts/game.js"></script>
 </body>
 

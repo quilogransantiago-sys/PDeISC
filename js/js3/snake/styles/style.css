@@ -1,46 +1,50 @@
+/* Reset de márgenes y paddings por defecto del navegador */
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Facilita el cálculo del ancho y alto total incluyendo bordes y rellenos */
 }
 
+/* --- Paleta de Colores y Variables de Diseño (Tema Claro por defecto) --- */
 :root {
-    --bg: #f0f2f5;
-    --panel: #ffffff;
-    --text: #1a1a2e;
-    --border: #ccc;
-    --canvas-bg: #ffffff;
-    --grid-color: #d0d0d0;
-    --snake: #2ecc71;
-    --crystal: #f1c40f;
-    --wall: #e74c3c;
-    --base-fill: rgba(46, 204, 113, 0.2);
-    --base-stroke: #2ecc71;
+    --bg: #f0f2f5;                  /* Fondo general de la página */
+    --panel: #ffffff;               /* Fondo de tarjetas, menús y sidebar */
+    --text: #1a1a2e;                /* Color del texto principal */
+    --border: #ccc;                 /* Borde gris claro */
+    --canvas-bg: #ffffff;           /* Fondo del área jugable y minimapa */
+    --grid-color: #d0d0d0;          /* Líneas de la cuadrícula */
+    --snake: #2ecc71;               /* Color de la serpiente (verde claro) */
+    --crystal: #f1c40f;             /* Color de cristales estándar (amarillo) */
+    --wall: #e74c3c;                /* Color de los obstáculos temporales (rojo) */
+    --base-fill: rgba(46, 204, 113, 0.2); /* Relleno seguro de la base */
+    --base-stroke: #2ecc71;         /* Borde seguro de la base */
 }
 
+/* --- Paleta de Colores y Variables de Diseño (Tema Oscuro) --- */
 :root.dark {
-    --bg: #0f172a;
-    --panel: #1e293b;
-    --text: #e2e8f0;
-    --border: #334155;
-    --canvas-bg: #0a0f1a;
-    --grid-color: #2c3e50;
-    --snake: #10b981;
-    --crystal: #fbbf24;
-    --wall: #ef4444;
+    --bg: #0f172a;                  /* Azul pizarra muy oscuro para el fondo general */
+    --panel: #1e293b;               /* Azul pizarra oscuro para la sidebar y modales */
+    --text: #e2e8f0;                /* Gris muy claro para alto contraste */
+    --border: #334155;              /* Borde oscuro */
+    --canvas-bg: #0a0f1a;           /* Fondo del área jugable y minimapa en modo oscuro */
+    --grid-color: #2c3e50;          /* Líneas de cuadrícula oscuras */
+    --snake: #10b981;               /* Verde esmeralda para la serpiente */
+    --crystal: #fbbf24;             /* Color ámbar para los cristales */
+    --wall: #ef4444;                /* Obstáculos de color rojo brillante */
     --base-fill: rgba(16, 185, 129, 0.2);
     --base-stroke: #10b981;
 }
 
+/* --- Configuración base del cuerpo del documento --- */
 body {
     background: var(--bg);
     font-family: 'Segoe UI', system-ui, sans-serif;
     height: 100vh;
-    overflow: hidden;
-    transition: background 0.2s;
+    overflow: hidden; /* Decisión de Diseño: Desactiva el scroll del navegador para que la app se comporte como un juego nativo */
+    transition: background 0.2s; /* Transición suave al alternar entre modo claro y oscuro */
 }
 
-/* Pantalla de inicio */
+/* --- Pantalla de Inicio (startScreen) --- */
 .start-screen {
     position: fixed;
     top: 0;
@@ -49,17 +53,19 @@ body {
     height: 100%;
     background: var(--bg);
     display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-    transition: opacity 0.5s;
+    align-items: center;      /* Centrado vertical de la tarjeta de bienvenida */
+    justify-content: center;    /* Centrado horizontal de la tarjeta de bienvenida */
+    z-index: 100;               /* Superpone el panel sobre el área del juego */
+    transition: opacity 0.5s;   /* Animación de desvanecimiento (fade-out) cuando comienza el juego */
 }
 
+/* Clase de utilidad para desvanecer y desactivar interacciones con la pantalla de inicio */
 .start-screen.hidden {
     opacity: 0;
     pointer-events: none;
 }
 
+/* Contenido interno del panel de bienvenida */
 .start-content {
     text-align: center;
     color: var(--text);
@@ -79,6 +85,7 @@ body {
     color: var(--text);
 }
 
+/* Botón principal de juego */
 #playBtn {
     background: #2ecc71;
     border: none;
@@ -93,11 +100,13 @@ body {
     margin: 0 auto 1rem auto;
 }
 
+/* Efecto hover con micro-animación para una sensación interactiva más premium */
 #playBtn:hover {
     transform: scale(1.05);
     opacity: 0.9;
 }
 
+/* Botón de cambio de tema */
 .theme-btn {
     background: transparent;
     border: 1px solid var(--border);
@@ -113,14 +122,14 @@ body {
     background: var(--border);
 }
 
-/* Modal */
+/* --- Fondo oscurecido para modales (Overlay) --- */
 .modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.6); /* Fondo negro translúcido para centrar la atención en el modal */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -133,6 +142,7 @@ body {
     pointer-events: none;
 }
 
+/* Contenedor del cuadro de diálogo del modal */
 .modal-content {
     background: var(--panel);
     color: var(--text);
@@ -142,7 +152,7 @@ body {
     width: 90%;
     text-align: center;
     position: relative;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); /* Sombra difusa para otorgar profundidad (diseño de capas) */
 }
 
 .modal-content h2 {
@@ -150,6 +160,7 @@ body {
     font-size: 2rem;
 }
 
+/* Contenedor flexible en columna para los botones de dificultad */
 .difficulty-buttons {
     display: flex;
     flex-direction: column;
@@ -157,6 +168,7 @@ body {
     margin-bottom: 1.5rem;
 }
 
+/* Botón individual de dificultad */
 .diff-btn {
     background: var(--snake);
     border: none;
@@ -174,6 +186,7 @@ body {
     opacity: 0.9;
 }
 
+/* Botón de cierre en esquina superior derecha de los modales */
 .close-modal-btn {
     position: absolute;
     top: 10px;
@@ -190,7 +203,7 @@ body {
     opacity: 0.6;
 }
 
-/* Layout principal */
+/* --- Layout Principal de la Aplicación --- */
 #app {
     display: flex;
     width: 100vw;
@@ -198,7 +211,7 @@ body {
     background: var(--bg);
 }
 
-/* Sidebar izquierda (20%) */
+/* --- Sidebar Lateral Izquierda (20% del ancho) --- */
 #sidebar {
     width: 20%;
     height: 100%;
@@ -217,16 +230,17 @@ body {
     font-size: 1.2rem;
 }
 
+/* Canvas del minimapa proporcional (1:1) */
 #minimapCanvas {
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1 / 1; /* Mantiene la relación de aspecto cuadrada */
     background: var(--canvas-bg);
     border: 1px solid var(--border);
     border-radius: 8px;
     max-height: 60vh;
 }
 
-/* Área del juego (80% derecha) */
+/* --- Área de Juego Principal (80% del ancho) --- */
 #gameArea {
     width: 80%;
     height: 100%;
@@ -235,6 +249,7 @@ body {
     overflow: hidden;
 }
 
+/* Canvas principal del juego (ocupa todo el espacio contenedor) */
 #snakeCanvas {
     display: block;
     width: 100%;
@@ -242,12 +257,12 @@ body {
     background: var(--canvas-bg);
 }
 
-/* Botón de tema flotante (solo escritorio) */
+/* Botón de tema flotante circular en la zona de juego (solo escritorio) */
 .theme-float {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente para legibilidad sobre el canvas */
     border: none;
     border-radius: 50%;
     width: 48px;
@@ -266,8 +281,15 @@ body {
     background: rgba(0, 0, 0, 0.7);
 }
 
-/* ---- Estilos para móvil ---- */
+/* ==========================================================================
+   ---- Estilos de Adaptabilidad Móvil (Pantallas <= 768px de ancho) ----
+   ========================================================================== */
 @media (max-width: 768px) {
+    /* 
+      Decisión de Diseño: Colapsar Layout.
+      El sidebar pasa a estar posicionado de forma absoluta para maximizar el espacio
+      que ocupa el canvas de juego, convirtiendo el minimapa en un pequeño overlay flotante.
+    */
     #app {
         flex-direction: column;
     }
@@ -278,13 +300,14 @@ body {
         left: 10px;
         width: 120px;
         height: 120px;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.5); /* Se vuelve oscuro y semitransparente */
         border-radius: 8px;
         padding: 5px;
         z-index: 20;
         border: none;
     }
 
+    /* Ocultar encabezado del minimapa para ahorrar espacio visual en móviles */
     #sidebar h3 {
         display: none;
     }
@@ -306,7 +329,7 @@ body {
         height: 100%;
     }
 
-    /* Info en esquina superior derecha (se controla desde JS) */
+    /* Panel de estadísticas reubicado en móviles para no solaparse con el minimapa */
     #infoDiv {
         position: absolute;
         top: 10px;
@@ -320,7 +343,12 @@ body {
         pointer-events: none;
     }
 
-    /* Controles en forma de cruz (joystick) */
+    /* 
+      Cruz de Controles Táctiles (D-Pad virtual)
+      - Centrado horizontalmente en la parte inferior del dispositivo.
+      - Posee pointer-events: none para permitir clics que caigan en los bordes, pero sus hijos
+        (botones) tienen pointer-events: auto para capturar los toques táctiles del jugador.
+    */
     #mobileControls {
         position: absolute;
         bottom: 30px;
@@ -330,10 +358,10 @@ body {
         height: 180px;
         z-index: 30;
         pointer-events: none;
-        display: none;
-        /* se muestra en móvil mediante JS */
+        display: none; /* Se activa vía JavaScript únicamente tras iniciar la partida */
     }
 
+    /* Cuadrícula CSS de 3x3 que acomoda la distribución de cruz clásica */
     .ctrl-grid {
         display: grid;
         grid-template-columns: 60px 60px 60px;
@@ -344,12 +372,13 @@ body {
         pointer-events: none;
     }
 
+    /* Estilo del botón de dirección táctil circular */
     .ctrl-grid .ctrl-btn {
-        pointer-events: auto;
+        pointer-events: auto; /* Reactivar capturas de clic */
         width: 60px;
         height: 60px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.3); /* Semitransparente */
         border: 2px solid rgba(255, 255, 255, 0.6);
         color: white;
         font-size: 24px;
@@ -357,15 +386,16 @@ body {
         align-items: center;
         justify-content: center;
         user-select: none;
-        touch-action: manipulation;
-        backdrop-filter: blur(4px);
+        touch-action: manipulation; /* Optimiza el tiempo de retardo del clic en navegadores móviles */
+        backdrop-filter: blur(4px); /* Cristal esmerilado translúcido muy elegante */
     }
 
+    /* Retroalimentación visual al mantener presionado el botón táctil */
     .ctrl-grid .ctrl-btn:active {
         background: rgba(255, 255, 255, 0.6);
     }
 
-    /* Posicionar cada botón en la cuadrícula */
+    /* Posicionamiento específico en filas y columnas del grid */
     .ctrl-grid .ctrl-btn[data-dir="up"] {
         grid-column: 2;
         grid-row: 1;
@@ -390,13 +420,13 @@ body {
         pointer-events: none;
     }
 
-    /* Ocultar botón de tema en móvil durante la partida */
+    /* Ocultar el botón flotante de tema durante el juego en móvil para evitar toques accidentales */
     .theme-float {
         display: none;
     }
 }
 
-/* Ajuste para pantallas muy pequeñas */
+/* --- Ajuste específico para Pantallas Extremadamente Pequeñas --- */
 @media (max-width: 480px) {
     #mobileControls {
         width: 140px;
@@ -417,20 +447,18 @@ body {
     }
 }
 
-/* ... (todo lo anterior se mantiene igual) ... */
-
-/* Pantalla de fin de partida */
+/* --- Pantalla de Fin de Partida (endScreen) --- */
 .end-screen {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.7); /* Oscurece el juego de fondo */
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 300;
+    z-index: 300;               /* Máxima capa de prioridad */
     transition: opacity 0.5s;
 }
 
@@ -439,6 +467,7 @@ body {
     pointer-events: none;
 }
 
+/* Cuadro de diálogo del final de la partida */
 .end-content {
     background: var(--panel);
     color: var(--text);
@@ -482,7 +511,7 @@ body {
     opacity: 0.9;
 }
 
-/* Ajustes responsive para fin de partida */
+/* Responsividad para la tarjeta final de partida en móviles */
 @media (max-width: 480px) {
     .end-content {
         padding: 1.5rem 1.5rem;
