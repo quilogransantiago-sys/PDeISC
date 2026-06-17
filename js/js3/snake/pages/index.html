@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Snake - Base</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <script>
+        const darkMode = localStorage.getItem('darkMode') === 'true';
+        if (darkMode) document.documentElement.classList.add('dark');
+    </script>
+</head>
+
+<body>
+    <!-- Pantalla de inicio -->
+    <div id="startScreen" class="start-screen">
+        <div class="start-content">
+            <h1>🐍 Snake Base</h1>
+            <p>Recoge cristales, haz crecer tu base</p>
+            <button id="playBtn">▶ Play</button>
+            <button id="themeToggleStart" class="theme-btn">🌓 Modo Oscuro</button>
+        </div>
+    </div>
+
+    <!-- Modal de dificultad -->
+    <div id="difficultyModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Selecciona Dificultad</h2>
+            <div class="difficulty-buttons">
+                <button class="diff-btn" data-diff="facil">Fácil</button>
+                <button class="diff-btn" data-diff="normal">Normal</button>
+                <button class="diff-btn" data-diff="dificil">Difícil</button>
+            </div>
+            <button id="closeModalBtn" class="close-modal-btn">✕</button>
+        </div>
+    </div>
+
+    <!-- Pantalla de fin de partida -->
+    <div id="endScreen" class="end-screen hidden">
+        <div class="end-content">
+            <h2>⏱️ ¡Partida terminada!</h2>
+            <div id="endStats">
+                <p>Tamaño final de la base: <strong id="endBaseSize">0x0</strong></p>
+                <p>Crecimiento: <strong id="endGrowth">0</strong> veces</p>
+            </div>
+            <button id="goHomeBtn">🏠 Volver al inicio</button>
+        </div>
+    </div>
+
+    <!-- Contenedor principal del juego -->
+    <div id="gameContainer" style="display:none;">
+        <div id="app">
+            <div id="sidebar">
+                <h3>Mapa</h3>
+                <canvas id="minimapCanvas"></canvas>
+            </div>
+            <div id="gameArea">
+                <canvas id="snakeCanvas"></canvas>
+                <button id="themeToggle" class="theme-float">🌓</button>
+                <!-- Controles móviles -->
+                <div id="mobileControls" style="display:none;">
+                    <div class="ctrl-grid">
+                        <div></div>
+                        <button class="ctrl-btn" data-dir="up">▲</button>
+                        <div></div>
+                        <button class="ctrl-btn" data-dir="left">◀</button>
+                        <div></div>
+                        <button class="ctrl-btn" data-dir="right">▶</button>
+                        <div></div>
+                        <button class="ctrl-btn" data-dir="down">▼</button>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="/scripts/game.js"></script>
+</body>
+
+</html>

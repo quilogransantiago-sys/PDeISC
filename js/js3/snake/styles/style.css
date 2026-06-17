@@ -1,0 +1,498 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg: #f0f2f5;
+    --panel: #ffffff;
+    --text: #1a1a2e;
+    --border: #ccc;
+    --canvas-bg: #ffffff;
+    --grid-color: #d0d0d0;
+    --snake: #2ecc71;
+    --crystal: #f1c40f;
+    --wall: #e74c3c;
+    --base-fill: rgba(46, 204, 113, 0.2);
+    --base-stroke: #2ecc71;
+}
+
+:root.dark {
+    --bg: #0f172a;
+    --panel: #1e293b;
+    --text: #e2e8f0;
+    --border: #334155;
+    --canvas-bg: #0a0f1a;
+    --grid-color: #2c3e50;
+    --snake: #10b981;
+    --crystal: #fbbf24;
+    --wall: #ef4444;
+    --base-fill: rgba(16, 185, 129, 0.2);
+    --base-stroke: #10b981;
+}
+
+body {
+    background: var(--bg);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    transition: background 0.2s;
+}
+
+/* Pantalla de inicio */
+.start-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: opacity 0.5s;
+}
+
+.start-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.start-content {
+    text-align: center;
+    color: var(--text);
+    max-width: 400px;
+    padding: 2rem;
+}
+
+.start-content h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+}
+
+.start-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: var(--text);
+}
+
+#playBtn {
+    background: #2ecc71;
+    border: none;
+    padding: 1rem 3rem;
+    border-radius: 3rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.2s;
+    display: block;
+    margin: 0 auto 1rem auto;
+}
+
+#playBtn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+.theme-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 0.5rem 1.5rem;
+    border-radius: 2rem;
+    font-size: 1rem;
+    color: var(--text);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.theme-btn:hover {
+    background: var(--border);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    transition: opacity 0.3s;
+}
+
+.modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: var(--panel);
+    color: var(--text);
+    padding: 2rem 3rem;
+    border-radius: 2rem;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h2 {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+.difficulty-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.diff-btn {
+    background: var(--snake);
+    border: none;
+    padding: 0.8rem;
+    border-radius: 2rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.diff-btn:hover {
+    transform: scale(1.02);
+    opacity: 0.9;
+}
+
+.close-modal-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text);
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.close-modal-btn:hover {
+    opacity: 0.6;
+}
+
+/* Layout principal */
+#app {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background: var(--bg);
+}
+
+/* Sidebar izquierda (20%) */
+#sidebar {
+    width: 20%;
+    height: 100%;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+    color: var(--text);
+    overflow: hidden;
+}
+
+#sidebar h3 {
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+#minimapCanvas {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: var(--canvas-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    max-height: 60vh;
+}
+
+/* Área del juego (80% derecha) */
+#gameArea {
+    width: 80%;
+    height: 100%;
+    position: relative;
+    background: var(--canvas-bg);
+    overflow: hidden;
+}
+
+#snakeCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--canvas-bg);
+}
+
+/* Botón de tema flotante (solo escritorio) */
+.theme-float {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #fff;
+    transition: background 0.2s;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.theme-float:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+/* ---- Estilos para móvil ---- */
+@media (max-width: 768px) {
+    #app {
+        flex-direction: column;
+    }
+
+    #sidebar {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 120px;
+        height: 120px;
+        background: rgba(0, 0, 0, 0.5);
+        border-radius: 8px;
+        padding: 5px;
+        z-index: 20;
+        border: none;
+    }
+
+    #sidebar h3 {
+        display: none;
+    }
+
+    #minimapCanvas {
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 4px;
+    }
+
+    #gameArea {
+        width: 100%;
+        height: 100%;
+    }
+
+    #snakeCanvas {
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Info en esquina superior derecha (se controla desde JS) */
+    #infoDiv {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        z-index: 15;
+        pointer-events: none;
+    }
+
+    /* Controles en forma de cruz (joystick) */
+    #mobileControls {
+        position: absolute;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 180px;
+        height: 180px;
+        z-index: 30;
+        pointer-events: none;
+        display: none;
+        /* se muestra en móvil mediante JS */
+    }
+
+    .ctrl-grid {
+        display: grid;
+        grid-template-columns: 60px 60px 60px;
+        grid-template-rows: 60px 60px 60px;
+        gap: 5px;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .ctrl-grid .ctrl-btn {
+        pointer-events: auto;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        border: 2px solid rgba(255, 255, 255, 0.6);
+        color: white;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        touch-action: manipulation;
+        backdrop-filter: blur(4px);
+    }
+
+    .ctrl-grid .ctrl-btn:active {
+        background: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Posicionar cada botón en la cuadrícula */
+    .ctrl-grid .ctrl-btn[data-dir="up"] {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .ctrl-grid .ctrl-btn[data-dir="left"] {
+        grid-column: 1;
+        grid-row: 2;
+    }
+
+    .ctrl-grid .ctrl-btn[data-dir="right"] {
+        grid-column: 3;
+        grid-row: 2;
+    }
+
+    .ctrl-grid .ctrl-btn[data-dir="down"] {
+        grid-column: 2;
+        grid-row: 3;
+    }
+
+    .ctrl-grid>div {
+        pointer-events: none;
+    }
+
+    /* Ocultar botón de tema en móvil durante la partida */
+    .theme-float {
+        display: none;
+    }
+}
+
+/* Ajuste para pantallas muy pequeñas */
+@media (max-width: 480px) {
+    #mobileControls {
+        width: 140px;
+        height: 140px;
+        bottom: 20px;
+    }
+
+    .ctrl-grid {
+        grid-template-columns: 46px 46px 46px;
+        grid-template-rows: 46px 46px 46px;
+        gap: 4px;
+    }
+
+    .ctrl-grid .ctrl-btn {
+        width: 46px;
+        height: 46px;
+        font-size: 18px;
+    }
+}
+
+/* ... (todo lo anterior se mantiene igual) ... */
+
+/* Pantalla de fin de partida */
+.end-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 300;
+    transition: opacity 0.5s;
+}
+
+.end-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.end-content {
+    background: var(--panel);
+    color: var(--text);
+    padding: 2rem 3rem;
+    border-radius: 2rem;
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.end-content h2 {
+    font-size: 2.2rem;
+    margin-bottom: 1.5rem;
+}
+
+#endStats {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    line-height: 1.8;
+}
+
+#endStats strong {
+    color: var(--snake);
+}
+
+#goHomeBtn {
+    background: var(--snake);
+    border: none;
+    padding: 0.8rem 2.5rem;
+    border-radius: 3rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#goHomeBtn:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+/* Ajustes responsive para fin de partida */
+@media (max-width: 480px) {
+    .end-content {
+        padding: 1.5rem 1.5rem;
+    }
+
+    .end-content h2 {
+        font-size: 1.8rem;
+    }
+
+    #endStats {
+        font-size: 1rem;
+    }
+}
