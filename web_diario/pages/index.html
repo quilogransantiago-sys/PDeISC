@@ -29,10 +29,23 @@
                 <h1 class="titulo-sitio">Diario Online</h1>
             </div>
 
+            <!-- Navegación horizontal (solo desktop) -->
+            <nav class="nav-escritorio" aria-label="Navegación por temas">
+                <ul class="lista-temas-horizontal">
+                    <li><button data-tema="todas" class="boton-tema boton-tema-h activo">Todas</button></li>
+                    <li><button data-tema="Fútbol" class="boton-tema boton-tema-h">⚽ Fútbol</button></li>
+                    <li><button data-tema="Juegos" class="boton-tema boton-tema-h">🎮 Juegos</button></li>
+                    <li><button data-tema="Política" class="boton-tema boton-tema-h">🏛️ Política</button></li>
+                    <li><button data-tema="Economía" class="boton-tema boton-tema-h">📈 Economía</button></li>
+                </ul>
+            </nav>
+
+            <!-- Menú hamburguesa (solo móvil) -->
             <button id="menuHamburguesa" class="boton-hamburguesa" aria-label="Menú de temas">
                 <span></span><span></span><span></span>
             </button>
 
+            <!-- Menú lateral deslizante (solo móvil) -->
             <nav id="menuLateral" class="menu-lateral">
                 <button id="cerrarMenu" class="cerrar-menu" aria-label="Cerrar menú">✕</button>
                 <ul class="lista-temas">

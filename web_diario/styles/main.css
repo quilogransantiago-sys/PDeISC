@@ -70,7 +70,7 @@ body {
     font-size: 1.8rem;
     font-weight: 700;
     letter-spacing: -0.02em;
-    background: linear-gradient(135deg, var(--color-tema), #8b5cf6);
+    background: white;
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
@@ -222,6 +222,7 @@ body {
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -276,12 +277,50 @@ body {
 
 
 
-/* ===== MENÚ HAMBURGUESA ===== */
+/* ===== NAVEGACIÓN HORIZONTAL (DESKTOP) ===== */
+.nav-escritorio {
+    display: flex;
+    align-items: center;
+}
+
+.lista-temas-horizontal {
+    list-style: none;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.boton-tema-h {
+    width: auto;
+    white-space: nowrap;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border-radius: 0.5rem;
+    background: none;
+    border: none;
+    color: var(--texto-principal);
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s, color 0.2s;
+}
+
+.boton-tema-h:hover {
+    background: var(--color-tema);
+    color: white;
+}
+
+.boton-tema-h.activo {
+    background: var(--color-tema);
+    color: white;
+}
+
+/* ===== MENÚ HAMBURGUESA (móvil) ===== */
 .boton-hamburguesa {
     background: none;
     border: none;
     cursor: pointer;
-    display: flex;
+    display: none;
+    /* oculto en desktop */
     flex-direction: column;
     justify-content: space-between;
     width: 30px;
@@ -426,9 +465,23 @@ body {
     }
 
     .cabecera {
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
+        justify-content: space-between;
+    }
+
+    .boton-modo {
+        order: 1;
+    }
+
+    .grupo-titulo {
+        order: 2;
         text-align: center;
+    }
+
+    .boton-hamburguesa {
+        order: 3;
+        display: flex;
     }
 
     .titulo-sitio {
@@ -448,5 +501,10 @@ body {
         font-size: 1.5rem;
         width: 42px;
         height: 42px;
+    }
+
+    /* Ocultar nav horizontal */
+    .nav-escritorio {
+        display: none;
     }
 }
