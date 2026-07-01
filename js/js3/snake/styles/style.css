@@ -1,50 +1,47 @@
-/* Reset de márgenes y paddings por defecto del navegador */
+/* ================================================================
+   SNAKE - Estilos Dark Gaming Moderno
+   ================================================================ */
+
+/* ---- Reset ---- */
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* Facilita el cálculo del ancho y alto total incluyendo bordes y rellenos */
+    box-sizing: border-box;
 }
 
-/* --- Paleta de Colores y Variables de Diseño (Tema Claro por defecto) --- */
-:root {
-    --bg: #f0f2f5;                  /* Fondo general de la página */
-    --panel: #ffffff;               /* Fondo de tarjetas, menús y sidebar */
-    --text: #1a1a2e;                /* Color del texto principal */
-    --border: #ccc;                 /* Borde gris claro */
-    --canvas-bg: #ffffff;           /* Fondo del área jugable y minimapa */
-    --grid-color: #d0d0d0;          /* Líneas de la cuadrícula */
-    --snake: #2ecc71;               /* Color de la serpiente (verde claro) */
-    --crystal: #f1c40f;             /* Color de cristales estándar (amarillo) */
-    --wall: #e74c3c;                /* Color de los obstáculos temporales (rojo) */
-    --base-fill: rgba(46, 204, 113, 0.2); /* Relleno seguro de la base */
-    --base-stroke: #2ecc71;         /* Borde seguro de la base */
-}
-
-/* --- Paleta de Colores y Variables de Diseño (Tema Oscuro) --- */
+/* ---- Variables de diseño ---- */
+:root,
 :root.dark {
-    --bg: #0f172a;                  /* Azul pizarra muy oscuro para el fondo general */
-    --panel: #1e293b;               /* Azul pizarra oscuro para la sidebar y modales */
-    --text: #e2e8f0;                /* Gris muy claro para alto contraste */
-    --border: #334155;              /* Borde oscuro */
-    --canvas-bg: #0a0f1a;           /* Fondo del área jugable y minimapa en modo oscuro */
-    --grid-color: #2c3e50;          /* Líneas de cuadrícula oscuras */
-    --snake: #10b981;               /* Verde esmeralda para la serpiente */
-    --crystal: #fbbf24;             /* Color ámbar para los cristales */
-    --wall: #ef4444;                /* Obstáculos de color rojo brillante */
-    --base-fill: rgba(16, 185, 129, 0.2);
-    --base-stroke: #10b981;
+    --bg: #0a0a0f;
+    --panel: #14141f;
+    --panel-hover: #1a1a28;
+    --text: #e0e0e0;
+    --text-secondary: #8888aa;
+    --border: #1e1e2e;
+    --accent: #00ff88;
+    --accent-glow: rgba(0, 255, 136, 0.3);
+    --danger: #ff4466;
+    --warning: #ffaa33;
+    --info: #44aaff;
+    --canvas-bg: #0a0a0f;
+    --snake: #00ff88;
+    --wall: #ff4466;
+    --radius: 12px;
+    --radius-lg: 18px;
+    --transition: 0.2s ease;
 }
 
-/* --- Configuración base del cuerpo del documento --- */
+/* ---- Body ---- */
 body {
     background: var(--bg);
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     height: 100vh;
-    overflow: hidden; /* Decisión de Diseño: Desactiva el scroll del navegador para que la app se comporte como un juego nativo */
-    transition: background 0.2s; /* Transición suave al alternar entre modo claro y oscuro */
+    overflow: hidden;
+    touch-action: manipulation;
+    color: var(--text);
 }
 
-/* --- Pantalla de Inicio (startScreen) --- */
+/* ---- Pantalla de Inicio ---- */
 .start-screen {
     position: fixed;
     top: 0;
@@ -53,165 +50,160 @@ body {
     height: 100%;
     background: var(--bg);
     display: flex;
-    align-items: center;      /* Centrado vertical de la tarjeta de bienvenida */
-    justify-content: center;    /* Centrado horizontal de la tarjeta de bienvenida */
-    z-index: 100;               /* Superpone el panel sobre el área del juego */
-    transition: opacity 0.5s;   /* Animación de desvanecimiento (fade-out) cuando comienza el juego */
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    transition: opacity 0.4s;
 }
-
-/* Clase de utilidad para desvanecer y desactivar interacciones con la pantalla de inicio */
 .start-screen.hidden {
     opacity: 0;
     pointer-events: none;
 }
-
-/* Contenido interno del panel de bienvenida */
 .start-content {
     text-align: center;
-    color: var(--text);
-    max-width: 400px;
+    max-width: 420px;
     padding: 2rem;
 }
-
 .start-content h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    color: var(--text);
-}
-
-.start-content p {
-    font-size: 1.2rem;
+    font-size: 4rem;
+    font-weight: 900;
+    letter-spacing: 6px;
+    color: var(--accent);
+    text-shadow:
+        0 0 40px var(--accent-glow),
+        0 0 80px var(--accent-glow);
     margin-bottom: 2rem;
-    color: var(--text);
 }
 
-/* Botón principal de juego */
+/* Botón PLAY */
 #playBtn {
-    background: #2ecc71;
+    background: linear-gradient(135deg, var(--accent), #00cc66);
     border: none;
-    padding: 1rem 3rem;
+    padding: 1rem 4rem;
     border-radius: 3rem;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #fff;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #000;
     cursor: pointer;
-    transition: 0.2s;
+    transition: var(--transition);
     display: block;
     margin: 0 auto 1rem auto;
+    box-shadow: 0 0 25px var(--accent-glow);
 }
-
-/* Efecto hover con micro-animación para una sensación interactiva más premium */
 #playBtn:hover {
     transform: scale(1.05);
-    opacity: 0.9;
+    box-shadow: 0 0 40px var(--accent-glow);
 }
 
-/* Botón de cambio de tema */
+/* Botón de tema */
 .theme-btn {
     background: transparent;
     border: 1px solid var(--border);
     padding: 0.5rem 1.5rem;
     border-radius: 2rem;
-    font-size: 1rem;
-    color: var(--text);
+    font-size: 0.9rem;
+    color: var(--text-secondary);
     cursor: pointer;
-    transition: 0.2s;
+    transition: var(--transition);
 }
-
 .theme-btn:hover {
-    background: var(--border);
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
-/* --- Fondo oscurecido para modales (Overlay) --- */
+/* IP del servidor */
+.server-ip {
+    margin-top: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-family: monospace;
+}
+
+/* ---- Modales (overlay oscuro) ---- */
 .modal {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6); /* Fondo negro translúcido para centrar la atención en el modal */
+    background: rgba(0, 0, 0, 0.75);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 200;
     transition: opacity 0.3s;
 }
-
 .modal.hidden {
     opacity: 0;
     pointer-events: none;
 }
-
-/* Contenedor del cuadro de diálogo del modal */
 .modal-content {
     background: var(--panel);
     color: var(--text);
-    padding: 2rem 3rem;
-    border-radius: 2rem;
+    padding: 2rem 2.5rem;
+    border-radius: var(--radius-lg);
     max-width: 400px;
     width: 90%;
     text-align: center;
     position: relative;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3); /* Sombra difusa para otorgar profundidad (diseño de capas) */
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
-
 .modal-content h2 {
-    margin-bottom: 1.5rem;
-    font-size: 2rem;
+    margin-bottom: 1.2rem;
+    font-size: 1.6rem;
+    color: var(--accent);
 }
 
-/* Contenedor flexible en columna para los botones de dificultad */
+/* ---- Botones de selección (dificultad, jugadores, formularios) ---- */
 .difficulty-buttons {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
-    margin-bottom: 1.5rem;
+    gap: 0.6rem;
+    margin-bottom: 1.2rem;
 }
-
-/* Botón individual de dificultad */
 .diff-btn {
-    background: var(--snake);
-    border: none;
-    padding: 0.8rem;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 0.7rem;
     border-radius: 2rem;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
     cursor: pointer;
-    transition: 0.2s;
+    transition: var(--transition);
 }
-
 .diff-btn:hover {
-    transform: scale(1.02);
-    opacity: 0.9;
+    border-color: var(--accent);
+    color: var(--accent);
+}
+.diff-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
 }
 
-/* Botón de cierre en esquina superior derecha de los modales */
+/* Botón cerrar modal */
 .close-modal-btn {
     position: absolute;
     top: 10px;
     right: 15px;
     background: transparent;
     border: none;
-    font-size: 1.5rem;
-    color: var(--text);
+    font-size: 1.3rem;
+    color: var(--text-secondary);
     cursor: pointer;
-    padding: 0 5px;
 }
-
 .close-modal-btn:hover {
-    opacity: 0.6;
+    color: var(--danger);
 }
 
-/* --- Layout Principal de la Aplicación --- */
+/* ---- Layout del juego (canvas + sidebar) ---- */
 #app {
     display: flex;
     width: 100vw;
     height: 100vh;
-    background: var(--bg);
 }
-
-/* --- Sidebar Lateral Izquierda (20% del ancho) --- */
 #sidebar {
     width: 20%;
     height: 100%;
@@ -224,23 +216,21 @@ body {
     color: var(--text);
     overflow: hidden;
 }
-
 #sidebar h3 {
     margin-bottom: 0.5rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 2px;
 }
-
-/* Canvas del minimapa proporcional (1:1) */
 #minimapCanvas {
     width: 100%;
-    aspect-ratio: 1 / 1; /* Mantiene la relación de aspecto cuadrada */
+    aspect-ratio: 1 / 1;
     background: var(--canvas-bg);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: var(--radius);
     max-height: 60vh;
 }
-
-/* --- Área de Juego Principal (80% del ancho) --- */
 #gameArea {
     width: 80%;
     height: 100%;
@@ -248,280 +238,671 @@ body {
     background: var(--canvas-bg);
     overflow: hidden;
 }
-
-/* Canvas principal del juego (ocupa todo el espacio contenedor) */
 #snakeCanvas {
     display: block;
     width: 100%;
     height: 100%;
-    background: var(--canvas-bg);
 }
 
-/* Botón de tema flotante circular en la zona de juego (solo escritorio) */
+/* Botón de tema flotante (escritorio) */
 .theme-float {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: rgba(0, 0, 0, 0.5); /* Fondo oscuro semitransparente para legibilidad sobre el canvas */
-    border: none;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid var(--border);
     border-radius: 50%;
-    width: 48px;
-    height: 48px;
-    font-size: 1.5rem;
+    width: 42px;
+    height: 42px;
+    font-size: 1.2rem;
     cursor: pointer;
-    color: #fff;
-    transition: background 0.2s;
+    color: var(--text-secondary);
+    transition: var(--transition);
     z-index: 10;
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
 .theme-float:hover {
-    background: rgba(0, 0, 0, 0.7);
+    border-color: var(--accent);
+    color: var(--accent);
 }
 
-/* ==========================================================================
-   ---- Estilos de Adaptabilidad Móvil (Pantallas <= 768px de ancho) ----
-   ========================================================================== */
-@media (max-width: 768px) {
-    /* 
-      Decisión de Diseño: Colapsar Layout.
-      El sidebar pasa a estar posicionado de forma absoluta para maximizar el espacio
-      que ocupa el canvas de juego, convirtiendo el minimapa en un pequeño overlay flotante.
-    */
-    #app {
-        flex-direction: column;
-    }
-
-    #sidebar {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        width: 120px;
-        height: 120px;
-        background: rgba(0, 0, 0, 0.5); /* Se vuelve oscuro y semitransparente */
-        border-radius: 8px;
-        padding: 5px;
-        z-index: 20;
-        border: none;
-    }
-
-    /* Ocultar encabezado del minimapa para ahorrar espacio visual en móviles */
-    #sidebar h3 {
-        display: none;
-    }
-
-    #minimapCanvas {
-        width: 100%;
-        height: 100%;
-        border: none;
-        border-radius: 4px;
-    }
-
-    #gameArea {
-        width: 100%;
-        height: 100%;
-    }
-
-    #snakeCanvas {
-        width: 100%;
-        height: 100%;
-    }
-
-    /* Panel de estadísticas reubicado en móviles para no solaparse con el minimapa */
-    #infoDiv {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(0, 0, 0, 0.6);
-        color: white;
-        padding: 5px 10px;
-        border-radius: 6px;
-        font-size: 12px;
-        z-index: 15;
-        pointer-events: none;
-    }
-
-    /* 
-      Cruz de Controles Táctiles (D-Pad virtual)
-      - Centrado horizontalmente en la parte inferior del dispositivo.
-      - Posee pointer-events: none para permitir clics que caigan en los bordes, pero sus hijos
-        (botones) tienen pointer-events: auto para capturar los toques táctiles del jugador.
-    */
-    #mobileControls {
-        position: absolute;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 180px;
-        height: 180px;
-        z-index: 30;
-        pointer-events: none;
-        display: none; /* Se activa vía JavaScript únicamente tras iniciar la partida */
-    }
-
-    /* Cuadrícula CSS de 3x3 que acomoda la distribución de cruz clásica */
-    .ctrl-grid {
-        display: grid;
-        grid-template-columns: 60px 60px 60px;
-        grid-template-rows: 60px 60px 60px;
-        gap: 5px;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-    }
-
-    /* Estilo del botón de dirección táctil circular */
-    .ctrl-grid .ctrl-btn {
-        pointer-events: auto; /* Reactivar capturas de clic */
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.3); /* Semitransparente */
-        border: 2px solid rgba(255, 255, 255, 0.6);
-        color: white;
-        font-size: 24px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        user-select: none;
-        touch-action: manipulation; /* Optimiza el tiempo de retardo del clic en navegadores móviles */
-        backdrop-filter: blur(4px); /* Cristal esmerilado translúcido muy elegante */
-    }
-
-    /* Retroalimentación visual al mantener presionado el botón táctil */
-    .ctrl-grid .ctrl-btn:active {
-        background: rgba(255, 255, 255, 0.6);
-    }
-
-    /* Posicionamiento específico en filas y columnas del grid */
-    .ctrl-grid .ctrl-btn[data-dir="up"] {
-        grid-column: 2;
-        grid-row: 1;
-    }
-
-    .ctrl-grid .ctrl-btn[data-dir="left"] {
-        grid-column: 1;
-        grid-row: 2;
-    }
-
-    .ctrl-grid .ctrl-btn[data-dir="right"] {
-        grid-column: 3;
-        grid-row: 2;
-    }
-
-    .ctrl-grid .ctrl-btn[data-dir="down"] {
-        grid-column: 2;
-        grid-row: 3;
-    }
-
-    .ctrl-grid>div {
-        pointer-events: none;
-    }
-
-    /* Ocultar el botón flotante de tema durante el juego en móvil para evitar toques accidentales */
-    .theme-float {
-        display: none;
-    }
+/* ---- Pantalla de Salas ---- */
+.room-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    z-index: 150;
+    transition: opacity 0.3s;
+    overflow-y: auto;
+    padding: 2rem 1rem;
+}
+.room-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.room-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 1rem;
+    flex-shrink: 0;
+}
+.room-list-header h2 {
+    font-size: 1.6rem;
+    color: var(--text);
+}
+.create-room-fab {
+    background: var(--accent);
+    border: none;
+    padding: 0.7rem 2rem;
+    border-radius: 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #000;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+.create-room-fab:hover {
+    transform: scale(1.05);
+}
+.room-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+.room-list-full {
+    width: 100%;
+    max-width: 800px;
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.2rem;
+}
+.room-empty {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin: auto;
+    text-align: center;
+    padding: 3rem 0;
 }
 
-/* --- Ajuste específico para Pantallas Extremadamente Pequeñas --- */
-@media (max-width: 480px) {
-    #mobileControls {
-        width: 140px;
-        height: 140px;
-        bottom: 20px;
-    }
-
-    .ctrl-grid {
-        grid-template-columns: 46px 46px 46px;
-        grid-template-rows: 46px 46px 46px;
-        gap: 4px;
-    }
-
-    .ctrl-grid .ctrl-btn {
-        width: 46px;
-        height: 46px;
-        font-size: 18px;
-    }
+/* Tarjeta de sala */
+.room-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.8rem 1.2rem;
+    flex-shrink: 0;
+    transition: var(--transition);
+    gap: 1rem;
+}
+.room-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 15px var(--accent-glow);
+}
+.room-card-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    align-items: center;
+}
+.room-card-diff {
+    font-weight: 700;
+    font-size: 0.85rem;
+    background: rgba(0, 255, 136, 0.1);
+    padding: 0.2rem 0.7rem;
+    border-radius: 1rem;
+}
+.room-card-type {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+.room-card-players {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+}
+.room-card-join {
+    background: transparent;
+    border: 1px solid var(--accent);
+    padding: 0.4rem 1.5rem;
+    border-radius: 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--accent);
+    cursor: pointer;
+    transition: var(--transition);
+    flex-shrink: 0;
+}
+.room-card-join:hover {
+    background: var(--accent);
+    color: #000;
 }
 
-/* --- Pantalla de Fin de Partida (endScreen) --- */
+/* ---- Formulario Crear Sala ---- */
+.create-room-container {
+    background: var(--panel);
+    color: var(--text);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+}
+.create-room-container h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1.2rem;
+    text-align: center;
+    color: var(--accent);
+}
+.back-btn-bottom {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 0.6rem;
+    border-radius: 2rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 100%;
+    margin-top: 0.8rem;
+}
+.back-btn-bottom:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+.fab-mobile {
+    display: none;
+    position: fixed;
+    bottom: 30px;
+    right: 25px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    color: #000;
+    font-size: 1.8rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 20px var(--accent-glow);
+    z-index: 160;
+    transition: var(--transition);
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+.fab-mobile:hover {
+    transform: scale(1.1);
+}
+
+/* Grupos de formulario */
+.form-group {
+    margin-bottom: 1rem;
+}
+.form-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Toggle pública/privada */
+.toggle-group {
+    display: flex;
+    gap: 0.5rem;
+}
+.toggle-btn {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.9rem;
+    color: var(--text);
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+}
+.toggle-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+}
+.toggle-btn:hover {
+    border-color: var(--accent);
+}
+
+/* Botón crear sala */
+.create-room-btn {
+    background: var(--accent);
+    border: none;
+    padding: 0.8rem;
+    border-radius: 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #000;
+    cursor: pointer;
+    transition: var(--transition);
+    width: 100%;
+    margin-top: 0.4rem;
+}
+.create-room-btn:disabled {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+    opacity: 1;
+}
+.create-room-btn:not(:disabled):hover {
+    transform: scale(1.02);
+}
+#createRoomScreen .diff-btn.active {
+    background: var(--accent);
+    color: #000;
+}
+
+/* Input de código */
+.code-input {
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 1.2rem;
+    text-align: center;
+    letter-spacing: 4px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    margin-bottom: 0.8rem;
+    text-transform: uppercase;
+}
+.code-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* ---- Lobby (sala de espera) ---- */
+.lobby-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 250;
+    transition: opacity 0.3s;
+}
+.lobby-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+.lobby-content {
+    background: var(--panel);
+    color: var(--text);
+    padding: 2rem 2.5rem;
+    border-radius: var(--radius-lg);
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+.lobby-content h2 {
+    font-size: 1.4rem;
+    margin-bottom: 1.2rem;
+    color: var(--accent);
+}
+.room-code-section {
+    background: var(--bg);
+    border: 1px dashed var(--accent);
+    border-radius: var(--radius);
+    padding: 0.8rem;
+    margin-bottom: 1.2rem;
+}
+.room-code-section p {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+.room-code {
+    font-family: 'Courier New', monospace;
+    font-size: 2.2rem;
+    font-weight: bold;
+    letter-spacing: 6px;
+    color: var(--accent);
+    background: rgba(0, 255, 136, 0.05);
+    padding: 0.2rem 0.8rem;
+    border-radius: 0.5rem;
+    display: inline-block;
+}
+.room-code-hint {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 0.3rem;
+}
+.lobby-players {
+    font-size: 1.8rem;
+    font-weight: bold;
+    margin-bottom: 1.2rem;
+}
+.lobby-players span:first-child {
+    color: var(--accent);
+    font-size: 2.2rem;
+}
+.lobby-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+.start-game-btn {
+    background: var(--accent);
+    border: none;
+    padding: 0.8rem;
+    border-radius: 2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #000;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.start-game-btn:disabled {
+    background: #333;
+    color: #666;
+    cursor: not-allowed;
+    opacity: 1;
+}
+.start-game-btn:not(:disabled):hover {
+    transform: scale(1.02);
+}
+.cancel-lobby-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 0.6rem;
+    border-radius: 2rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition);
+}
+.cancel-lobby-btn:hover {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+/* ---- Pantalla de Fin de Partida ---- */
 .end-screen {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.7); /* Oscurece el juego de fondo */
+    background: rgba(0, 0, 0, 0.8);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 300;               /* Máxima capa de prioridad */
-    transition: opacity 0.5s;
+    z-index: 300;
+    transition: opacity 0.4s;
 }
-
 .end-screen.hidden {
     opacity: 0;
     pointer-events: none;
 }
-
-/* Cuadro de diálogo del final de la partida */
 .end-content {
     background: var(--panel);
     color: var(--text);
-    padding: 2rem 3rem;
-    border-radius: 2rem;
-    max-width: 450px;
+    padding: 2rem 2.5rem;
+    border-radius: var(--radius-lg);
+    max-width: 480px;
     width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
     text-align: center;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
 }
-
 .end-content h2 {
-    font-size: 2.2rem;
-    margin-bottom: 1.5rem;
+    font-size: 1.6rem;
+    margin-bottom: 1.2rem;
+    color: var(--accent);
 }
-
-#endStats {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
-    line-height: 1.8;
-}
-
-#endStats strong {
-    color: var(--snake);
-}
-
 #goHomeBtn {
-    background: var(--snake);
+    background: var(--accent);
     border: none;
-    padding: 0.8rem 2.5rem;
-    border-radius: 3rem;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #fff;
+    padding: 0.7rem 2.5rem;
+    border-radius: 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #000;
     cursor: pointer;
-    transition: 0.2s;
+    transition: var(--transition);
+    margin-top: 0.5rem;
 }
-
 #goHomeBtn:hover {
     transform: scale(1.05);
-    opacity: 0.9;
 }
 
-/* Responsividad para la tarjeta final de partida en móviles */
+/* ================================================================
+   ADAPTABILIDAD MÓVIL (Pantallas <= 768px de ancho)
+   ================================================================ */
+@media (max-width: 768px) {
+    #app {
+        flex-direction: column;
+    }
+    #sidebar {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 100px;
+        height: 100px;
+        background: rgba(10, 10, 15, 0.7);
+        border-radius: var(--radius);
+        padding: 4px;
+        z-index: 20;
+        border: 1px solid var(--border);
+    }
+    #sidebar h3 {
+        display: none;
+    }
+    #minimapCanvas {
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 6px;
+    }
+    #gameArea {
+        width: 100%;
+        height: 100%;
+    }
+    #snakeCanvas {
+        width: 100%;
+        height: 100%;
+    }
+    #infoDiv {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        color: var(--accent);
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 11px;
+        z-index: 15;
+        pointer-events: none;
+        border: 1px solid var(--border);
+    }
+
+    /* ---- Controles táctiles (D-Pad) ---- */
+    #mobileControls {
+        position: absolute;
+        bottom: 90px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        height: 300px;
+        z-index: 30;
+        pointer-events: none;
+        display: none;
+    }
+    .ctrl-grid {
+        display: grid;
+        grid-template-columns: 95px 95px 95px;
+        grid-template-rows: 95px 95px 95px;
+        gap: 10px;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+    .ctrl-grid .ctrl-btn {
+        pointer-events: auto;
+        width: 95px;
+        height: 95px;
+        border-radius: 20px;
+        background: rgba(0, 255, 136, 0.1);
+        border: 2px solid rgba(0, 255, 136, 0.3);
+        color: var(--accent);
+        font-size: 42px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        user-select: none;
+        touch-action: manipulation;
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+    }
+    .ctrl-grid .ctrl-btn:active {
+        background: rgba(0, 255, 136, 0.4);
+        border-color: var(--accent);
+        transform: scale(0.92);
+    }
+
+    /* Posiciones de cada botón en la grilla */
+    .ctrl-grid .ctrl-btn[data-dir="up"] {
+        grid-column: 2;
+        grid-row: 1;
+    }
+    .ctrl-grid .ctrl-btn[data-dir="left"] {
+        grid-column: 1;
+        grid-row: 2;
+    }
+    .ctrl-grid .ctrl-btn[data-dir="right"] {
+        grid-column: 3;
+        grid-row: 2;
+    }
+    .ctrl-grid .ctrl-btn[data-dir="down"] {
+        grid-column: 2;
+        grid-row: 3;
+    }
+    .ctrl-grid > div {
+        pointer-events: none;
+    }
+    .theme-float {
+        display: none;
+    }
+
+    /* Modo horizontal (landscape) */
+    @media (max-height: 500px) {
+        #mobileControls {
+            position: fixed;
+            bottom: 8px;
+            left: 8px;
+            right: auto;
+            transform: none;
+            width: 90px;
+            height: 90px;
+        }
+        .ctrl-grid {
+            grid-template-columns: 28px 28px 28px;
+            grid-template-rows: 28px 28px 28px;
+            gap: 3px;
+        }
+        .ctrl-grid .ctrl-btn {
+            width: 28px;
+            height: 28px;
+            font-size: 13px;
+            border-radius: 8px;
+        }
+    }
+
+    /* Lista de salas responsive */
+    .room-screen {
+        padding: 1rem 0.6rem;
+    }
+    .room-list-header {
+        flex-direction: column;
+        gap: 0.6rem;
+        align-items: stretch;
+    }
+    .room-list-header h2 {
+        font-size: 1.2rem;
+        text-align: center;
+    }
+    .fab-mobile {
+        display: flex;
+    }
+    .create-room-fab {
+        display: none;
+    }
+    .room-list-full {
+        max-width: 100%;
+    }
+    .room-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.7rem 1rem;
+    }
+    .room-card-join {
+        width: 100%;
+        text-align: center;
+    }
+    .create-room-container {
+        padding: 1.2rem;
+    }
+}
+
+/* Pantallas muy chicas */
 @media (max-width: 480px) {
+    #mobileControls {
+        width: 200px;
+        height: 200px;
+        bottom: 80px;
+    }
+    .ctrl-grid {
+        grid-template-columns: 62px 62px 62px;
+        grid-template-rows: 62px 62px 62px;
+        gap: 6px;
+    }
+    .ctrl-grid .ctrl-btn {
+        width: 62px;
+        height: 62px;
+        font-size: 26px;
+    }
     .end-content {
-        padding: 1.5rem 1.5rem;
-    }
-
-    .end-content h2 {
-        font-size: 1.8rem;
-    }
-
-    #endStats {
-        font-size: 1rem;
+        padding: 1.2rem;
     }
 }

@@ -1,77 +1,85 @@
 /**
- * @file config.js
- * @description Módulo de configuración centralizada que define todas las constantes físicas,
- * de temporización y de comportamiento para el juego de Snake.
+ * config.js - Constantes y configuración del juego Snake Multijugador.
  */
 
-// Tamaño de cada celda del tablero de juego en píxeles. Define la escala visual en el canvas.
-export const CELL_SIZE = 15;
+// Tamaño de cada celda en píxeles (escala visual del canvas)
+export const TAMANIO_CELDA = 25;
 
-// Intervalo de actualización inicial del juego en milisegundos (un valor menor hace que el juego vaya más rápido).
-export const INIT_SPEED_MS = 135;
+// Intervalo inicial de movimiento en ms (menor = más rápido)
+export const VELOCIDAD_INICIAL_MS = 85;
 
-// Límite máximo para el intervalo de actualización de la serpiente (400ms).
-// Evita que la serpiente se mueva ridículamente lento tras recolectar muchos cristales.
-export const MAX_SPEED_MS = 400;
+// Máxima ralentización posible al acumular cristales
+export const VELOCIDAD_MAXIMA_MS = 350;
 
-// Definición de los vectores de dirección 2D del juego.
-// UP: disminuye y (arriba), DOWN: aumenta y (abajo), LEFT: disminuye x (izquierda), RIGHT: aumenta x (derecha).
-export const DIRS = {
-   UP: { x: 0, y: -1 },
-   DOWN: { x: 0, y: 1 },
-   LEFT: { x: -1, y: 0 },
-   RIGHT: { x: 1, y: 0 }
+// Vectores de dirección 2D
+export const DIRECCIONES = {
+   ARRIBA: { x: 0, y: -1 },
+   ABAJO: { x: 0, y: 1 },
+   IZQUIERDA: { x: -1, y: 0 },
+   DERECHA: { x: 1, y: 0 }
 };
 
-// Tamaño inicial en celdas (lado) de la base cuadrada segura de la serpiente.
-export const BASE_START_SIZE = 20;
+// Tamaño inicial de la base (lado en celdas)
+export const TAMANIO_BASE_INICIAL = 20;
 
-// Cantidad de celdas que crece la base (ancho y alto) cada vez que se canjean suficientes puntos.
-export const BASE_GROWTH = 2;
+// Celdas que crece la base por cada depósito exitoso
+export const CRECIMIENTO_BASE = 2;
 
-// Duración total de cada partida en segundos (300 segundos = 5 minutos).
-export const TIMER_DURATION = 300;
+// Duración de la partida en segundos (5 minutos)
+export const DURACION_PARTIDA = 180;
 
-// Margen de celdas alrededor de la base donde está prohibido generar cristales u obstáculos.
-// Esto garantiza que el jugador tenga espacio libre al salir y entrar de su base.
-export const BASE_EXCLUSION_MARGIN = 3;
+// Margen alrededor de bases donde no se generan cristales ni obstáculos
+export const MARGEN_EXCLUSION_BASE = 3;
 
-// Distancia mínima de Manhattan (en celdas) permitida entre cristales para evitar que se solapen o amontonen.
-export const MIN_DIST = 2;
+// Distancia mínima entre cristales para evitar amontonamiento
+export const DISTANCIA_MINIMA = 2;
 
-/**
- * Configuración de Cristales por Dificultad
- * - value: Puntos que otorga el cristal al ser recolectado y depositado.
- * - color: Color con el que se dibuja el cristal (en modo oscuro y claro).
- * - prob: Probabilidad de aparición del cristal.
- * - speedDelay: Retardo en milisegundos que se suma al intervalo tick actual (`currentSpeed`).
- *   @why Aumentar el retardo ralentiza la velocidad de la serpiente. Esta es una decisión de diseño
- *   para contrarrestar el aumento de longitud de la serpiente, facilitando el control a medida que crece.
- */
-
-// Modo fácil: Un solo tipo de cristal común que no ralentiza la serpiente.
-export const CRYSTAL_TYPES_EASY = [
-   { value: 1, color: '#aaaaaa', prob: 1, speedDelay: 0 }
+// Tipos de cristal por dificultad: { valor, color, prob, demoraVelocidad }
+export const TIPOS_CRISTAL_FACIL = [{ valor: 1, color: '#aaaaaa', prob: 1, demoraVelocidad: 0 }];
+export const TIPOS_CRISTAL_NORMAL = [
+   { valor: 1, color: '#aaaaaa', prob: 0.8, demoraVelocidad: 2 },
+   { valor: 5, color: '#ffffff', prob: 0.2, demoraVelocidad: 10 }
+];
+export const TIPOS_CRISTAL_DIFICIL = [
+   { valor: 1, color: '#aaaaaa', prob: 0.8, demoraVelocidad: 2 },
+   { valor: 5, color: '#ffffff', prob: 0.18, demoraVelocidad: 10 },
+   { valor: 15, color: '#ffd700', prob: 0.02, demoraVelocidad: 30 }
 ];
 
-// Modo normal: Cristales normales de valor 1, y cristales raros de valor 5 que ralentizan un poco (+10ms).
-export const CRYSTAL_TYPES_NORMAL = [
-   { value: 1, color: '#aaaaaa', prob: 0.8, speedDelay: 2 },
-   { value: 5, color: '#ffffff', prob: 0.2, speedDelay: 10 }
-];
+export const TIPOS_CRISTAL = TIPOS_CRISTAL_NORMAL;
+export const CANTIDAD_PAREDES = 100;
+export const CICLO_PAREDES_MS = 3800;
+export const PARPADEO_PAREDES_MS = 1500;
 
-// Modo difícil: Incluye cristales legendarios dorados de valor 15 que otorgan gran ralentización (+30ms) pero tienen baja probabilidad.
-export const CRYSTAL_TYPES_HARD = [
-   { value: 1, color: '#aaaaaa', prob: 0.8, speedDelay: 2 },
-   { value: 5, color: '#ffffff', prob: 0.18, speedDelay: 10 },
-   { value: 15, color: '#ffd700', prob: 0.02, speedDelay: 30 }
-];
+// Colores por jugador: cabeza (oscura), cuerpo, cuerpo claro, base, borde base
+export const COLORES_JUGADOR_CABEZA = ['#1a5e32', '#a93226', '#1a5276', '#b9770e'];
+export const COLORES_JUGADOR = ['#27ae60', '#e74c3c', '#3498db', '#f39c12'];
+export const COLORES_JUGADOR_CLARO = ['#2ecc71', '#e74c3c', '#5dade2', '#f5b041'];
+export const COLORES_BASE_JUGADOR = ['rgba(46,204,113,0.2)', 'rgba(231,76,60,0.2)', 'rgba(52,152,219,0.2)', 'rgba(243,156,18,0.2)'];
+export const BORDES_BASE_JUGADOR = ['#2ecc71', '#e74c3c', '#3498db', '#f39c12'];
 
-// Tipo de cristal activo por defecto (será sobreescrito dinámicamente al seleccionar dificultad).
-export const CRYSTAL_TYPES = CRYSTAL_TYPES_NORMAL;
+// Devuelve la posición (x, y) de la base según el índice del jugador (0-3 = 4 esquinas)
+export function obtenerPosicionBase(indiceJugador, tamanioMapa, tamanioBase) {
+   const margen = 0;
+   switch (indiceJugador) {
+      case 0: return { x: margen, y: margen };
+      case 1: return { x: tamanioMapa - tamanioBase - margen, y: margen };
+      case 2: return { x: margen, y: tamanioMapa - tamanioBase - margen };
+      case 3: return { x: tamanioMapa - tamanioBase - margen, y: tamanioMapa - tamanioBase - margen };
+      default: return { x: margen, y: margen };
+   }
+}
 
-// Cantidad máxima de paredes destructibles activas en el mapa en el modo difícil.
-export const WALL_COUNT = 50;
+// Dirección inicial al spawnear, según la esquina donde nace
+export function obtenerDireccionSpawn(indiceJugador) {
+   switch (indiceJugador) {
+      case 0: return DIRECCIONES.DERECHA;   // sup-izq
+      case 1: return DIRECCIONES.IZQUIERDA; // sup-der
+      case 2: return DIRECCIONES.DERECHA;   // inf-izq
+      case 3: return DIRECCIONES.IZQUIERDA; // inf-der
+      default: return DIRECCIONES.DERECHA;
+   }
+}
 
-// Duración en segundos de cada pared antes de desaparecer y reaparecer en una nueva celda libre del tablero.
-export const WALL_DURATION = 5;
+// Cada cuántos ms corre el game loop del servidor (80ms = 12.5 tick/seg)
+export const TICK_SERVIDOR_MS = 150;

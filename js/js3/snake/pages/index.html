@@ -9,9 +9,40 @@
       hagan zoom automático al pulsar repetidamente y con rapidez los controles de dirección táctiles.
     -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Snake - Base</title>
+    <title>Snake</title>
     <!-- Estilos del juego (hoja de estilos principal) -->
     <link rel="stylesheet" href="/styles/style.css">
+    <!-- Estilos inline para ranking, conteo, errores e historial -->
+    <style>
+        .code-error{color:#ff4466;font-size:0.8rem;margin-bottom:0.4rem;}
+        .code-error.hidden{display:none;}
+        .countdown-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:400;transition:opacity 0.2s;}
+        .countdown-screen.hidden{opacity:0;pointer-events:none;}
+        .countdown-screen span{font-size:10rem;font-weight:900;color:#00ff88;text-shadow:0 0 50px rgba(0,255,136,0.5);animation:pulse 1s infinite;font-family:Arial,sans-serif;}
+        @keyframes pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.15);opacity:0.7;}}
+        .ranking-card{display:flex;align-items:center;gap:0.6rem;padding:0.7rem 0.9rem;margin-bottom:0.4rem;background:#14141f;border:1px solid #1e1e2e;border-radius:10px;}
+        .ranking-card-pos{flex-shrink:0;width:38px;text-align:center;}
+        .ranking-medal{font-size:1.6rem;}
+        .ranking-num{font-size:1rem;font-weight:800;color:#8888aa;}
+        .ranking-card-info{flex:1;display:flex;flex-direction:column;gap:0.2rem;}
+        .ranking-card-name{font-weight:700;}
+        .ranking-bar-bg{width:100%;height:5px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+        .ranking-bar-fill{height:100%;border-radius:3px;transition:width 0.5s;}
+        .ranking-card-score{font-size:0.75rem;color:#8888aa;}
+        .ranking-footer{text-align:center;margin-top:0.8rem;font-size:0.8rem;color:#8888aa;}
+        .abandono-card{display:flex;flex-direction:column;align-items:center;gap:0.5rem;padding:2rem;text-align:center;}
+        .abandono-icon{font-size:2.5rem;}
+        .abandono-texto{font-size:1rem;font-weight:600;color:#e0e0e0;}
+        .historial-vacio{text-align:center;padding:2rem;color:#8888aa;font-size:1rem;}
+        .historial-card{background:#14141f;border:1px solid #1e1e2e;border-radius:10px;padding:0.7rem 0.9rem;margin-bottom:0.5rem;}
+        .historial-fecha{font-weight:700;font-size:0.75rem;color:#00ff88;margin-bottom:0.4rem;}
+        .historial-podio{display:flex;flex-direction:column;gap:0.15rem;}
+        .historial-jugador{display:flex;align-items:center;gap:0.4rem;padding:0.1rem 0;}
+        .historial-medalla{font-size:1rem;width:22px;}
+        .historial-nombre{font-weight:700;font-size:0.85rem;flex:1;}
+        .historial-puntaje{font-size:0.75rem;color:#8888aa;}
+        .historial-resto{font-size:0.75rem;color:#8888aa;padding-left:1.8rem;}
+    </style>
     <script>
         /**
          * Decisión de Diseño: Script inline bloqueante.
@@ -26,51 +57,117 @@
 </head>
 
 <body>
-    <!-- 
-      Pantalla de Inicio (startScreen)
-      - Contiene la bienvenida al juego, el botón de Play y la opción de cambiar de tema en la landing.
-      - Superpuesta a pantalla completa a través de position: fixed y z-index.
-    -->
     <div id="startScreen" class="start-screen">
         <div class="start-content">
-            <h1>🐍 Snake Base</h1>
-            <p>Recoge cristales, haz crecer tu base</p>
+            <h1>Snake</h1>
             <button id="playBtn">▶ Play</button>
             <button id="themeToggleStart" class="theme-btn">🌓 Modo Oscuro</button>
+            <button id="historialBtn" class="theme-btn">🏆 Historial</button>
+            <p id="serverIpDisplay" class="server-ip"></p>
         </div>
     </div>
 
-    <!-- 
-      Modal de Selección de Dificultad (difficultyModal)
-      - Se muestra al pulsar "Play".
-      - Permite elegir entre Fácil, Normal y Difícil.
-      - Utiliza la clase 'hidden' para controlar su visibilidad con transiciones de opacidad.
-    -->
-    <div id="difficultyModal" class="modal hidden">
-        <div class="modal-content">
-            <h2>Selecciona Dificultad</h2>
-            <div class="difficulty-buttons">
-                <button class="diff-btn" data-diff="facil">Fácil</button>
-                <button class="diff-btn" data-diff="normal">Normal</button>
-                <button class="diff-btn" data-diff="dificil">Difícil</button>
+    <!-- Lista de Salas -->
+    <div id="roomListScreen" class="room-screen hidden">
+        <div class="room-list-header">
+            <h2>Salas</h2>
+            <button id="goCreateRoomBtn" class="create-room-fab">＋ Crear Sala</button>
+        </div>
+        <div id="roomList" class="room-list room-list-full">
+            <p class="room-empty">Sin salas activas</p>
+        </div>
+        <button id="backFromListBtn" class="back-btn-bottom">← Volver al inicio</button>
+        <button id="fabCreateRoom" class="fab-mobile">＋</button>
+    </div>
+
+    <!-- Crear Sala -->
+    <div id="createRoomScreen" class="room-screen hidden">
+        <div class="create-room-container">
+            <h2>⚙️ Crear Sala</h2>
+            <div class="form-group">
+                <label>Tipo de sala</label>
+                <div class="toggle-group">
+                    <button class="toggle-btn active" data-room-type="public">🌐 Pública</button>
+                    <button class="toggle-btn" data-room-type="private">🔒 Privada</button>
+                </div>
             </div>
-            <!-- Botón para cerrar el modal sin seleccionar dificultad -->
-            <button id="closeModalBtn" class="close-modal-btn">✕</button>
+            <div class="form-group">
+                <label>Dificultad</label>
+                <div class="difficulty-buttons">
+                    <button class="diff-btn" data-diff="facil">😊 Fácil</button>
+                    <button class="diff-btn" data-diff="normal">⚡ Normal</button>
+                    <button class="diff-btn" data-diff="dificil">💀 Difícil</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Cantidad de jugadores</label>
+                <div class="difficulty-buttons">
+                    <button class="diff-btn" data-players="2">👥 2 Jugadores</button>
+                    <button class="diff-btn" data-players="3">👥 3 Jugadores</button>
+                    <button class="diff-btn" data-players="4">👥 4 Jugadores</button>
+                </div>
+            </div>
+            <button id="createRoomBtn" class="create-room-btn" disabled>Crear Sala</button>
+            <button id="backFromCreateBtn" class="back-btn-bottom">← Volver a salas</button>
         </div>
     </div>
 
-    <!-- 
-      Pantalla de Fin de Partida (endScreen)
-      - Se activa automáticamente al expirar el tiempo (límite del temporizador).
-      - Muestra estadísticas clave: tamaño final de la base segura y cuántas veces creció.
-    -->
+    <!-- Lobby -->
+    <div id="lobbyScreen" class="lobby-screen hidden">
+        <div class="lobby-content">
+            <h2>Esperando jugadores</h2>
+            <div id="lobbyRoomCodeSection" class="room-code-section hidden">
+                <p>Código de sala:</p>
+                <span id="lobbyRoomCode" class="room-code"></span>
+                <p class="room-code-hint">Código de acceso</p>
+            </div>
+            <div class="lobby-players">
+                <span id="lobbyPlayerCount">1</span> / <span id="lobbyMaxPlayers">2</span> jugadores
+            </div>
+            <div class="lobby-actions">
+                <button id="startGameBtn" class="start-game-btn" disabled>Iniciar Partida</button>
+                <button id="cancelLobbyBtn" class="cancel-lobby-btn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nombre -->
+    <div id="namePromptModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Nombre</h2>
+            <p>Ingrese su nombre:</p>
+            <input type="text" id="namePromptInput" class="code-input" placeholder="Ingresar nombre" maxlength="15"
+                autocomplete="off">
+            <p id="namePromptError" class="code-error hidden">El nombre no puede estar vacío.</p>
+            <button id="namePromptConfirmBtn" class="diff-btn">Continuar</button>
+        </div>
+    </div>
+
+    <!-- Modal Código -->
+    <div id="joinCodeModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Sala Privada</h2>
+            <p>Ingrese el código:</p>
+            <input type="text" id="joinCodeInput" class="code-input" placeholder="Ej: ABC123" maxlength="6"
+                autocomplete="off">
+            <p id="joinCodeError" class="code-error hidden">Código incorrecto</p>
+            <div class="difficulty-buttons" style="flex-direction: row; gap: 0.5rem;">
+                <button id="joinCodeConfirmBtn" class="diff-btn">Entrar</button>
+                <button id="joinCodeCancelBtn" class="diff-btn" style="background: #888;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteo regresivo -->
+    <div id="countdownScreen" class="countdown-screen hidden">
+        <span id="countdownNumber">3</span>
+    </div>
+
+    <!-- Fin de partida -->
     <div id="endScreen" class="end-screen hidden">
         <div class="end-content">
-            <h2>¡Partida terminada!</h2>
-            <div id="endStats">
-                <p>Tamaño final de la base: <strong id="endBaseSize">0x0</strong></p>
-                <p>Crecimiento: <strong id="endGrowth">0</strong> veces</p>
-            </div>
+            <h2>🏆 Ranking Final</h2>
+            <ol id="rankingList" class="ranking-list"></ol>
             <button id="goHomeBtn">Volver al inicio</button>
         </div>
     </div>
@@ -90,7 +187,7 @@
                 <h3>Mapa</h3>
                 <canvas id="minimapCanvas"></canvas>
             </div>
-            
+
             <!-- 
               Área de Juego Principal (gameArea)
               - Alberga el canvas principal donde se dibuja la vista de cámara centrada del juego.
@@ -100,23 +197,19 @@
             <div id="gameArea">
                 <canvas id="snakeCanvas"></canvas>
                 <button id="themeToggle" class="theme-float">🌓</button>
-                
-                <!-- 
-                  Controles Móviles (mobileControls)
-                  - Ocultos por defecto, activados en JS si se detecta ancho de pantalla móvil (<= 768px).
-                  - Diseño en cuadrícula CSS (grid) de 3x3 que posiciona los botones en cruz (arriba, abajo, izq, der).
-                -->
+
+                <!-- Controles táctiles para dispositivos móviles -->
                 <div id="mobileControls" style="display:none;">
                     <div class="ctrl-grid">
-                        <div></div> <!-- Espacio vacío de la grilla (col 1, fila 1) -->
+                        <div></div>
                         <button class="ctrl-btn" data-dir="up">▲</button>
-                        <div></div> <!-- Espacio vacío de la grilla (col 3, fila 1) -->
+                        <div></div>
                         <button class="ctrl-btn" data-dir="left">◀</button>
-                        <div></div> <!-- Espacio vacío central (col 2, fila 2) -->
+                        <div></div>
                         <button class="ctrl-btn" data-dir="right">▶</button>
-                        <div></div> <!-- Espacio vacío de la grilla (col 1, fila 3) -->
+                        <div></div>
                         <button class="ctrl-btn" data-dir="down">▼</button>
-                        <div></div> <!-- Espacio vacío de la grilla (col 3, fila 3) -->
+                        <div></div>
                     </div>
                 </div>
             </div>
@@ -124,7 +217,7 @@
     </div>
 
     <!-- Lógica principal del juego importada como módulo ES6 -->
-    <script type="module" src="/scripts/game.js"></script>
+    <script type="module" src="/scripts/juego.js"></script>
 </body>
 
 </html>

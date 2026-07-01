@@ -205,6 +205,65 @@ body {
     transform: scale(0.98);
 }
 
+/* ===== BANNER DE RED LOCAL ===== */
+.banner-red {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    color: white;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    animation: deslizarAbajo 0.4s ease-out;
+}
+
+@keyframes deslizarAbajo {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.banner-red-contenido {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.banner-red-icono {
+    font-size: 1.3rem;
+}
+
+#bannerRedTexto {
+    flex: 1;
+    min-width: 200px;
+    word-break: break-all;
+}
+
+.cerrar-banner-red {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.cerrar-banner-red:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
 /* ----- PIE DE PÁGINA ----- */
 .pie {
     margin-top: 3rem;
