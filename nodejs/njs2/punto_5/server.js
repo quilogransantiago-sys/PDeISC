@@ -11,7 +11,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PUERTO = 3000;
+const PUERTO = 3002;
 
 // Servir archivos estáticos desde sus carpetas
 app.use('/styles', express.static('styles'));

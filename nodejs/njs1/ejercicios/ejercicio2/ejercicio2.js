@@ -1,20 +1,19 @@
-// ejercicio4.js
-// Servidor HTTP que usa el módulo calculos.js para mostrar resultados
+// ejercicio2.js
+// Servidor HTTP que muestra resultados de operaciones aritméticas
 
 const http = require('http');
-const { sumar, restar, multiplicar, dividir } = require('./calculos.js');
+
+const suma = 4 + 5;
+const resta = 3 - 6;
+const multiplicacion = 2 * 7;
+const division = 20 / 4;
 
 const server = http.createServer((req, res) => {
-    const suma = sumar(5, 3);
-    const resta = restar(8, 6);
-    const multiplicacion = multiplicar(3, 11);
-    const division = dividir(30, 5);
-
     res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-    res.end(`5 + 3 = ${suma}\n8 - 6 = ${resta}\n3 * 11 = ${multiplicacion}\n30 / 5 = ${division}`);
+    res.end(`4 + 5 = ${suma}\n3 - 6 = ${resta}\n2 * 7 = ${multiplicacion}\n20 / 4 = ${division}`);
 });
 
-const PORT = 3003;
+const PORT = 3001;
 
 server.on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
