@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABM con API propia</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <script>
+        (function () {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>Gestión de Usuarios</h1>
+        <button id="themeToggle">Modo</button>
+    </header>
+    <main>
+        <div class="contenedor-columnas">
+            <!-- Columna izquierda: formulario + selector -->
+            <div class="columna-izquierda">
+                <section id="formSection">
+                    <h2>Formulario</h2>
+                    <form id="userForm">
+                        <input type="hidden" id="editId" value="">
+                        <div class="campo">
+                            <label for="name">Nombre (solo letras y espacios)</label>
+                            <input type="text" id="name" required>
+                            <span id="nameError" class="error-mensaje"></span>
+                        </div>
+                        <div class="campo">
+                            <label for="email">Correo electrónico</label>
+                            <input type="email" id="email" required>
+                            <span id="emailError" class="error-mensaje"></span>
+                        </div>
+                        <div class="campo">
+                            <label>Método de envío:</label>
+                            <div class="selector-metodo">
+                                <label><input type="radio" name="metodo" value="fetch" checked> Fetch</label>
+                                <label><input type="radio" name="metodo" value="axios"> Axios</label>
+                            </div>
+                        </div>
+                        <div class="acciones">
+                            <button type="submit" id="submitBtn">Enviar a API</button>
+                            <button type="button" id="cancelBtn" style="display:none;">Cancelar</button>
+                        </div>
+                    </form>
+                    <div id="resultado" class="resultado">Esperando acción...</div>
+                </section>
+            </div>
+
+            <!-- Columna derecha: listado local -->
+            <div class="columna-derecha">
+                <section id="listSection">
+                    <h2>Listado de Usuarios (local)</h2>
+                    <div id="userList" class="user-grid"></div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="modalConfirm" class="modal" style="display:none;">
+        <div class="modal-contenido">
+            <p id="modalMensaje">¿Está seguro?</p>
+            <div class="modal-acciones">
+                <button id="modalSi">Sí</button>
+                <button id="modalNo">No</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="importmap">
+    {
+      "imports": {
+        "axios": "https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/esm/axios.js"
+      }
+    }
+  </script>
+    <script type="module" src="/scripts/main.js"></script>
+</body>
+
+</html>

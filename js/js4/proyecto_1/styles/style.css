@@ -1,0 +1,176 @@
+/* ============================================================
+   style.css - Estilos globales, variables, modo oscuro/claro,
+   diseño responsive (desktop horizontal, móvil vertical).
+   ============================================================ */
+
+/* Variables CSS (claro por defecto) */
+:root,
+[data-theme="light"] {
+    --bg: #f8f9fa;
+    --text: #212529;
+    --card-bg: #ffffff;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --border: #dee2e6;
+    --btn-bg: #0d6efd;
+    --btn-hover: #0b5ed7;
+    --btn-text: #fff;
+}
+
+[data-theme="dark"] {
+    --bg: #1a1a1a;
+    --text: #e9ecef;
+    --card-bg: #2d2d2d;
+    --card-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    --border: #444;
+    --btn-bg: #375a7f;
+    --btn-hover: #2c4a6b;
+    --btn-text: #fff;
+}
+
+/* Reseteo básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    transition: background 0.2s, color 0.2s;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: var(--card-bg);
+    border-bottom: 1px solid var(--border);
+}
+
+h1 {
+    font-weight: 400;
+    font-size: 1.5rem;
+}
+
+#themeToggle {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.3rem 0.8rem;
+    font-size: 1.2rem;
+    cursor: pointer;
+    background: var(--bg);
+    color: var(--text);
+    margin-left: auto;
+}
+
+main {
+    flex: 1;
+    padding: 2rem;
+    /* Desktop: contenedor principal en fila (ocupa 100% ancho) */
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.actions button {
+    padding: 0.6rem 1.2rem;
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.actions button:hover {
+    background: var(--btn-hover);
+}
+
+/* Contenedor de tarjetas (desktop: fila horizontal, wrap) */
+.user-grid {
+    display: flex;
+    flex-direction: row;
+    /* ← Desktop: horizontal */
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+/* Cada tarjeta */
+.user-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    padding: 1.2rem 1.5rem;
+    flex: 1 1 calc(33.333% - 1.5rem);
+    /* 3 columnas */
+    min-width: 200px;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.user-card h3 {
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+}
+
+.user-card p {
+    color: var(--text);
+    opacity: 0.8;
+}
+
+/* Mensaje de estado */
+#statusMsg {
+    padding: 0.8rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+}
+
+/* ========== RESPONSIVE MÓVIL ========== */
+@media (max-width: 768px) {
+    main {
+        padding: 1rem;
+    }
+
+    .user-grid {
+        flex-direction: column;
+        /* ← Móvil: vertical */
+        gap: 1rem;
+    }
+
+    .user-card {
+        flex: 1 1 auto;
+        width: 100%;
+    }
+
+    .actions {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    header {
+        flex-direction: row;
+        gap: 0.5rem;
+        text-align: center;
+    }
+}

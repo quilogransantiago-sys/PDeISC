@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios API</title>
+    <link rel="stylesheet" href="/styles/style.css">
+    <script>
+        (function () {
+            const theme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>Lista de Usuarios</h1>
+        <button id="themeToggle" aria-label="Cambiar tema">Modo</button>
+    </header>
+    <main>
+        <div class="actions">
+            <button id="fetchBtn">Obtener con Fetch</button>
+            <button id="axiosBtn">Obtener con Axios</button>
+        </div>
+        <div id="statusMsg" class="status-message">Presiona un boton para cargar.</div>
+        <div id="userList" class="user-grid"></div>
+    </main>
+    <script type="importmap">
+    {
+      "imports": {
+        "axios": "https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/esm/axios.js"
+      }
+    }
+  </script>
+    <script type="module" src="/scripts/main.js"></script>
+</body>
+
+</html>
