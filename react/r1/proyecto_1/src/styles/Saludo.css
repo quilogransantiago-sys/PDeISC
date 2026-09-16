@@ -17,7 +17,7 @@
 .saludo__titulo {
     font-size: 4rem;
     font-weight: 300;
-    color: #111827;
+    color: var(--texto);
     margin: 0;
     letter-spacing: -0.5px;
 
@@ -27,7 +27,7 @@
 }
 
 .saludo__titulo:hover {
-    color: #4f46e5;             /* cambia a un acento índigo sutil */
+    color: var(--indigo);       /* cambia a un acento índigo sutil */
     transform: scale(1.08);     /* crece un poco (zoom) */
 }
 

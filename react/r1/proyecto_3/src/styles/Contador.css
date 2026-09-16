@@ -12,7 +12,7 @@
     padding: 40px 32px;
     border-radius: 14px;
 
-    background-color: #ffffff;
+    background-color: var(--tarjeta);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     font-family: "Segoe UI", system-ui, sans-serif;
 }
@@ -24,7 +24,7 @@
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: #6b7280;
+    color: var(--texto-suave);
 }
 
 /* El número grande que muestra el valor actual. */
@@ -32,7 +32,7 @@
     margin: 0;
     font-size: 5rem;
     font-weight: 300;
-    color: #111827;
+    color: var(--texto);
     line-height: 1;
 }
 
@@ -59,22 +59,22 @@
 
 /* Botón "Decrementar": gris neutro. */
 .contador__boton--restar {
-    background-color: #e5e7eb;
-    color: #111827;
+    background-color: var(--gris);
+    color: var(--texto);
 }
 
 .contador__boton--restar:hover {
-    background-color: #d1d5db;
+    background-color: var(--gris-hover);
 }
 
 /* Botón "Incrementar": azul de acento. */
 .contador__boton--sumar {
-    background-color: #2563eb;
+    background-color: var(--acento);
     color: #ffffff;
 }
 
 .contador__boton--sumar:hover {
-    background-color: #1d4ed8;
+    background-color: var(--acento-hover);
 }
 
 /* Efecto de "presionado" al hacer clic. */

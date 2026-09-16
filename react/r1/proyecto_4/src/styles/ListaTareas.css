@@ -10,7 +10,7 @@
     padding: 28px;
     border-radius: 16px;
 
-    background-color: #ffffff;
+    background-color: var(--tarjeta);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     font-family: "Segoe UI", system-ui, sans-serif;
 }
@@ -29,7 +29,7 @@
     margin: 0;
     font-size: 1.6rem;
     font-weight: 700;
-    color: #111827;
+    color: var(--texto);
 }
 
 /* Fila de contadores (Total / Pendientes / Completadas). */
@@ -47,14 +47,14 @@
 
     padding: 6px 12px;
     border-radius: 999px;
-    background-color: #f1f5f9;
-    color: #475569;
+    background-color: var(--gris);
+    color: var(--texto-suave);
     font-size: 0.85rem;
 }
 
 .lista__resumen-item strong {
     font-weight: 700;
-    color: #111827;
+    color: var(--texto);
 }
 
 /* Contador de pendientes (ámbar). */
@@ -97,9 +97,9 @@
 .lista__panel--formulario {
     flex: 1 1 35%;
     padding: 18px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--borde);
     border-radius: 12px;
-    background-color: #f8fafc;
+    background-color: var(--tarjeta-suave);
 }
 
 /* Panel derecho (listados): ocupa el resto.
@@ -117,7 +117,7 @@
     margin: 0;
     font-size: 1.05rem;
     font-weight: 600;
-    color: #374151;
+    color: var(--texto-suave);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -134,18 +134,19 @@
 .lista__entrada {
     width: 100%;
     padding: 10px 14px;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--borde);
     border-radius: 8px;
     font-size: 1rem;
     font-family: inherit;
-    color: #111827;
+    color: var(--texto);
+    background-color: var(--tarjeta);
     outline: none;
     transition: border-color 0.2s ease;
     box-sizing: border-box;
 }
 
 .lista__entrada:focus {
-    border-color: #2563eb;
+    border-color: var(--acento);
 }
 
 /* El textarea se puede agrandar solo verticalmente. */
@@ -160,7 +161,7 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    background-color: #2563eb;
+    background-color: var(--acento);
     color: #ffffff;
     font-size: 1rem;
     font-family: inherit;
@@ -168,7 +169,7 @@
 }
 
 .lista__boton:hover {
-    background-color: #1d4ed8;
+    background-color: var(--acento-hover);
 }
 
 .lista__boton:active {
@@ -177,12 +178,12 @@
 
 /* Botón "Cancelar" (gris, secundario). */
 .lista__boton--cancelar {
-    background-color: #e5e7eb;
-    color: #111827;
+    background-color: var(--gris);
+    color: var(--texto);
 }
 
 .lista__boton--cancelar:hover {
-    background-color: #d1d5db;
+    background-color: var(--gris-hover);
 }
 
 /* Mensaje de error (validación sin alert). */
@@ -196,7 +197,7 @@
 .lista__vacia {
     margin: 0;
     font-size: 0.95rem;
-    color: #6b7280;
+    color: var(--texto-suave);
 }
 
 /* Sector (Pendientes / Completadas). */
@@ -224,10 +225,10 @@
     gap: 12px;
 
     padding: 12px 16px;
-    border: 1px solid #e5e7eb;
-    border-left: 4px solid #d1d5db;   /* barrita lateral (se pinta según estado) */
+    border: 1px solid var(--borde);
+    border-left: 4px solid var(--borde);   /* barrita lateral (se pinta según estado) */
     border-radius: 8px;
-    background-color: #ffffff;
+    background-color: var(--tarjeta);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 
     transition: box-shadow 0.2s ease, transform 0.1s ease;
@@ -259,20 +260,20 @@
 /* Título de cada tarea. */
 .lista__titulo-tarea {
     font-size: 1rem;
-    color: #111827;
+    color: var(--texto);
     word-break: break-word;
 }
 
 /* Título tachado cuando está completada. */
 .lista__titulo-tarea--completada {
     text-decoration: line-through;
-    color: #9ca3af;
+    color: var(--texto-suave);
 }
 
 /* Descripción o subtarea (gris, más chica). */
 .lista__descripcion {
     font-size: 0.85rem;
-    color: #6b7280;
+    color: var(--texto-suave);
     word-break: break-word;
 }
 
@@ -287,11 +288,11 @@
 /* Botones de acción (Completar / Editar / Eliminar). */
 .lista__boton-accion {
     padding: 6px 12px;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--borde);
     border-radius: 6px;
     cursor: pointer;
-    background-color: #ffffff;
-    color: #374151;
+    background-color: var(--tarjeta);
+    color: var(--texto-suave);
     font-size: 0.8rem;
     font-weight: 600;
     font-family: inherit;
@@ -299,8 +300,8 @@
 }
 
 .lista__boton-accion:hover {
-    background-color: #eef2ff;
-    border-color: #c7d2fe;
+    background-color: var(--gris);
+    border-color: var(--borde);
 }
 
 /* Botón "Completar" (verde). */

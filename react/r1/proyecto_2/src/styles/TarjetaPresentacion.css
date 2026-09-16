@@ -5,7 +5,7 @@
     max-width: 100%;
     border-radius: 14px;
     overflow: hidden;
-    background-color: #ffffff;
+    background-color: var(--tarjeta);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     font-family: "Segoe UI", system-ui, sans-serif;
 }
@@ -50,20 +50,20 @@
 .credencial__nombre {
     font-size: 1.6rem;
     font-weight: 400;
-    color: #111827;
+    color: var(--texto);
     margin: 0;
 }
 
 .credencial__profesion {
     font-size: 1rem;
-    color: #6b7280;
+    color: var(--texto-suave);
     margin: 0;
 }
 
 /* Franja inferior tipo tarjeta de acceso. */
 .credencial__franja {
     height: 10px;
-    background-color: #e5e7eb;
+    background-color: var(--borde);
 }
 
 @media (max-width: 768px) {

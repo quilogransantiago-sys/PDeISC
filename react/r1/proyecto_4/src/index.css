@@ -1,4 +1,30 @@
-/* Estilos globales: reset y base del documento. */
+/* Estilos globales: reset, base del documento y variables de tema. */
+
+:root {
+    --fondo: #c7c7c7;
+    --texto: #111827;
+    --texto-suave: #6b7280;
+    --tarjeta: #ffffff;
+    --tarjeta-suave: #f8fafc;
+    --borde: #e5e7eb;
+    --gris: #e5e7eb;
+    --gris-hover: #d1d5db;
+    --acento: #2563eb;
+    --acento-hover: #1d4ed8;
+}
+
+[data-tema="oscuro"] {
+    --fondo: #111827;
+    --texto: #f3f4f6;
+    --texto-suave: #9ca3af;
+    --tarjeta: #1f2937;
+    --tarjeta-suave: #1f2937;
+    --borde: #374151;
+    --gris: #374151;
+    --gris-hover: #4b5563;
+    --acento: #3b82f6;
+    --acento-hover: #60a5fa;
+}
 
 * {
     margin: 0;
@@ -13,7 +39,30 @@
 
 body {
     font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-    color: #111827;
-    background-color: rgb(199, 199, 199);
+    color: var(--texto);
+    background-color: var(--fondo);
     -webkit-font-smoothing: antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.boton-tema {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    background-color: var(--tarjeta);
+    color: var(--texto);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.boton-tema:hover {
+    background-color: var(--borde);
 }

@@ -12,7 +12,7 @@
     padding: 40px 32px;
     border-radius: 16px;
 
-    background-color: #ffffff;
+    background-color: var(--tarjeta);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
     font-family: "Segoe UI", system-ui, sans-serif;
 }
@@ -32,7 +32,7 @@
     margin: 0;
     font-size: 1.4rem;
     font-weight: 700;
-    color: #111827;
+    color: var(--texto);
     text-align: center;
 }
 
@@ -41,7 +41,7 @@
     margin: 0;
     font-size: 1.8rem;
     font-weight: 700;
-    color: #1d4ed8;
+    color: var(--acento-hover);
     text-align: center;
 }
 
@@ -49,18 +49,19 @@
 .formulario__entrada {
     width: 100%;
     padding: 12px 14px;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--borde);
     border-radius: 8px;
     font-size: 1rem;
     font-family: inherit;
-    color: #111827;
+    color: var(--texto);
+    background-color: var(--tarjeta);
     outline: none;
     box-sizing: border-box;
     transition: border-color 0.2s ease;
 }
 
 .formulario__entrada:focus {
-    border-color: #2563eb;
+    border-color: var(--acento);
 }
 
 /* Botón principal (Enviar). */
@@ -70,7 +71,7 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    background-color: #2563eb;
+    background-color: var(--acento);
     color: #ffffff;
     font-size: 1rem;
     font-family: inherit;
@@ -78,7 +79,7 @@
 }
 
 .formulario__boton:hover {
-    background-color: #1d4ed8;
+    background-color: var(--acento-hover);
 }
 
 .formulario__boton:active {
@@ -87,12 +88,12 @@
 
 /* Botón secundario (Ingresar otro nombre): gris. */
 .formulario__boton--secundario {
-    background-color: #e5e7eb;
-    color: #111827;
+    background-color: var(--gris);
+    color: var(--texto);
 }
 
 .formulario__boton--secundario:hover {
-    background-color: #d1d5db;
+    background-color: var(--gris-hover);
 }
 
 /* Mensaje de error (validación sin alert). */
