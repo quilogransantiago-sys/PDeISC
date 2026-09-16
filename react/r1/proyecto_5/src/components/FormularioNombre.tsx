@@ -1,45 +1,49 @@
 // FormularioNombre: captura el nombre de un usuario y muestra un mensaje de bienvenida.
-// Dependencias: react (hook useState), ../styles/FormularioNombre.css
+// Dependencias: react (hook useState), react-hook-form (useForm), ../styles/FormularioNombre.css
 // Conceptos clave:
-//  1) Estado (useState) para guardar lo que el usuario escribe en el input.
-//  2) "Input controlado": el valor del input depende del estado, y cada tecla
-//     lo actualiza con onChange. Así el estado y lo que se ve están sincronizados.
-//  3) onSubmit + preventDefault(): evita que el formulario recargue la página.
+//  1) useForm: maneja el input de forma declarativa (register + handleSubmit).
+//     Evita tener un useState por campo y no re-renderiza en cada tecla.
+//  2) validación con "required" y mensaje de error vía formState.errors (sin alert()).
+//  3) handleSubmit: evita la recarga de la página al enviar.
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import "./../styles/FormularioNombre.css";
 
+// Tipo que describe los campos del formulario.
+interface DatosFormulario {
+    nombre: string;
+}
+
 function FormularioNombre() {
-    // Estado del nombre: guarda el texto que escribe el usuario.
-    const [nombre, setNombre] = useState("");
+    // useForm devuelve:
+    //  - register: vincula cada input al formulario.
+    //  - handleSubmit: envuelve la función que se ejecuta al enviar.
+    //  - formState: contiene los errores de validación.
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<DatosFormulario>();
 
     // Estado "enviado": controla si ya se envió el formulario.
-    // true = mostrar el mensaje de bienvenida; false = mostrar el formulario.
+    // (Se mantiene con useState porque no es un campo del formulario,
+    //  es un estado de la interfaz.)
     const [enviado, setEnviado] = useState(false);
 
-    // Estado auxiliar: mensaje de error visible en pantalla (sin alert()).
-    const [error, setError] = useState("");
+    // Estado que guarda el nombre ingresado para mostrarlo en la bienvenida.
+    const [nombre, setNombre] = useState("");
 
-    // Se ejecuta al enviar el formulario (botón "Enviar" o tecla Enter).
-    const manejarEnvio = (evento: React.FormEvent<HTMLFormElement>) => {
-        // Evita que el navegador recargue la página (comportamiento por defecto).
-        evento.preventDefault();
-
-        // Validación: el nombre no puede estar vacío (solo espacios).
-        if (nombre.trim() === "") {
-            setError("Escribí tu nombre antes de enviar.");
-            return;
-        }
-
-        // Todo ok: marca como enviado y limpia el error.
+    // Se ejecuta al enviar el formulario (solo si pasa la validación).
+    const manejarEnvio = (datos: DatosFormulario) => {
+        // Quita espacios del nombre y lo guarda.
+        setNombre(datos.nombre.trim());
         setEnviado(true);
-        setError("");
     };
 
     // Vuelve al formulario para escribir otro nombre.
     const volverAEditar = () => {
         setEnviado(false);
         setNombre("");
-        setError("");
     };
 
     return (
@@ -60,20 +64,26 @@ function FormularioNombre() {
             ) : (
                 <form
                     className="formulario__form"
-                    onSubmit={manejarEnvio}
+                    onSubmit={handleSubmit(manejarEnvio)}
                 >
                     <h1 className="formulario__titulo">Ingresá tu nombre</h1>
 
+                    {/* register vincula el input y define su validación. */}
                     <input
                         className="formulario__entrada"
                         type="text"
                         placeholder="Tu nombre"
-                        value={nombre}
-                        onChange={(evento) => setNombre(evento.target.value)}
+                        {...register("nombre", {
+                            required: "Escribí tu nombre antes de enviar.",
+                        })}
                     />
 
                     {/* Mensaje de error visible en pantalla (sin alert()). */}
-                    {error && <p className="formulario__error">{error}</p>}
+                    {errors.nombre && (
+                        <p className="formulario__error">
+                            {errors.nombre.message}
+                        </p>
+                    )}
 
                     <button className="formulario__boton" type="submit">
                         Enviar

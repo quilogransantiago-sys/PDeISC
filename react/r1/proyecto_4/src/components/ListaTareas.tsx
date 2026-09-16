@@ -53,6 +53,10 @@ function ListaTareas() {
     // Estado auxiliar: mensaje de error visible en pantalla (sin alert()).
     const [error, setError] = useState("");
 
+    // Estado del modal de confirmación: guarda la tarea que se quiere eliminar.
+    // Si es null, el modal está cerrado.
+    const [tareaAEliminar, setTareaAEliminar] = useState<Tarea | null>(null);
+
     // useEffect se ejecuta DESPUÉS de cada renderizado en el que "tareas" cambió.
     // Aquí guarda las tareas en localStorage para que persistan al recargar.
     useEffect(() => {
@@ -126,6 +130,14 @@ function ListaTareas() {
         setTareas(tareas.filter((tarea) => tarea.id !== id));
     };
 
+    // Confirma la eliminación: borra la tarea del modal y cierra el modal.
+    const confirmarEliminar = () => {
+        if (tareaAEliminar) {
+            eliminarTarea(tareaAEliminar.id);
+        }
+        setTareaAEliminar(null);
+    };
+
     // Cambia una tarea de completada a pendiente (o viceversa).
     // .map() devuelve un arreglo nuevo; a la tarea coincidente le invierte
     // el valor de "completada" con el operador ! (negación).
@@ -192,7 +204,7 @@ function ListaTareas() {
                 </button>
                 <button
                     className="lista__boton-accion lista__boton-accion--eliminar"
-                    onClick={() => eliminarTarea(tarea.id)}
+                    onClick={() => setTareaAEliminar(tarea)}
                 >
                     Eliminar
                 </button>
@@ -303,6 +315,36 @@ function ListaTareas() {
                     </section>
                 </div>
             </div>
+
+            {/* Modal de confirmación de eliminación (sin alert()). */}
+            {tareaAEliminar && (
+                <div className="lista__modal-fondo">
+                    <div className="lista__modal">
+                        <h2 className="lista__modal-titulo">
+                            ¿Eliminar tarea?
+                        </h2>
+                        <p className="lista__modal-texto">
+                            ¿Estás seguro de que querés eliminar la tarea{" "}
+                            <strong>{tareaAEliminar.titulo}</strong>? Esta
+                            acción no se puede deshacer.
+                        </p>
+                        <div className="lista__modal-acciones">
+                            <button
+                                className="lista__boton-accion"
+                                onClick={() => setTareaAEliminar(null)}
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                className="lista__boton-accion lista__boton-accion--eliminar"
+                                onClick={confirmarEliminar}
+                            >
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </section>
     );
 }

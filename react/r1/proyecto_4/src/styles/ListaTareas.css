@@ -370,6 +370,54 @@
     background-color: #94a3b8;
 }
 
+/* Modal de confirmación de eliminación. */
+
+/* Fondo oscuro semitransparente que tapa toda la pantalla. */
+.lista__modal-fondo {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Tarjeta centrada del modal. */
+.lista__modal {
+    width: 100%;
+    max-width: 400px;
+    padding: 24px;
+    border-radius: 12px;
+    background-color: var(--tarjeta);
+    border: 1px solid var(--borde);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Título del modal. */
+.lista__modal-titulo {
+    margin: 0 0 8px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--texto);
+}
+
+/* Texto del modal. */
+.lista__modal-texto {
+    margin: 0 0 20px;
+    font-size: 0.95rem;
+    color: var(--texto-suave);
+    line-height: 1.5;
+}
+
+/* Fila de botones del modal (a la derecha). */
+.lista__modal-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
 /* Móvil (≤768px): todo pasa a una sola columna vertical. */
 @media (max-width: 768px) {
     .lista {
