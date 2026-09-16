@@ -1,11 +1,17 @@
 // Creacion: página con un formulario para crear O editar una tarea.
 // Propósito: capturar título y descripción. Si hay un id en la URL (modo edición),
 // carga la tarea y la actualiza; si no, crea una tarea nueva.
-// Dependencias: react (useState), react-router-dom (useNavigate, useParams, Link),
+// Dependencias: react-hook-form (useForm), react-router-dom (useNavigate, useParams),
 //               tipo Tarea.
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Tarea } from "../modules/datosTareas";
+
+// Tipo que describe los campos del formulario.
+interface DatosFormulario {
+    titulo: string;
+    descripcion: string;
+}
 
 // Datos que recibe la página por props: la lista y las funciones de alta/edición.
 interface PropsCreacion {
@@ -30,40 +36,34 @@ function Creacion({ tareas, agregarTarea, actualizarTarea }: PropsCreacion) {
     // true si estamos editando una tarea existente.
     const esEdicion = Boolean(tareaEditar);
 
-    // Estados del formulario (inputs controlados).
-    // Se inicializan con los datos de la tarea a editar, o vacíos si es alta.
-    const [titulo, setTitulo] = useState(tareaEditar?.titulo ?? "");
-    const [descripcion, setDescripcion] = useState(
-        tareaEditar?.descripcion ?? ""
-    );
+    // useForm maneja los campos de forma declarativa.
+    // defaultValues precarga los valores si estamos editando una tarea.
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<DatosFormulario>({
+        defaultValues: {
+            titulo: tareaEditar?.titulo ?? "",
+            descripcion: tareaEditar?.descripcion ?? "",
+        },
+    });
 
-    // Estado auxiliar: mensaje de error visible en pantalla (sin alert()).
-    const [error, setError] = useState("");
-
-    // Se ejecuta al enviar el formulario.
-    const manejarEnvio = (evento: React.FormEvent<HTMLFormElement>) => {
-        // Evita la recarga de la página (comportamiento por defecto).
-        evento.preventDefault();
-
-        // Validación: el título no puede estar vacío.
-        if (titulo.trim() === "") {
-            setError("Escribí un título para la tarea.");
-            return;
-        }
-
+    // Se ejecuta al enviar el formulario (solo si pasa la validación).
+    const manejarEnvio = (datos: DatosFormulario) => {
         if (esEdicion && tareaEditar) {
             // CASO EDICIÓN: se actualiza la tarea conservando id, fecha y estado.
             actualizarTarea({
                 ...tareaEditar,
-                titulo: titulo.trim(),
-                descripcion: descripcion.trim(),
+                titulo: datos.titulo.trim(),
+                descripcion: datos.descripcion.trim(),
             });
         } else {
             // CASO ALTA: se crea una tarea nueva (siempre incompleta).
             const nuevaTarea: Tarea = {
                 id: Date.now(),
-                titulo: titulo.trim(),
-                descripcion: descripcion.trim(),
+                titulo: datos.titulo.trim(),
+                descripcion: datos.descripcion.trim(),
                 fecha: new Date().toISOString().slice(0, 10), // fecha actual (YYYY-MM-DD)
                 completada: false,
             };
@@ -81,17 +81,18 @@ function Creacion({ tareas, agregarTarea, actualizarTarea }: PropsCreacion) {
             <div className="w-full max-w-2xl">
                 {/* Formulario dentro de una tarjeta con sombra. */}
                 <form
-                    onSubmit={manejarEnvio}
+                    onSubmit={handleSubmit(manejarEnvio)}
                     className="rounded-xl border border-gray-200 bg-white p-6 shadow-md dark:border-gray-700 dark:bg-gray-800"
                 >
-                    {/* Campo de título. */}
+                    {/* Campo de título (validado como obligatorio). */}
                     <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Título
                         <input
                             type="text"
-                            value={titulo}
-                            onChange={(e) => setTitulo(e.target.value)}
                             placeholder="Título de la tarea"
+                            {...register("titulo", {
+                                required: "Escribí un título para la tarea.",
+                            })}
                             className="mt-1 block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                         />
                     </label>
@@ -100,17 +101,18 @@ function Creacion({ tareas, agregarTarea, actualizarTarea }: PropsCreacion) {
                     <label className="mb-4 block text-sm font-medium text-gray-700 dark:text-gray-300">
                         Descripción
                         <textarea
-                            value={descripcion}
-                            onChange={(e) => setDescripcion(e.target.value)}
                             placeholder="Descripción de la tarea"
                             rows={8}
+                            {...register("descripcion")}
                             className="mt-1 block w-full resize-y rounded-lg border border-gray-300 px-3 py-2 text-gray-900 outline-none transition focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                         />
                     </label>
 
                     {/* Mensaje de error visible en pantalla (sin alert()). */}
-                    {error && (
-                        <p className="mb-4 text-sm text-red-600">{error}</p>
+                    {errors.titulo && (
+                        <p className="mb-4 text-sm text-red-600">
+                            {errors.titulo.message}
+                        </p>
                     )}
 
                     {/* Botones. */}
