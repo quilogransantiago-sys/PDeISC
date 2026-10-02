@@ -1,0 +1,17 @@
+// database: crea y exporta el pool de conexiones a MySQL/MariaDB.
+// Dependencias: mysql2/promise, dotenv.
+// Se usa un "pool" (conjunto de conexiones reutilizables) por rendimiento.
+import mysql from "mysql2/promise";
+import "dotenv/config";
+
+// Configura el pool con las variables de entorno (.env).
+export const pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    waitForConnections: true,
+    connectionLimit: 10,
+    namedPlaceholders: false,
+});
