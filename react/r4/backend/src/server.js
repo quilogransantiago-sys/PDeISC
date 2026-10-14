@@ -1,6 +1,4 @@
 // server: punto de entrada de la API del portfolio.
-// Propósito: configurar middlewares, servir las imágenes subidas y montar rutas.
-// Dependencias: express, cors, dotenv, fs, path, url, las rutas.
 import express from "express";
 import cors from "cors";
 import "dotenv/config";

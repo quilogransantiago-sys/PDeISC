@@ -1,6 +1,4 @@
 // portfolioController: CRUD genérico de las secciones del portfolio + subida de imágenes.
-// Propósito: manejar datos, habilidades, experiencias, proyectos y logros.
-// Dependencias: pool, sanitizar, configMulter.
 import { pool } from "../database.js";
 import { sanitizarTexto } from "../utilidades/sanitizar.js";
 import { subir } from "../configMulter.js";

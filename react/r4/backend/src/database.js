@@ -1,5 +1,4 @@
 // database: crea y exporta el pool de conexiones a MySQL/MariaDB.
-// Dependencias: mysql2/promise, dotenv.
 import mysql from "mysql2/promise";
 import "dotenv/config";
 

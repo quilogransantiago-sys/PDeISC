@@ -1,13 +1,11 @@
 // AdminPanel: panel de administración del portfolio.
-// Propósito: permitir al admin crear/editar/eliminar cada sección y subir imágenes.
-// Dependencias: react (useState, useEffect), react-router-dom, api, useAuth, useTema.
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api, { URL_BACKEND, obtenerMensajeError } from "../modules/api";
 import { useAuth } from "../context/AuthContext";
 import { useTema } from "../scripts/useTema";
 
-// Tipo de un registro genérico (cada sección tiene campos distintos).
+// Tipo de un registro genérico.
 type Registro = Record<string, string | number>;
 
 // Describe un campo editable.
@@ -51,7 +49,8 @@ const SECCIONES: Record<string, Campo[]> = {
         { nombre: "fecha", etiqueta: "Fecha", tipo: "texto" },
     ],
 };
-// Componente genérico que administra una sección (CRUD + subida de imagen).
+
+// Editor genérico de una sección (CRUD + subida de imagen).
 function EditorSeccion({ tabla }: { tabla: string }) {
     const campos = SECCIONES[tabla];
     const [registros, setRegistros] = useState<Registro[]>([]);
@@ -60,7 +59,6 @@ function EditorSeccion({ tabla }: { tabla: string }) {
     const [error, setError] = useState("");
     const [exito, setExito] = useState("");
 
-    // Carga los registros de la sección.
     const cargar = async () => {
         try {
             const respuesta = await api.get(`/${tabla}`);
@@ -75,51 +73,46 @@ function EditorSeccion({ tabla }: { tabla: string }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [tabla]);
 
-    // Actualiza un campo del formulario.
     const manejarCampo = (nombre: string, valor: string | number) => {
         setFormulario((anterior) => ({ ...anterior, [nombre]: valor }));
     };
 
-    // Sube una imagen y guarda su URL en el campo indicado.
-    const subirArchivo = async (evento: React.ChangeEvent<HTMLInputElement>, nombreCampo: string) => {
-        const archivo = evento.target.files?.[0];
+    const subirImagen = async (campo: string, archivo: File | null) => {
         if (!archivo) return;
         const datos = new FormData();
         datos.append("imagen", archivo);
         try {
             const respuesta = await api.post("/subir-imagen", datos);
-            manejarCampo(nombreCampo, respuesta.data.url);
+            manejarCampo(campo, respuesta.data.url);
         } catch (err) {
             setError(obtenerMensajeError(err));
         }
     };
 
-    // Crea o actualiza según haya edición o no.
     const guardar = async () => {
         setError("");
         setExito("");
         try {
-            if (editandoId) {
-                await api.put(`/${tabla}/${editandoId}`, formulario);
-            } else {
+            if (editandoId === null) {
                 await api.post(`/${tabla}`, formulario);
+                setExito("Creado correctamente.");
+            } else {
+                await api.put(`/${tabla}/${editandoId}`, formulario);
+                setExito("Actualizado correctamente.");
             }
             setFormulario({});
             setEditandoId(null);
-            setExito("Guardado correctamente.");
             cargar();
         } catch (err) {
             setError(obtenerMensajeError(err));
         }
     };
 
-    // Carga un registro en el formulario para editarlo.
     const editar = (registro: Registro) => {
         setEditandoId(registro.id as number);
-        setFormulario(registro);
+        setFormulario({ ...registro });
     };
 
-    // Elimina un registro.
     const eliminar = async (id: number) => {
         setError("");
         try {
@@ -129,67 +122,63 @@ function EditorSeccion({ tabla }: { tabla: string }) {
             setError(obtenerMensajeError(err));
         }
     };
+
     return (
-        <div>
-            {/* Formulario de alta/edición. */}
-            <form
-                className="tarjeta formulario mb-2"
-                onSubmit={(evento) => {
-                    evento.preventDefault();
-                    guardar();
-                }}
-            >
-                <h3 className="tarjeta__titulo">
-                    {editandoId ? "Editar" : "Agregar"}
-                </h3>
+        <div className="editor">
+            <h2 className="seccion__titulo">{tabla.charAt(0).toUpperCase() + tabla.slice(1)}</h2>
+
+            <div className="tarjeta formulario mb-2">
                 {campos.map((campo) => (
                     <label key={campo.nombre} className="etiqueta">
                         {campo.etiqueta}
                         {campo.tipo === "area" ? (
                             <textarea
                                 className="entrada"
-                                value={(formulario[campo.nombre] as string) ?? ""}
+                                value={String(formulario[campo.nombre] ?? "")}
                                 onChange={(e) => manejarCampo(campo.nombre, e.target.value)}
                             />
                         ) : campo.tipo === "numero" ? (
                             <input
                                 type="number"
                                 className="entrada"
-                                value={(formulario[campo.nombre] as number) ?? ""}
+                                value={Number(formulario[campo.nombre] ?? 0)}
                                 onChange={(e) => manejarCampo(campo.nombre, Number(e.target.value))}
                             />
                         ) : campo.tipo === "imagen" ? (
-                            <>
-                                {formulario[campo.nombre] && (
-                                    <img
-                                        className="miniatura"
-                                        src={URL_BACKEND + (formulario[campo.nombre] as string)}
-                                        alt=""
-                                    />
-                                )}
+                            <div className="fila">
                                 <input
                                     type="file"
                                     accept="image/*"
-                                    onChange={(e) => subirArchivo(e, campo.nombre)}
+                                    onChange={(e) => subirImagen(campo.nombre, e.target.files?.[0] ?? null)}
                                 />
-                            </>
+                                {formulario[campo.nombre] && (
+                                    <img
+                                        className="tarjeta__imagen"
+                                        src={URL_BACKEND + String(formulario[campo.nombre])}
+                                        alt="preview"
+                                    />
+                                )}
+                            </div>
                         ) : (
                             <input
                                 type="text"
                                 className="entrada"
-                                value={(formulario[campo.nombre] as string) ?? ""}
+                                value={String(formulario[campo.nombre] ?? "")}
                                 onChange={(e) => manejarCampo(campo.nombre, e.target.value)}
                             />
                         )}
                     </label>
                 ))}
+
+                {error && <p className="error">{error}</p>}
+                {exito && <p className="exito">{exito}</p>}
+
                 <div className="fila">
-                    <button type="submit" className="boton boton--primario">
-                        {editandoId ? "Guardar" : "Agregar"}
+                    <button className="boton boton--primario" onClick={guardar}>
+                        {editandoId === null ? "Crear" : "Guardar cambios"}
                     </button>
-                    {editandoId && (
+                    {editandoId !== null && (
                         <button
-                            type="button"
                             className="boton boton--secundario"
                             onClick={() => {
                                 setEditandoId(null);
@@ -200,17 +189,17 @@ function EditorSeccion({ tabla }: { tabla: string }) {
                         </button>
                     )}
                 </div>
-            </form>
+            </div>
 
-            {error && <p className="error mb-1">{error}</p>}
-            {exito && <p className="exito mb-1">{exito}</p>}
-
-            {/* Lista de registros. */}
-            <div className="panel__lista">
+            <div className="lista">
                 {registros.map((registro) => (
-                    <div key={registro.id} className="panel__item">
-                        <strong>{String(registro[campos[0].nombre])}</strong>
-                        <div className="panel__item-acciones">
+                    <div key={registro.id} className="usuario-item">
+                        <div className="usuario-item__info">
+                            <span className="usuario-item__nombre">
+                                {String(registro[SECCIONES[tabla][0].nombre])}
+                            </span>
+                        </div>
+                        <div className="usuario-item__acciones">
                             <button className="boton boton--secundario" onClick={() => editar(registro)}>
                                 Editar
                             </button>
@@ -224,7 +213,7 @@ function EditorSeccion({ tabla }: { tabla: string }) {
         </div>
     );
 }
-// Componente principal del panel: header + pestañas + editor de la sección activa.
+
 function AdminPanel() {
     const { adminEmail, cerrarSesion } = useAuth();
     const { tema, alternarTema } = useTema();
@@ -243,30 +232,18 @@ function AdminPanel() {
             <header className="header">
                 <span className="header__marca">Panel de administración</span>
                 <nav className="header__nav">
-                    <Link className="header__enlace" to="/">
-                        Ver portfolio
-                    </Link>
+                    <Link className="header__enlace" to="/">Ver portfolio</Link>
                     <span className="header__enlace">{adminEmail}</span>
                     <button className="boton boton--secundario" onClick={cerrarSesion}>
                         Cerrar sesión
                     </button>
                     <button className="boton-tema" onClick={alternarTema} aria-label="Cambiar tema">
-                        {tema === "claro" ? (
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 18, height: 18 }}>
-                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                            </svg>
-                        ) : (
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ width: 18, height: 18 }}>
-                                <circle cx="12" cy="12" r="4" />
-                                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-                            </svg>
-                        )}
+                        {tema === "claro" ? "🌙" : "☀️"}
                     </button>
                 </nav>
             </header>
 
             <div className="panel">
-                {/* Pestañas para elegir la sección a editar. */}
                 <div className="panel__tabs">
                     {pestanas.map((pestana) => (
                         <button
@@ -283,7 +260,6 @@ function AdminPanel() {
                     ))}
                 </div>
 
-                {/* Editor de la sección activa. */}
                 <EditorSeccion tabla={pestanaActiva} />
             </div>
         </>
@@ -291,4 +267,3 @@ function AdminPanel() {
 }
 
 export default AdminPanel;
-

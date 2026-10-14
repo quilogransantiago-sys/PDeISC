@@ -1,12 +1,14 @@
-// api: instancia de Axios configurada para hablar con el backend del portfolio.
-// Dependencias: axios.
+// api: instancia de Axios configurada para hablar con el backend.
 import axios from "axios";
 
+// URL base del backend (para armar las rutas de las imágenes subidas).
+export const URL_BACKEND = "http://localhost:5000";
+
 const api = axios.create({
-    baseURL: "http://localhost:5000/api",
+    baseURL: `${URL_BACKEND}/api`,
 });
 
-// Interceptor: agrega el token (admin) a cada petición si existe.
+// Interceptor: agrega el token JWT a cada petición (para las rutas protegidas).
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -23,8 +25,5 @@ export function obtenerMensajeError(error: unknown): string {
     }
     return "Ocurrió un error inesperado.";
 }
-
-// URL base del backend (para armar la ruta completa de las imágenes subidas).
-export const URL_BACKEND = "http://localhost:5000";
 
 export default api;

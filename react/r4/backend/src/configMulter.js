@@ -1,34 +1,36 @@
-// configMulter: configura la subida de imágenes.
-// Propósito: guardar los archivos subidos en la carpeta "uploads" con un nombre único.
-// Dependencias: multer, path, url.
+// configMulter: configuración de Multer para subir imágenes.
 import multer from "multer";
 import path from "path";
+import fs from "fs";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const uploadsDir = path.join(__dirname, "..", "uploads");
 
-// Configura dónde y con qué nombre se guarda cada imagen.
-const almacenamiento = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, "../uploads"));
-    },
+// Crea la carpeta uploads si no existe.
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, uploadsDir),
     filename: (req, file, cb) => {
-        // Nombre único: marca de tiempo + nombre original sin espacios.
-        const nombreUnico =
-            Date.now() + "-" + file.originalname.replace(/\s+/g, "_");
-        cb(null, nombreUnico);
+        const ext = path.extname(file.originalname);
+        cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
     },
 });
 
-// Exporta el middleware de subida (solo imágenes, máximo 5 MB).
+// Solo se permiten imágenes.
+const tiposPermitidos = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+
 export const subir = multer({
-    storage: almacenamiento,
-    limits: { fileSize: 5 * 1024 * 1024 },
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB
     fileFilter: (req, file, cb) => {
-        if (file.mimetype.startsWith("image/")) {
+        if (tiposPermitidos.includes(file.mimetype)) {
             cb(null, true);
         } else {
-            cb(new Error("Solo se permiten imágenes."));
+            cb(new Error("Formato de imagen no válido."));
         }
     },
 });

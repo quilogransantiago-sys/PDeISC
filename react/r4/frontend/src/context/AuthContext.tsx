@@ -1,12 +1,6 @@
 // AuthContext: contexto de autenticación del administrador.
 // Propósito: guardar si el admin está autenticado y exponer iniciarSesion/cerrarSesion.
-// Dependencias: react (createContext, useContext, useState, useEffect), api.
-import {
-    createContext,
-    useContext,
-    useState,
-    type ReactNode,
-} from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 import api from "../modules/api";
 
 interface ContextoAuth {
@@ -19,8 +13,8 @@ interface ContextoAuth {
 const AuthContext = createContext<ContextoAuth | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    // Estado de la sesión. Se inicializa de forma síncrona desde localStorage
-    // para que la ruta protegida no redirija al login antes de cargar la sesión.
+    // Se inicializa de forma síncrona desde localStorage para que la ruta
+    // "/admin" no redirija al login antes de cargar la sesión.
     const [autenticado, setAutenticado] = useState<boolean>(() => {
         return Boolean(localStorage.getItem("token"));
     });

@@ -1,26 +1,17 @@
-// useTema: hook para manejar el modo claro/oscuro.
+// useTema: hook para alternar entre tema claro y oscuro.
 import { useEffect, useState } from "react";
 
-const CLAVE_TEMA = "tema";
-
-type Tema = "claro" | "oscuro";
-
-function leerTemaGuardado(): Tema {
-    const guardado = localStorage.getItem(CLAVE_TEMA);
-    return guardado === "oscuro" ? "oscuro" : "claro";
-}
-
 export function useTema() {
-    const [tema, setTema] = useState<Tema>(leerTemaGuardado);
+    const [tema, setTema] = useState<"claro" | "oscuro">(() => {
+        return localStorage.getItem("tema") === "oscuro" ? "oscuro" : "claro";
+    });
 
     useEffect(() => {
         document.documentElement.setAttribute("data-tema", tema);
-        localStorage.setItem(CLAVE_TEMA, tema);
+        localStorage.setItem("tema", tema);
     }, [tema]);
 
-    const alternarTema = () => {
-        setTema((anterior) => (anterior === "claro" ? "oscuro" : "claro"));
-    };
+    const alternarTema = () => setTema((t) => (t === "claro" ? "oscuro" : "claro"));
 
     return { tema, alternarTema };
 }

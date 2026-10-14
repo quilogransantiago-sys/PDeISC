@@ -1,21 +1,17 @@
-// autenticar: middleware que protege las rutas del panel admin con JWT.
-// Dependencias: jsonwebtoken.
+// autenticar: middleware que valida el token JWT del admin.
 import jwt from "jsonwebtoken";
 
 export function autenticar(req, res, next) {
     const header = req.headers.authorization;
-
-    if (!header || !header.startsWith("Bearer ")) {
-        return res.status(401).json({ mensaje: "No autorizado. Falta el token." });
+    if (!header?.startsWith("Bearer ")) {
+        return res.status(401).json({ mensaje: "No autenticado." });
     }
-
-    const token = header.slice(7);
-
     try {
+        const token = header.slice(7);
         const payload = jwt.verify(token, process.env.JWT_SECRET);
-        req.idAdmin = payload.id;
+        req.usuario = payload;
         next();
     } catch {
-        return res.status(401).json({ mensaje: "Token inválido o expirado." });
+        res.status(401).json({ mensaje: "Token inválido o vencido." });
     }
 }

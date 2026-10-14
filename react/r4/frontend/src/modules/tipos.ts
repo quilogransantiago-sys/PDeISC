@@ -1,5 +1,4 @@
 // tipos: tipos de datos del portfolio.
-// Propósito: describir la forma de cada entidad que devuelve la API.
 
 export interface DatosPersonales {
     id: number;

@@ -1,5 +1,5 @@
-// portfolioRoutes: rutas del CRUD del portfolio (protegidas con JWT).
-// Dependencias: express, autenticar (middleware), portfolioController.
+// portfolioRoutes: rutas del CRUD del portfolio.
+// Lectura pública; escritura protegida con JWT (solo admin).
 import { Router } from "express";
 import { autenticar } from "../middleware/autenticar.js";
 import {

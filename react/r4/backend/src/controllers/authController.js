@@ -1,5 +1,4 @@
 // authController: maneja el login del administrador.
-// Dependencias: bcryptjs, jsonwebtoken, pool, sanitizar.
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { pool } from "../database.js";
@@ -16,9 +15,7 @@ export async function iniciarSesionAdmin(req, res) {
     const emailLimpio = sanitizarTexto(email).toLowerCase();
 
     try {
-        const [filas] = await pool.execute("SELECT * FROM admin WHERE email = ?", [
-            emailLimpio,
-        ]);
+        const [filas] = await pool.execute("SELECT * FROM admin WHERE email = ?", [emailLimpio]);
 
         if (filas.length === 0) {
             return res.status(401).json({ mensaje: "Credenciales incorrectas." });
