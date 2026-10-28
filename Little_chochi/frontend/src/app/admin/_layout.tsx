@@ -1,9 +1,9 @@
 import { Stack, Redirect, Link, usePathname } from 'expo-router';
-import { View, Text, Pressable, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Logo } from '@/components/Logo';
 import { FullScreenLoading } from '@/components/ui/Feedback';
-import { colors, spacing, fontSize, radius } from '@/styles/theme';
+import { colors, spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
 import { useAuth } from '@/context/AuthContext';
 
 export default function AdminLayout() {
@@ -25,39 +25,47 @@ export default function AdminLayout() {
   return (
     <View style={styles.root}>
       <View style={styles.topbar}>
-        <Link href="/" asChild>
-          <Pressable style={styles.brand}>
-            <Logo size={34} />
-            <Text style={styles.brandText}>Little Chochi · Panel</Text>
-          </Pressable>
-        </Link>
-        <View style={styles.topActions}>
+        <View style={styles.topbarInner}>
           <Link href="/" asChild>
-            <Pressable style={styles.storeLink}>
-              <Ionicons name="storefront-outline" size={18} color={colors.primary} />
-              <Text style={styles.storeText}>Ver tienda</Text>
+            <Pressable style={styles.brand}>
+              <Logo size={34} />
+              <Text style={styles.brandText}>Little Chochi · Panel</Text>
             </Pressable>
           </Link>
-          <Pressable onPress={logout} style={styles.logout}>
-            <Ionicons name="log-out-outline" size={18} color={colors.danger} />
-            <Text style={styles.logoutText}>Salir</Text>
-          </Pressable>
+          <View style={styles.topActions}>
+            <Link href="/" asChild>
+              <Pressable style={styles.storeLink}>
+                <Ionicons name="storefront-outline" size={18} color={colors.primary} />
+                <Text style={styles.storeText}>Ver tienda</Text>
+              </Pressable>
+            </Link>
+            <Pressable onPress={logout} style={styles.logout}>
+              <Ionicons name="log-out-outline" size={18} color={colors.danger} />
+              <Text style={styles.logoutText}>Salir</Text>
+            </Pressable>
+          </View>
         </View>
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.navBar} contentContainerStyle={styles.navContent}>
-        {links.map((link) => {
-          const active = pathname === link.href;
-          return (
-            <Link key={link.href} href={link.href} asChild>
-              <Pressable style={StyleSheet.flatten([styles.navItem, active && styles.navItemActive])}>
-                <Ionicons name={link.icon} size={16} color={active ? colors.textOnPrimary : colors.textMuted} />
-                <Text style={[styles.navText, active && styles.navTextActive]}>{link.label}</Text>
-              </Pressable>
-            </Link>
-          );
-        })}
-      </ScrollView>
+      <View style={styles.navBar}>
+        <View style={styles.navInner}>
+          {links.map((link) => {
+            const active = pathname === link.href;
+            return (
+              <Link key={link.href} href={link.href} asChild>
+                <Pressable style={StyleSheet.flatten([styles.navItem, active && styles.navItemActive])}>
+                  <Ionicons
+                    name={link.icon}
+                    size={16}
+                    color={active ? colors.textOnPrimary : colors.textMuted}
+                  />
+                  <Text style={[styles.navText, active && styles.navTextActive]}>{link.label}</Text>
+                </Pressable>
+              </Link>
+            );
+          })}
+        </View>
+      </View>
 
       <View style={styles.content}>
         <Stack screenOptions={{ headerShown: false }} />
@@ -69,14 +77,19 @@ export default function AdminLayout() {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
   topbar: {
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  topbarInner: {
+    width: '100%',
+    maxWidth: maxContentWidth,
+    alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
-    backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
   brand: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   brandText: { fontSize: fontSize.md, fontWeight: '800', color: colors.text },
@@ -85,8 +98,22 @@ const styles = StyleSheet.create({
   storeText: { color: colors.primary, fontWeight: '600', fontSize: fontSize.sm },
   logout: { flexDirection: 'row', alignItems: 'center', gap: 6, padding: 8 },
   logoutText: { color: colors.danger, fontWeight: '600', fontSize: fontSize.sm },
-  navBar: { backgroundColor: colors.cream, borderBottomWidth: 1, borderBottomColor: colors.border },
-  navContent: { paddingHorizontal: spacing.lg, gap: spacing.sm, paddingVertical: spacing.xs },
+  navBar: {
+    backgroundColor: colors.cream,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  navInner: {
+    width: '100%',
+    maxWidth: maxContentWidth,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xs,
+  },
   navItem: {
     flexDirection: 'row',
     alignItems: 'center',

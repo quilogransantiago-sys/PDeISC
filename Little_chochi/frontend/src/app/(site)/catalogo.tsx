@@ -11,6 +11,7 @@ import {
 import { useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { ProductCard } from '@/components/ProductCard';
+import { Footer } from '@/components/Footer';
 import { Loading, EmptyState, ErrorBanner } from '@/components/ui/Feedback';
 import { colors, spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
 import { productsApi } from '@/modules/api/products';
@@ -176,6 +177,8 @@ export default function CatalogoScreen() {
           </View>
         )}
       </View>
+
+      <Footer />
     </ScrollView>
   );
 }

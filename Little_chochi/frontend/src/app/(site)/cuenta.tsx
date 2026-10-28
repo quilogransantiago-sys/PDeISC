@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { FullScreenLoading } from '@/components/ui/Feedback';
+import { Footer } from '@/components/Footer';
 import { colors, spacing, fontSize, radius } from '@/styles/theme';
 import { useAuth } from '@/context/AuthContext';
 
@@ -41,6 +42,8 @@ export default function CuentaScreen() {
 
         <Button title="Cerrar sesión" variant="outline" onPress={logout} icon="log-out-outline" />
       </View>
+
+      <Footer />
     </ScrollView>
   );
 }

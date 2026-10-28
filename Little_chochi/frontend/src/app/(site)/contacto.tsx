@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { ErrorBanner } from '@/components/ui/Feedback';
+import { Footer } from '@/components/Footer';
 import { colors, spacing, fontSize, radius } from '@/styles/theme';
 import { contactApi } from '@/modules/api/contact';
 
@@ -119,6 +120,8 @@ export default function ContactoScreen() {
           </View>
         ) : null}
       </View>
+
+      <Footer />
     </ScrollView>
   );
 }

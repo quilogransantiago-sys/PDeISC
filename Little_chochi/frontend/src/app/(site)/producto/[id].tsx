@@ -3,6 +3,7 @@ import { ScrollView, Text, View, Pressable, StyleSheet } from 'react-native';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { ProductImage } from '@/components/ProductImage';
+import { Footer } from '@/components/Footer';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Loading, ErrorBanner } from '@/components/ui/Feedback';
@@ -99,6 +100,8 @@ export default function ProductoDetalleScreen() {
           </View>
         </View>
       </View>
+
+      <Footer />
     </ScrollView>
   );
 }

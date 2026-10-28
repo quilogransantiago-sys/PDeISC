@@ -1,20 +1,30 @@
 import { useEffect, useState } from 'react';
-import { ScrollView, Text, View, StyleSheet, useWindowDimensions } from 'react-native';
+import { ScrollView, Text, View, StyleSheet, useWindowDimensions, Pressable } from 'react-native';
 import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Logo } from '@/components/Logo';
 import { ProductCard } from '@/components/ProductCard';
+import { Footer } from '@/components/Footer';
+import { FadeInView } from '@/components/ui/FadeInView';
 import { Button } from '@/components/ui/Button';
 import { Loading, EmptyState } from '@/components/ui/Feedback';
-import { colors, spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
+import { colors, spacing, fontSize, radius, maxContentWidth, gradients } from '@/styles/theme';
 import { productsApi } from '@/modules/api/products';
 import { categoriesApi } from '@/modules/api/categories';
 import type { Producto, Categoria } from '@/modules/types';
 
+const CATEGORY_ICONS: Record<string, keyof typeof Ionicons.glyphMap> = {
+  'ropa-de-bebe': 'shirt-outline',
+  accesorios: 'rose-outline',
+  juguetes: 'balloon-outline',
+  decoracion: 'home-outline',
+};
+
 const BENEFICIOS = [
   { icon: 'heart-outline', title: 'Hecho a mano', text: 'Cada pieza se elabora con dedicación artesanal.' },
   { icon: 'leaf-outline', title: 'Materiales nobles', text: 'Algodón y lanas suaves para la piel del bebé.' },
-  { icon: 'cube-outline', title: 'Envíos a todo el país', text: 'Coordinamos la entrega de tu pedido donde estés.' },
+  { icon: 'cube-outline', title: 'Envíos a todo el país', text: 'Coordinamos la entrega donde estés.' },
 ] as const;
 
 export default function HomeScreen() {
@@ -37,7 +47,7 @@ export default function HomeScreen() {
           setCategorias(cats.data);
         }
       } catch {
-        // si el backend no responde, mostramos estado vacío sin romper la UI
+        // sin backend, mostramos estado vacío sin romper la UI
       } finally {
         if (active) setCargando(false);
       }
@@ -49,15 +59,15 @@ export default function HomeScreen() {
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.container}>
-      <View style={styles.inner}>
-        {/* Hero */}
-        <View style={styles.hero}>
+      {/* Hero */}
+      <LinearGradient colors={[...gradients.hero]} style={styles.hero}>
+        <View style={styles.heroInner}>
           <View style={styles.heroText}>
             <Text style={styles.kicker}>Boutique artesanal para bebés</Text>
             <Text style={styles.heroTitle}>Piezas únicas, hechas con amor</Text>
             <Text style={styles.heroSubtitle}>
-              Ropa, accesorios y decoración tejidos a mano para acompañar los primeros
-              años de tu bebé.
+              Ropa, accesorios y decoración tejidos a mano para acompañar los
+              primeros años de tu bebé.
             </Text>
             <View style={styles.heroActions}>
               <Link href="/catalogo" asChild>
@@ -69,77 +79,91 @@ export default function HomeScreen() {
             </View>
           </View>
           <View style={styles.heroImage}>
-            <Logo size={220} />
+            <Logo size={width < 640 ? 150 : 210} />
           </View>
         </View>
+      </LinearGradient>
 
+      <View style={styles.inner}>
         {/* Categorías */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Categorías</Text>
-          <View style={styles.categoryGrid}>
-            {categorias.map((cat) => (
-              <Link key={cat.id} href={`/catalogo?categoria=${cat.slug}`} asChild>
-                <View style={styles.categoryCard}>
-                  <Text style={styles.categoryName}>{cat.nombre}</Text>
-                </View>
-              </Link>
-            ))}
+        <FadeInView delay={80}>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Categorías</Text>
+            <View style={styles.categoryGrid}>
+              {categorias.map((cat) => (
+                <Link key={cat.id} href={`/catalogo?categoria=${cat.slug}`} asChild>
+                  <Pressable
+                    style={({ pressed }) => [styles.categoryCard, pressed && styles.pressed]}
+                  >
+                    <View style={styles.categoryIcon}>
+                      <Ionicons
+                        name={CATEGORY_ICONS[cat.slug] ?? 'pricetag-outline'}
+                        size={24}
+                        color={colors.primary}
+                      />
+                    </View>
+                    <Text style={styles.categoryName}>{cat.nombre}</Text>
+                  </Pressable>
+                </Link>
+              ))}
+            </View>
           </View>
-        </View>
+        </FadeInView>
 
         {/* Productos destacados */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Productos destacados</Text>
-            <Link href="/catalogo" style={styles.seeAll}>
-              Ver todos
-            </Link>
-          </View>
+        <FadeInView delay={140}>
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Productos destacados</Text>
+              <Link href="/catalogo" style={styles.seeAll}>
+                Ver todos
+              </Link>
+            </View>
 
-          {cargando ? (
-            <Loading />
-          ) : productos.length === 0 ? (
-            <EmptyState
-              title="Todavía no hay productos"
-              mensaje="Pronto vas a encontrar piezas artesanales únicas."
-            />
-          ) : (
-            <View style={[styles.grid, { gap: spacing.md }]}>
-              {productos.map((producto) => (
-                <View
-                  key={producto.id}
-                  style={{
-                    width:
-                      columns === 1
-                        ? '100%'
-                        : columns === 2
-                          ? '48.5%'
-                          : '23.5%',
-                  }}
-                >
-                  <ProductCard product={producto} />
+            {cargando ? (
+              <Loading />
+            ) : productos.length === 0 ? (
+              <EmptyState
+                title="Todavía no hay productos"
+                mensaje="Pronto vas a encontrar piezas artesanales únicas."
+              />
+            ) : (
+              <View style={styles.grid}>
+                {productos.map((producto) => (
+                  <View
+                    key={producto.id}
+                    style={{
+                      width: columns === 1 ? '100%' : columns === 2 ? '48.5%' : '23.5%',
+                    }}
+                  >
+                    <ProductCard product={producto} />
+                  </View>
+                ))}
+              </View>
+            )}
+          </View>
+        </FadeInView>
+
+        {/* Beneficios */}
+        <FadeInView delay={200}>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Por qué elegirnos</Text>
+            <View style={styles.benefitsGrid}>
+              {BENEFICIOS.map((b) => (
+                <View key={b.title} style={styles.benefit}>
+                  <View style={styles.benefitIcon}>
+                    <Ionicons name={b.icon} size={26} color={colors.primary} />
+                  </View>
+                  <Text style={styles.benefitTitle}>{b.title}</Text>
+                  <Text style={styles.benefitText}>{b.text}</Text>
                 </View>
               ))}
             </View>
-          )}
-        </View>
-
-        {/* Beneficios */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Por qué elegirnos</Text>
-          <View style={styles.benefitsGrid}>
-            {BENEFICIOS.map((b) => (
-              <View key={b.title} style={styles.benefit}>
-                <View style={styles.benefitIcon}>
-                  <Ionicons name={b.icon} size={26} color={colors.primary} />
-                </View>
-                <Text style={styles.benefitTitle}>{b.title}</Text>
-                <Text style={styles.benefitText}>{b.text}</Text>
-              </View>
-            ))}
           </View>
-        </View>
+        </FadeInView>
       </View>
+
+      <Footer />
     </ScrollView>
   );
 }
@@ -152,15 +176,14 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
   },
-  inner: {
+  hero: {
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xxl,
+  },
+  heroInner: {
     width: '100%',
     maxWidth: maxContentWidth,
     alignSelf: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.xl,
-    gap: spacing.xxl,
-  },
-  hero: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     alignItems: 'center',
@@ -172,7 +195,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   kicker: {
-    color: colors.secondary,
+    color: colors.secondaryDark,
     fontWeight: '700',
     fontSize: fontSize.sm,
     textTransform: 'uppercase',
@@ -197,9 +220,17 @@ const styles = StyleSheet.create({
   },
   heroImage: {
     flex: 1,
-    minWidth: 220,
+    minWidth: 180,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  inner: {
+    width: '100%',
+    maxWidth: maxContentWidth,
+    alignSelf: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.xl,
+    gap: spacing.xxl,
   },
   section: {
     gap: spacing.md,
@@ -222,24 +253,42 @@ const styles = StyleSheet.create({
   categoryGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.sm,
+    gap: spacing.md,
   },
   categoryCard: {
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderRadius: radius.pill,
+    flex: 1,
+    minWidth: 140,
+    maxWidth: 240,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
+    borderRadius: radius.lg,
+    padding: spacing.md,
+  },
+  categoryIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.primarySoft,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   categoryName: {
     color: colors.text,
     fontWeight: '600',
     fontSize: fontSize.sm,
+    flex: 1,
+  },
+  pressed: {
+    opacity: 0.85,
   },
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    gap: spacing.md,
   },
   benefitsGrid: {
     flexDirection: 'row',

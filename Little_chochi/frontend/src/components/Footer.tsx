@@ -1,42 +1,39 @@
-import { View, Text, StyleSheet } from 'react-native';
-import { Link } from 'expo-router';
-import { Logo } from './Logo';
-import { colors, spacing, fontSize } from '@/styles/theme';
+import { View, Text, StyleSheet, Pressable, Linking } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { colors, spacing, fontSize, social } from '@/styles/theme';
 
+const REDES = [
+  { icon: 'logo-facebook' as const, url: social.facebook, label: 'Facebook' },
+  { icon: 'logo-instagram' as const, url: social.instagram, label: 'Instagram' },
+  {
+    icon: 'logo-whatsapp' as const,
+    url: `https://wa.me/${social.whatsappNumber}`,
+    label: 'WhatsApp',
+  },
+];
+
+/** Pie de página compacto: marca, redes sociales y copyright. */
 export function Footer() {
   return (
     <View style={styles.footer}>
       <View style={styles.inner}>
-        <View style={styles.column}>
-          <Logo size={40} withText />
-          <Text style={styles.tagline}>
-            Productos artesanales para bebés, hechos a mano con amor y dedicación.
-          </Text>
-        </View>
+        <Text style={styles.brand}>Little Chochi</Text>
+        <Text style={styles.tagline}>
+          Productos artesanales para bebés, hechos a mano con amor.
+        </Text>
 
-        <View style={styles.column}>
-          <Text style={styles.heading}>Navegación</Text>
-          <Link href="/" style={styles.link}>
-            Inicio
-          </Link>
-          <Link href="/catalogo" style={styles.link}>
-            Catálogo
-          </Link>
-          <Link href="/contacto" style={styles.link}>
-            Contacto
-          </Link>
-          <Link href="/login" style={styles.link}>
-            Mi cuenta
-          </Link>
-        </View>
-
-        <View style={styles.column}>
-          <Text style={styles.heading}>Contacto</Text>
-          <Text style={styles.text}>Consultanos por WhatsApp o correo.</Text>
-          <Text style={styles.text}>Enviamos a todo el país.</Text>
-          <Link href="/contacto" style={styles.contactLink}>
-            Escribinos
-          </Link>
+        <View style={styles.socialRow}>
+          {REDES.map((r) => (
+            <Pressable
+              key={r.label}
+              accessibilityRole="link"
+              accessibilityLabel={r.label}
+              onPress={() => Linking.openURL(r.url)}
+              style={({ pressed }) => [styles.socialBtn, pressed && styles.pressed]}
+            >
+              <Ionicons name={r.icon} size={22} color={colors.primaryDark} />
+            </Pressable>
+          ))}
         </View>
       </View>
 
@@ -54,47 +51,41 @@ const styles = StyleSheet.create({
     backgroundColor: colors.cream,
     borderTopWidth: 1,
     borderTopColor: colors.border,
+    marginTop: spacing.xxl,
   },
   inner: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: spacing.xl,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.xl,
-    maxWidth: 1160,
-    width: '100%',
-    alignSelf: 'center',
-  },
-  column: {
-    flex: 1,
-    minWidth: 220,
+    alignItems: 'center',
     gap: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.lg,
   },
-  heading: {
-    fontSize: fontSize.md,
+  brand: {
+    fontSize: fontSize.lg,
     fontWeight: '800',
     color: colors.text,
-    marginBottom: spacing.xs,
   },
   tagline: {
+    fontSize: fontSize.sm,
     color: colors.textMuted,
-    fontSize: fontSize.sm,
-    lineHeight: 20,
+    textAlign: 'center',
   },
-  text: {
-    color: colors.textMuted,
-    fontSize: fontSize.sm,
-  },
-  link: {
-    color: colors.text,
-    fontSize: fontSize.sm,
-    paddingVertical: 2,
-  },
-  contactLink: {
-    color: colors.primaryDark,
-    fontWeight: '700',
-    fontSize: fontSize.sm,
+  socialRow: {
+    flexDirection: 'row',
+    gap: spacing.md,
     marginTop: spacing.xs,
+  },
+  socialBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pressed: {
+    opacity: 0.7,
   },
   bottom: {
     borderTopWidth: 1,
@@ -106,5 +97,6 @@ const styles = StyleSheet.create({
   copyright: {
     color: colors.textMuted,
     fontSize: fontSize.xs,
+    textAlign: 'center',
   },
 });

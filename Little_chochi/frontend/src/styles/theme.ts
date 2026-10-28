@@ -79,3 +79,26 @@ export const shadows = {
 
 /** Ancho máximo del contenido en pantallas grandes (web). */
 export const maxContentWidth = 1160;
+
+/** Degradados para botones y secciones destacadas. */
+export const gradients = {
+  hero: ['#FFF6F0', '#F6E9E3'] as const,
+  primary: ['#1FA6BB', '#157687'] as const,
+  coral: ['#EB8A80', '#D05B50'] as const,
+  warm: ['#F8CD72', '#E9A23B'] as const,
+  soft: ['#FFFFFF', '#F3EAE6'] as const,
+};
+
+/** Enlaces a redes sociales de la marca. */
+export const social = {
+  facebook: 'https://facebook.com/littlechochi',
+  instagram: 'https://instagram.com/littlechochi',
+  whatsappNumber: '5491100000000',
+};
+
+/** Duración de las animaciones (ms). */
+export const motion = {
+  fast: 200,
+  base: 350,
+  slow: 550,
+};
