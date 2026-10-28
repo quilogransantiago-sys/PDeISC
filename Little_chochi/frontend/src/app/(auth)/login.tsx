@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, Text, View, Pressable, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import * as AuthSession from 'expo-auth-session';
 import { Logo } from '@/components/Logo';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -9,16 +10,59 @@ import { ErrorBanner } from '@/components/ui/Feedback';
 import { colors, spacing, fontSize, radius } from '@/styles/theme';
 import { useAuth } from '@/context/AuthContext';
 
-type Proveedor = 'google' | 'facebook' | 'github';
+const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID;
+
+const googleDiscovery = {
+  authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
+};
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, socialLogin } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
+
+  const [googleRequest, googleResponse, googlePromptAsync] = AuthSession.useAuthRequest(
+    {
+      clientId: GOOGLE_CLIENT_ID ?? '',
+      scopes: ['openid', 'profile', 'email'],
+      responseType: AuthSession.ResponseType.Token,
+      redirectUri: AuthSession.makeRedirectUri(),
+      usePKCE: false,
+      extraParams: { prompt: 'select_account' },
+    },
+    googleDiscovery,
+  );
+
+  useEffect(() => {
+    if (googleResponse?.type === 'success' || googleResponse?.type === 'error') {
+      (async () => {
+        if (googleResponse.type === 'success') {
+          const token = googleResponse.params?.access_token;
+          if (!token) {
+            setError('Google no devolvió un token válido');
+            return;
+          }
+          setError(null);
+          setInfo(null);
+          setCargando(true);
+          try {
+            await socialLogin('google', token);
+            router.replace('/cuenta');
+          } catch (e: any) {
+            setError(e?.message || 'No se pudo iniciar sesión con Google');
+          } finally {
+            setCargando(false);
+          }
+        } else {
+          setError('No se pudo completar el inicio de sesión con Google');
+        }
+      })();
+    }
+  }, [googleResponse, socialLogin, router]);
 
   async function handleLogin() {
     setError(null);
@@ -38,10 +82,24 @@ export default function LoginScreen() {
     }
   }
 
-  function handleSocial(proveedor: Proveedor) {
+  function handleGoogle() {
+    setError(null);
+    setInfo(null);
+    if (!GOOGLE_CLIENT_ID) {
+      setInfo('Falta configurar EXPO_PUBLIC_GOOGLE_CLIENT_ID en frontend/.env');
+      return;
+    }
+    if (!googleRequest) {
+      setError('El cliente de Google todavía no está listo');
+      return;
+    }
+    googlePromptAsync().catch(() => setError('No se pudo abrir la ventana de Google'));
+  }
+
+  function handleSocial(proveedor: 'facebook' | 'github') {
     setError(null);
     setInfo(
-      `El inicio de sesión con ${proveedor} requiere configurar las credenciales del proveedor (ver guía de instalación). Usá email y contraseña para probar la app.`,
+      `El inicio de sesión con ${proveedor} requiere configurar las credenciales de ese proveedor. Por ahora usá Google o email y contraseña.`,
     );
   }
 
@@ -90,13 +148,28 @@ export default function LoginScreen() {
         </View>
 
         <View style={styles.socialRow}>
-          <Pressable onPress={() => handleSocial('google')} style={styles.socialButton}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Iniciar sesión con Google"
+            onPress={handleGoogle}
+            style={styles.socialButton}
+          >
             <Ionicons name="logo-google" size={22} color={colors.text} />
           </Pressable>
-          <Pressable onPress={() => handleSocial('facebook')} style={styles.socialButton}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Iniciar sesión con Facebook"
+            onPress={() => handleSocial('facebook')}
+            style={styles.socialButton}
+          >
             <Ionicons name="logo-facebook" size={22} color={colors.text} />
           </Pressable>
-          <Pressable onPress={() => handleSocial('github')} style={styles.socialButton}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Iniciar sesión con GitHub"
+            onPress={() => handleSocial('github')}
+            style={styles.socialButton}
+          >
             <Ionicons name="logo-github" size={22} color={colors.text} />
           </Pressable>
         </View>
