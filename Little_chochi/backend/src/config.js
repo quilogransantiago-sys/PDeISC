@@ -37,4 +37,9 @@ export const config = {
   ]),
 
   whatsapp: process.env.WHATSAPP_NUMBER || '',
+
+  github: {
+    clientId: process.env.GITHUB_CLIENT_ID || '',
+    clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
+  },
 };

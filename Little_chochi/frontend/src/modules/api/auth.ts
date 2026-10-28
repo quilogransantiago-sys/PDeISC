@@ -26,7 +26,7 @@ export const authApi = {
     return api.get<{ ok: boolean; usuario: Usuario }>('/auth/me');
   },
 
-  social(proveedor: 'google' | 'facebook' | 'github', token: string) {
-    return api.post<AuthResponse>('/auth/social', { proveedor, token }, false);
+  social(proveedor: 'google' | 'facebook' | 'github', token?: string, code?: string) {
+    return api.post<AuthResponse>('/auth/social', { proveedor, token, code }, false);
   },
 };

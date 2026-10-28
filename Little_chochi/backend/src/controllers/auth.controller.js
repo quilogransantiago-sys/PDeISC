@@ -176,8 +176,8 @@ export async function me(req, res) {
 /* Login social (Google, Facebook, GitHub)                             */
 /* ------------------------------------------------------------------ */
 
-/** Verifica el token contra el proveedor y devuelve la identidad. */
-async function verifySocial(proveedor, token) {
+/** Verifica el token/código contra el proveedor y devuelve la identidad. */
+async function verifySocial(proveedor, token, code) {
   if (proveedor === 'google') {
     const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
       headers: { Authorization: `Bearer ${token}` },
@@ -197,15 +197,33 @@ async function verifySocial(proveedor, token) {
   }
 
   if (proveedor === 'github') {
+    // GitHub usa el flujo de código de autorización: si viene `code`, lo cambiamos por un access token.
+    let accessToken = token;
+    if (!accessToken && code) {
+      const tokenRes = await fetch('https://github.com/login/oauth/access_token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          client_id: config.github.clientId,
+          client_secret: config.github.clientSecret,
+          code,
+        }),
+      });
+      if (!tokenRes.ok) throw httpError(401, 'No se pudo validar el código de GitHub');
+      const tokenData = await tokenRes.json();
+      accessToken = tokenData.access_token;
+    }
+    if (!accessToken) throw httpError(401, 'No se pudo validar el token de GitHub');
+
     const userRes = await fetch('https://api.github.com/user', {
-      headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'little-chochi' },
+      headers: { Authorization: `Bearer ${accessToken}`, 'User-Agent': 'little-chochi' },
     });
     if (!userRes.ok) throw httpError(401, 'No se pudo validar el token de GitHub');
     const data = await userRes.json();
     let email = data.email;
     if (!email) {
       const emailsRes = await fetch('https://api.github.com/user/emails', {
-        headers: { Authorization: `Bearer ${token}`, 'User-Agent': 'little-chochi' },
+        headers: { Authorization: `Bearer ${accessToken}`, 'User-Agent': 'little-chochi' },
       });
       if (emailsRes.ok) {
         const emails = await emailsRes.json();
@@ -221,8 +239,8 @@ async function verifySocial(proveedor, token) {
 
 export async function socialLogin(req, res, next) {
   try {
-    const { proveedor, token } = req.body;
-    const identity = await verifySocial(proveedor, token);
+    const { proveedor, token, code } = req.body;
+    const identity = await verifySocial(proveedor, token, code);
 
     if (!identity.socialId) {
       throw httpError(401, 'No se pudo obtener la identidad del proveedor');

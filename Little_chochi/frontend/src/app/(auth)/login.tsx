@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, Text, View, Pressable, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,10 +10,20 @@ import { ErrorBanner } from '@/components/ui/Feedback';
 import { colors, spacing, fontSize, radius } from '@/styles/theme';
 import { useAuth } from '@/context/AuthContext';
 
+type Proveedor = 'google' | 'facebook' | 'github';
+
 const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID;
+const FACEBOOK_APP_ID = process.env.EXPO_PUBLIC_FACEBOOK_APP_ID;
+const GITHUB_CLIENT_ID = process.env.EXPO_PUBLIC_GITHUB_CLIENT_ID;
 
 const googleDiscovery = {
   authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
+};
+const facebookDiscovery = {
+  authorizationEndpoint: 'https://www.facebook.com/dialog/oauth',
+};
+const githubDiscovery = {
+  authorizationEndpoint: 'https://github.com/login/oauth/authorize',
 };
 
 export default function LoginScreen() {
@@ -25,7 +35,8 @@ export default function LoginScreen() {
   const [info, setInfo] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
 
-  const [googleRequest, googleResponse, googlePromptAsync] = AuthSession.useAuthRequest(
+  // Google: flujo implícito → access_token
+  const [, googleResponse, googlePromptAsync] = AuthSession.useAuthRequest(
     {
       clientId: GOOGLE_CLIENT_ID ?? '',
       scopes: ['openid', 'profile', 'email'],
@@ -37,32 +48,85 @@ export default function LoginScreen() {
     googleDiscovery,
   );
 
+  // Facebook: flujo implícito → access_token
+  const [, facebookResponse, facebookPromptAsync] = AuthSession.useAuthRequest(
+    {
+      clientId: FACEBOOK_APP_ID ?? '',
+      scopes: ['public_profile', 'email'],
+      responseType: AuthSession.ResponseType.Token,
+      redirectUri: AuthSession.makeRedirectUri(),
+      usePKCE: false,
+    },
+    facebookDiscovery,
+  );
+
+  // GitHub: flujo de código → el backend lo cambia por un access token
+  const [, githubResponse, githubPromptAsync] = AuthSession.useAuthRequest(
+    {
+      clientId: GITHUB_CLIENT_ID ?? '',
+      scopes: ['read:user', 'user:email'],
+      responseType: AuthSession.ResponseType.Code,
+      redirectUri: AuthSession.makeRedirectUri(),
+      usePKCE: false,
+    },
+    githubDiscovery,
+  );
+
+  const completarSocial = useCallback(
+    async (proveedor: Proveedor, token?: string, code?: string) => {
+      setError(null);
+      setInfo(null);
+      try {
+        await socialLogin(proveedor, token, code);
+        router.replace('/cuenta');
+      } catch (e: any) {
+        setError(e?.message || `No se pudo iniciar sesión con ${proveedor}`);
+      }
+    },
+    [socialLogin, router],
+  );
+
   useEffect(() => {
     if (googleResponse?.type === 'success' || googleResponse?.type === 'error') {
       (async () => {
         if (googleResponse.type === 'success') {
           const token = googleResponse.params?.access_token;
-          if (!token) {
-            setError('Google no devolvió un token válido');
-            return;
-          }
-          setError(null);
-          setInfo(null);
-          setCargando(true);
-          try {
-            await socialLogin('google', token);
-            router.replace('/cuenta');
-          } catch (e: any) {
-            setError(e?.message || 'No se pudo iniciar sesión con Google');
-          } finally {
-            setCargando(false);
-          }
+          if (token) await completarSocial('google', token);
+          else setError('Google no devolvió un token válido');
         } else {
           setError('No se pudo completar el inicio de sesión con Google');
         }
       })();
     }
-  }, [googleResponse, socialLogin, router]);
+  }, [googleResponse, completarSocial]);
+
+  useEffect(() => {
+    if (facebookResponse?.type === 'success' || facebookResponse?.type === 'error') {
+      (async () => {
+        if (facebookResponse.type === 'success') {
+          const token = facebookResponse.params?.access_token;
+          if (token) await completarSocial('facebook', token);
+          else setError('Facebook no devolvió un token válido');
+        } else {
+          setError('No se pudo completar el inicio de sesión con Facebook');
+        }
+      })();
+    }
+  }, [facebookResponse, completarSocial]);
+
+  useEffect(() => {
+    if (githubResponse?.type === 'success' || githubResponse?.type === 'error') {
+      (async () => {
+        if (githubResponse.type === 'success') {
+          const code = githubResponse.params?.code;
+          if (code) await completarSocial('github', undefined, code);
+          else setError('GitHub no devolvió un código válido');
+        } else {
+          setError('No se pudo completar el inicio de sesión con GitHub');
+        }
+      })();
+    }
+  }, [githubResponse, completarSocial]);
 
   async function handleLogin() {
     setError(null);
@@ -82,25 +146,18 @@ export default function LoginScreen() {
     }
   }
 
-  function handleGoogle() {
+  function abrirProveedor(
+    promptAsync: () => Promise<unknown>,
+    clienteId: string | undefined,
+    nombre: string,
+  ) {
     setError(null);
     setInfo(null);
-    if (!GOOGLE_CLIENT_ID) {
-      setInfo('Falta configurar EXPO_PUBLIC_GOOGLE_CLIENT_ID en frontend/.env');
+    if (!clienteId) {
+      setInfo(`Falta configurar la variable del cliente de ${nombre} en frontend/.env`);
       return;
     }
-    if (!googleRequest) {
-      setError('El cliente de Google todavía no está listo');
-      return;
-    }
-    googlePromptAsync().catch(() => setError('No se pudo abrir la ventana de Google'));
-  }
-
-  function handleSocial(proveedor: 'facebook' | 'github') {
-    setError(null);
-    setInfo(
-      `El inicio de sesión con ${proveedor} requiere configurar las credenciales de ese proveedor. Por ahora usá Google o email y contraseña.`,
-    );
+    promptAsync().catch(() => setError(`No se pudo abrir la ventana de ${nombre}`));
   }
 
   return (
@@ -151,7 +208,7 @@ export default function LoginScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Iniciar sesión con Google"
-            onPress={handleGoogle}
+            onPress={() => abrirProveedor(googlePromptAsync, GOOGLE_CLIENT_ID, 'Google')}
             style={styles.socialButton}
           >
             <Ionicons name="logo-google" size={22} color={colors.text} />
@@ -159,7 +216,7 @@ export default function LoginScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Iniciar sesión con Facebook"
-            onPress={() => handleSocial('facebook')}
+            onPress={() => abrirProveedor(facebookPromptAsync, FACEBOOK_APP_ID, 'Facebook')}
             style={styles.socialButton}
           >
             <Ionicons name="logo-facebook" size={22} color={colors.text} />
@@ -167,7 +224,7 @@ export default function LoginScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Iniciar sesión con GitHub"
-            onPress={() => handleSocial('github')}
+            onPress={() => abrirProveedor(githubPromptAsync, GITHUB_CLIENT_ID, 'GitHub')}
             style={styles.socialButton}
           >
             <Ionicons name="logo-github" size={22} color={colors.text} />

@@ -43,12 +43,17 @@ export const loginSchema = z.object({
   password: z.string({ required_error: 'La contraseña es obligatoria' }),
 });
 
-export const socialLoginSchema = z.object({
-  proveedor: z.enum(['google', 'facebook', 'github'], {
-    errorMap: () => ({ message: 'Proveedor social no soportado' }),
-  }),
-  token: z.string({ required_error: 'El token del proveedor es obligatorio' }),
-});
+export const socialLoginSchema = z
+  .object({
+    proveedor: z.enum(['google', 'facebook', 'github'], {
+      errorMap: () => ({ message: 'Proveedor social no soportado' }),
+    }),
+    token: z.string().optional(),
+    code: z.string().optional(),
+  })
+  .refine((data) => data.token || data.code, {
+    message: 'Se requiere el token o el código del proveedor',
+  });
 
 export const refreshSchema = z.object({
   refreshToken: z.string({ required_error: 'El refresh token es obligatorio' }),

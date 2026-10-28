@@ -22,7 +22,11 @@ interface AuthContextValue {
     password: string,
     confirmPassword: string,
   ) => Promise<void>;
-  socialLogin: (proveedor: 'google' | 'facebook' | 'github', token: string) => Promise<void>;
+  socialLogin: (
+    proveedor: 'google' | 'facebook' | 'github',
+    token?: string,
+    code?: string,
+  ) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -109,8 +113,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const socialLogin = useCallback(
-    async (proveedor: 'google' | 'facebook' | 'github', token: string) => {
-      const res = await authApi.social(proveedor, token);
+    async (proveedor: 'google' | 'facebook' | 'github', token?: string, code?: string) => {
+      const res = await authApi.social(proveedor, token, code);
       await persistSession(res);
     },
     [persistSession],
