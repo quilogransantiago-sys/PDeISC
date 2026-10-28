@@ -249,7 +249,10 @@ const styles = StyleSheet.create({
     fontSize: fontSize.sm,
   },
   hamburger: {
-    padding: 8,
+    width: 44,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   mobileMenu: {
     borderTopWidth: 1,
