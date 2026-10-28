@@ -1,3 +1,4 @@
+import Constants from 'expo-constants';
 import { storage, storageKeys } from '../storage';
 
 /**
@@ -7,8 +8,26 @@ import { storage, storageKeys } from '../storage';
  * - Convierte los errores del backend en mensajes comprensibles.
  */
 
+/**
+ * En un dispositivo físico (Expo Go) `localhost` apunta al teléfono, no a la
+ * computadora. Derivamos la IP del servidor de desarrollo desde Expo para que
+ * la API sea accesible tanto en web como en el celular.
+ */
+function getDevHost(): string | null {
+  try {
+    const hostUri = Constants.expoConfig?.hostUri; // ej. "192.168.1.10:8081"
+    if (hostUri) return hostUri.split(':')[0];
+  } catch {
+    // sin acceso a Constants, usamos localhost
+  }
+  return null;
+}
+
+const devHost = getDevHost();
+
 export const API_URL =
-  process.env.EXPO_PUBLIC_API_URL || 'http://localhost:4000/api';
+  process.env.EXPO_PUBLIC_API_URL ||
+  (devHost ? `http://${devHost}:4000/api` : 'http://localhost:4000/api');
 
 export const API_ORIGIN = API_URL.replace(/\/api\/?$/, '');
 
