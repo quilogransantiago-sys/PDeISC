@@ -89,11 +89,11 @@ export const gradients = {
   soft: ['#FFFFFF', '#F3EAE6'] as const,
 };
 
-/** Enlaces a redes sociales de la marca. */
+/** Enlaces a redes sociales de la marca (configurables desde frontend/.env). */
 export const social = {
-  facebook: 'https://facebook.com/littlechochi',
-  instagram: 'https://instagram.com/littlechochi',
-  whatsappNumber: '5491100000000',
+  facebook: process.env.EXPO_PUBLIC_FACEBOOK_URL || 'https://facebook.com/littlechochi',
+  instagram: process.env.EXPO_PUBLIC_INSTAGRAM_URL || 'https://instagram.com/littlechochi',
+  whatsappNumber: process.env.EXPO_PUBLIC_WHATSAPP_NUMBER || '5491100000000',
 };
 
 /** Duración de las animaciones (ms). */
