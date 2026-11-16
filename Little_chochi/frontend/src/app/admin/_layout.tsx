@@ -1,14 +1,18 @@
+import { useMemo } from 'react';
 import { Stack, Redirect, Link, usePathname } from 'expo-router';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Logo } from '@/components/Logo';
 import { FullScreenLoading } from '@/components/ui/Feedback';
-import { colors, spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
+import { spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function AdminLayout() {
   const { usuario, initializing, logout } = useAuth();
   const pathname = usePathname();
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   if (initializing) return <FullScreenLoading />;
   if (!usuario) return <Redirect href="/login" />;
@@ -74,7 +78,7 @@ export default function AdminLayout() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
   topbar: {
     backgroundColor: colors.surface,

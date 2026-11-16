@@ -8,7 +8,7 @@
  *   - Amarillo suave  #F5C159
  */
 
-export const colors = {
+export const lightColors = {
   primary: '#1A92A6',
   primaryDark: '#157687',
   primarySoft: '#E3F3F6',
@@ -22,6 +22,13 @@ export const colors = {
 
   softBlue: '#A4BCE8',
   softBlueDark: '#5B7FC0',
+
+  lavender: '#E4E0F6',
+  lavenderDark: '#8A7BC8',
+  mint: '#DCF2E6',
+  mintDark: '#4B9C73',
+  blush: '#FBE3E8',
+  blushDark: '#C96B7E',
 
   cream: '#EEE3DF',
   background: '#FAF4F1',
@@ -41,6 +48,48 @@ export const colors = {
 
   overlay: 'rgba(74, 63, 59, 0.45)',
 };
+
+/** Paleta oscura: mantiene los acentos y cambia los neutros. */
+export const darkColors = {
+  ...lightColors,
+
+  primarySoft: '#163239',
+  secondarySoft: '#3A211F',
+  accentSoft: '#3A3019',
+  softBlue: '#2A3854',
+
+  lavender: '#2A2740',
+  mint: '#1E3A2D',
+  blush: '#3A2229',
+
+  cream: '#241E1C',
+  background: '#191413',
+  surface: '#251F1D',
+
+  text: '#F6EFEA',
+  textMuted: '#B9ADA6',
+  textOnPrimary: '#FFFFFF',
+
+  border: '#3B322F',
+  dangerSoft: '#3A1E1A',
+  successSoft: '#1E3329',
+  warningSoft: '#3A3019',
+
+  overlay: 'rgba(0, 0, 0, 0.6)',
+};
+
+/** Por compatibilidad, `colors` apunta a la paleta clara. */
+export const colors = lightColors;
+
+/** Colores pastel para acentos decorativos. */
+export const pastels = [
+  lightColors.primarySoft,
+  lightColors.secondarySoft,
+  lightColors.accentSoft,
+  lightColors.lavender,
+  lightColors.mint,
+  lightColors.blush,
+];
 
 export const spacing = {
   xs: 4,
@@ -83,6 +132,7 @@ export const maxContentWidth = 1160;
 /** Degradados para botones y secciones destacadas. */
 export const gradients = {
   hero: ['#FFF6F0', '#F6E9E3'] as const,
+  heroDark: ['#2B2321', '#191413'] as const,
   primary: ['#1FA6BB', '#157687'] as const,
   coral: ['#EB8A80', '#D05B50'] as const,
   warm: ['#F8CD72', '#E9A23B'] as const,

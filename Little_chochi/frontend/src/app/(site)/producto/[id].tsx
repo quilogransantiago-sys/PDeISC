@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ScrollView, Text, View, Pressable, StyleSheet } from 'react-native';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,7 +7,8 @@ import { Footer } from '@/components/Footer';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Loading, ErrorBanner } from '@/components/ui/Feedback';
-import { colors, spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
+import { spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
 import { productsApi } from '@/modules/api/products';
 import { formatPrice } from '@/modules/format';
 import type { Producto } from '@/modules/types';
@@ -38,6 +39,9 @@ export default function ProductoDetalleScreen() {
       active = false;
     };
   }, [id]);
+
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   if (cargando) {
     return (
@@ -106,7 +110,7 @@ export default function ProductoDetalleScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.background,

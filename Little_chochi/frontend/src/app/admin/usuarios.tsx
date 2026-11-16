@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ScrollView, Text, View, Pressable, StyleSheet } from 'react-native';
 import { Redirect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Loading, EmptyState, ErrorBanner, FullScreenLoading } from '@/components/ui/Feedback';
-import { colors, spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
+import { spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import { usersApi } from '@/modules/api/users';
 import type { Usuario } from '@/modules/types';
 
@@ -46,6 +47,9 @@ export default function AdminUsuarios() {
       active = false;
     };
   }, [currentUser, version]);
+
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   if (initializing) return <FullScreenLoading />;
   if (!currentUser) return <Redirect href="/login" />;
@@ -156,7 +160,7 @@ export default function AdminUsuarios() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
   container: { flexGrow: 1 },
   inner: { width: '100%', maxWidth: maxContentWidth, alignSelf: 'center', padding: spacing.lg, gap: spacing.md },

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   Text,
   TextInput,
@@ -9,7 +9,8 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, radius, fontSize } from '@/styles/theme';
+import { radius, fontSize } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -21,6 +22,8 @@ interface InputProps extends TextInputProps {
 export function Input({ label, error, containerStyle, multiline, secureTextEntry, ...props }: InputProps) {
   const [hidden, setHidden] = useState(secureTextEntry === true);
   const esContrasena = secureTextEntry === true;
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -70,7 +73,7 @@ export function Input({ label, error, containerStyle, multiline, secureTextEntry
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   container: {
     gap: 6,
   },

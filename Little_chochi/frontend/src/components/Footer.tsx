@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
 import { View, Text, StyleSheet, Pressable, Linking } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, fontSize, social } from '@/styles/theme';
+import { spacing, fontSize, social } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
 
 const REDES = [
   { icon: 'logo-facebook' as const, url: social.facebook, label: 'Facebook' },
@@ -14,6 +16,8 @@ const REDES = [
 
 /** Pie de página compacto: marca, redes sociales y copyright. */
 export function Footer() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.footer}>
       <View style={styles.inner}>
@@ -46,7 +50,7 @@ export function Footer() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   footer: {
     backgroundColor: colors.cream,
     borderTopWidth: 1,

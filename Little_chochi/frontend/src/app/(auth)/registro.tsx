@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ScrollView, Text, View, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { Logo } from '@/components/Logo';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { ErrorBanner } from '@/components/ui/Feedback';
-import { colors, spacing, fontSize, radius } from '@/styles/theme';
+import { spacing, fontSize, radius } from '@/styles/theme';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function RegistroScreen() {
   const router = useRouter();
@@ -18,6 +19,9 @@ export default function RegistroScreen() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
+
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   function validar() {
     const next: Record<string, string> = {};
@@ -107,7 +111,7 @@ export default function RegistroScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
   container: { flexGrow: 1, justifyContent: 'center', padding: spacing.lg },
   card: {

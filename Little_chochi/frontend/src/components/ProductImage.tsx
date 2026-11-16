@@ -1,9 +1,9 @@
 import { Image } from 'expo-image';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { View, StyleSheet, type ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { resolveMediaUrl } from '@/modules/api/client';
-import { colors } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
 
 interface ProductImageProps {
   url?: string | null;
@@ -14,6 +14,8 @@ interface ProductImageProps {
 /** Imagen de producto con estado de carga y placeholder ante error/sin imagen. */
 export function ProductImage({ url, style, iconSize = 30 }: ProductImageProps) {
   const [failed, setFailed] = useState(false);
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const resolved = resolveMediaUrl(url);
 
   if (!resolved || failed) {
@@ -38,7 +40,7 @@ export function ProductImage({ url, style, iconSize = 30 }: ProductImageProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   wrapper: {
     backgroundColor: colors.cream,
     overflow: 'hidden',

@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ScrollView, Text, View, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Loading, ErrorBanner } from '@/components/ui/Feedback';
-import { colors, spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
+import { spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import { productsApi } from '@/modules/api/products';
 import { categoriesApi } from '@/modules/api/categories';
 import { usersApi } from '@/modules/api/users';
@@ -47,6 +48,9 @@ export default function AdminDashboard() {
       active = false;
     };
   }, [usuario]);
+
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const stats = [
     { label: 'Productos', value: totales.productos, icon: 'grid-outline' as const, color: colors.primary },
@@ -118,7 +122,7 @@ export default function AdminDashboard() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
   container: { flexGrow: 1 },
   inner: {

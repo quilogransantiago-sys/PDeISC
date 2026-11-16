@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, Text, View, Pressable, StyleSheet } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -7,8 +7,9 @@ import { Logo } from '@/components/Logo';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { ErrorBanner } from '@/components/ui/Feedback';
-import { colors, spacing, fontSize, radius } from '@/styles/theme';
+import { spacing, fontSize, radius } from '@/styles/theme';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 
 type Proveedor = 'google' | 'facebook' | 'github';
 
@@ -128,6 +129,9 @@ export default function LoginScreen() {
     }
   }, [githubResponse, completarSocial]);
 
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+
   async function handleLogin() {
     setError(null);
     setInfo(null);
@@ -242,7 +246,7 @@ export default function LoginScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
   container: { flexGrow: 1, justifyContent: 'center', padding: spacing.lg },
   card: {

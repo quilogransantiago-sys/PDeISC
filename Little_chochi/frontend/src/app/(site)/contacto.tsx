@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ScrollView, Text, View, StyleSheet, Linking, Pressable } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { ErrorBanner } from '@/components/ui/Feedback';
 import { Footer } from '@/components/Footer';
-import { colors, spacing, fontSize, radius } from '@/styles/theme';
+import { spacing, fontSize, radius } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
 import { contactApi } from '@/modules/api/contact';
 
 const WHATSAPP = process.env.EXPO_PUBLIC_WHATSAPP_NUMBER;
@@ -20,6 +21,9 @@ export default function ContactoScreen() {
   const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   function validar() {
     const next: typeof errors = {};
@@ -126,7 +130,7 @@ export default function ContactoScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
   container: { flexGrow: 1 },
   inner: {

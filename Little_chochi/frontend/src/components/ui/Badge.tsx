@@ -1,7 +1,11 @@
+import { useMemo } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { colors, fontSize } from '@/styles/theme';
+import { fontSize } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
 
 export function Badge({ text, color, bg }: { text: string; color?: string; bg?: string }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={[styles.badge, { backgroundColor: bg || colors.primarySoft }]}>
       <Text style={[styles.text, { color: color || colors.primaryDark }]}>{text}</Text>
@@ -9,7 +13,7 @@ export function Badge({ text, color, bg }: { text: string; color?: string; bg?: 
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   badge: {
     paddingHorizontal: 10,
     paddingVertical: 4,

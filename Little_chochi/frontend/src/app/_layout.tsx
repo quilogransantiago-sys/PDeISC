@@ -3,14 +3,15 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as WebBrowser from 'expo-web-browser';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
+import { ThemeProvider, useTheme } from '@/context/ThemeContext';
 import { LoadingScreen } from '@/components/LoadingScreen';
-import { colors } from '@/styles/theme';
 
 // Necesario en web para cerrar la ventana emergente del login social (Google/Facebook/GitHub).
 WebBrowser.maybeCompleteAuthSession();
 
 function RootNavigator() {
   const { initializing } = useAuth();
+  const { colors, mode } = useTheme();
   const [minSplash, setMinSplash] = useState(true);
 
   // Mostramos la pantalla de carga al menos 1,2 s para que se vea bien.
@@ -24,20 +25,24 @@ function RootNavigator() {
   }
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-        contentStyle: { backgroundColor: colors.background },
-      }}
-    />
+    <>
+      <StatusBar style={mode === 'dark' ? 'light' : 'dark'} />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: colors.background },
+        }}
+      />
+    </>
   );
 }
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
-      <StatusBar style="dark" />
-      <RootNavigator />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <RootNavigator />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

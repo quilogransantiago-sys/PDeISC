@@ -1,12 +1,16 @@
+import { useMemo } from 'react';
 import { Pressable, Text, StyleSheet, View } from 'react-native';
 import { Link } from 'expo-router';
 import { ProductImage } from './ProductImage';
 import { Badge } from './ui/Badge';
-import { colors, radius, spacing, fontSize, shadows } from '@/styles/theme';
+import { radius, spacing, fontSize, shadows } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
 import { formatPrice } from '@/modules/format';
 import type { Producto } from '@/modules/types';
 
 export function ProductCard({ product }: { product: Producto }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <Link href={`/producto/${product.id}`} asChild>
       <Pressable accessibilityRole="button" style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
@@ -26,7 +30,7 @@ export function ProductCard({ product }: { product: Producto }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
     borderRadius: radius.lg,

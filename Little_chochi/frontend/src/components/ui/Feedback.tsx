@@ -1,8 +1,12 @@
+import { useMemo } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, fontSize, spacing } from '@/styles/theme';
+import { fontSize, spacing } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
 
 export function Loading({ mensaje = 'Cargando…' }: { mensaje?: string }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.wrapper}>
       <ActivityIndicator size="large" color={colors.primary} />
@@ -12,6 +16,8 @@ export function Loading({ mensaje = 'Cargando…' }: { mensaje?: string }) {
 }
 
 export function FullScreenLoading() {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.full}>
       <ActivityIndicator size="large" color={colors.primary} />
@@ -29,6 +35,8 @@ export function EmptyState({
   mensaje?: string;
   icon?: keyof typeof Ionicons.glyphMap;
 }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.wrapper}>
       <View style={styles.iconCircle}>
@@ -41,6 +49,8 @@ export function EmptyState({
 }
 
 export function ErrorBanner({ mensaje }: { mensaje: string }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={styles.errorBanner}>
       <Ionicons name="alert-circle-outline" size={20} color={colors.danger} />
@@ -49,7 +59,7 @@ export function ErrorBanner({ mensaje }: { mensaje: string }) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   wrapper: {
     alignItems: 'center',
     justifyContent: 'center',

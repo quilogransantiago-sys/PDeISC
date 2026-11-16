@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { ScrollView, Text, View, StyleSheet } from 'react-native';
 import { Link, Redirect } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -5,11 +6,15 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { FullScreenLoading } from '@/components/ui/Feedback';
 import { Footer } from '@/components/Footer';
-import { colors, spacing, fontSize, radius } from '@/styles/theme';
+import { spacing, fontSize, radius } from '@/styles/theme';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function CuentaScreen() {
   const { usuario, initializing, logout } = useAuth();
+
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   if (initializing) return <FullScreenLoading />;
   if (!usuario) return <Redirect href="/login" />;
@@ -48,7 +53,7 @@ export default function CuentaScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
   container: { flexGrow: 1 },
   inner: {

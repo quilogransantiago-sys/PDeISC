@@ -1,6 +1,7 @@
+import { useMemo } from 'react';
 import { Image } from 'expo-image';
 import { View, Text, StyleSheet, type ViewStyle } from 'react-native';
-import { colors } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
 
 const logoAsset = require('@/assets/images/logo.jpeg');
 
@@ -13,6 +14,8 @@ interface LogoProps {
 
 /** Logotipo real de Little Chochi. Respeta sus proporciones (cuadrado). */
 export function Logo({ size = 40, withText = false, style }: LogoProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   return (
     <View style={[styles.row, style]}>
       <View style={{ width: size, height: size, borderRadius: size / 2, overflow: 'hidden' }}>
@@ -32,7 +35,7 @@ export function Logo({ size = 40, withText = false, style }: LogoProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',

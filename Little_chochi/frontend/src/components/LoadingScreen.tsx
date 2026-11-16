@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Animated, StyleSheet, View, Text } from 'react-native';
 import { Logo } from './Logo';
-import { colors, fontSize } from '@/styles/theme';
+import { fontSize } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
 
 /** Pantalla de carga inicial con animación del logo. */
 export function LoadingScreen() {
@@ -15,6 +16,9 @@ export function LoadingScreen() {
     ]).start();
   }, [opacity, scale]);
 
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
+
   return (
     <View style={styles.root}>
       <Animated.View style={[styles.box, { opacity, transform: [{ scale }] }]}>
@@ -26,7 +30,7 @@ export function LoadingScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.background,

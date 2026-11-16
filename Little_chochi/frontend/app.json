@@ -11,6 +11,7 @@
       "icon": "./assets/expo.icon"
     },
     "android": {
+      "package": "com.littlechochi.app",
       "adaptiveIcon": {
         "backgroundColor": "#EEE3DF",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
@@ -32,11 +33,30 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 96
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
       ]
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": false
-    }
+    },
+    "extra": {
+      "router": {
+        "asyncRoutes": {
+          "web": true
+        }
+      },
+      "eas": {
+        "projectId": "0319ff55-4c70-4e77-91ad-1276bc371547"
+      }
+    },
+    "owner": "quilogran2008"
   }
 }

@@ -1,6 +1,8 @@
+import { useMemo } from 'react';
 import { Pressable, Text, ActivityIndicator, StyleSheet, type ViewStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { colors, radius, fontSize } from '@/styles/theme';
+import { radius, fontSize } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
 
 type Variant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'accent';
 
@@ -23,6 +25,8 @@ export function Button({
   icon,
   style,
 }: ButtonProps) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
   const isDisabled = disabled || loading;
 
   const palette = {
@@ -61,7 +65,7 @@ export function Button({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   base: {
     flexDirection: 'row',
     alignItems: 'center',

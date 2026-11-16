@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ScrollView,
   Text,
@@ -13,7 +13,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { ProductCard } from '@/components/ProductCard';
 import { Footer } from '@/components/Footer';
 import { Loading, EmptyState, ErrorBanner } from '@/components/ui/Feedback';
-import { colors, spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
+import { spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
 import { productsApi } from '@/modules/api/products';
 import { categoriesApi } from '@/modules/api/categories';
 import type { Producto, Categoria } from '@/modules/types';
@@ -82,6 +83,9 @@ export default function CatalogoScreen() {
       active = false;
     };
   }, [buscarDebounced, categoria, orden]);
+
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.container}>
@@ -183,7 +187,7 @@ export default function CatalogoScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.background,

@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Pressable, Text, View, StyleSheet, useWindowDimensions } from 'react-native';
 import { Link, usePathname } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Logo } from './Logo';
 import { useAuth } from '@/context/AuthContext';
-import { colors, spacing, fontSize, radius } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
+import { spacing, fontSize, radius, type lightColors } from '@/styles/theme';
 
 const NAV_LINKS = [
   { href: '/', label: 'Inicio' },
@@ -19,12 +20,25 @@ function isActive(pathname: string, href: string) {
 
 export function Navbar() {
   const { usuario, logout } = useAuth();
+  const { colors, mode, toggle } = useTheme();
   const pathname = usePathname();
   const { width } = useWindowDimensions();
   const [open, setOpen] = useState(false);
   const isMobile = width < 860;
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   const close = () => setOpen(false);
+
+  const themeToggle = (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={mode === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+      onPress={toggle}
+      style={styles.themeToggle}
+    >
+      <Ionicons name={mode === 'dark' ? 'sunny-outline' : 'moon-outline'} size={20} color={colors.text} />
+    </Pressable>
+  );
 
   const accountActions = usuario ? (
     <>
@@ -81,14 +95,17 @@ export function Navbar() {
         </Link>
 
         {isMobile ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Abrir menú"
-            onPress={() => setOpen((v) => !v)}
-            style={styles.hamburger}
-          >
-            <Ionicons name={open ? 'close' : 'menu'} size={26} color={colors.text} />
-          </Pressable>
+          <View style={styles.mobileRight}>
+            {themeToggle}
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Abrir menú"
+              onPress={() => setOpen((v) => !v)}
+              style={styles.hamburger}
+            >
+              <Ionicons name={open ? 'close' : 'menu'} size={26} color={colors.text} />
+            </Pressable>
+          </View>
         ) : (
           <>
             <View style={styles.navLinks}>
@@ -107,7 +124,10 @@ export function Navbar() {
                 </Link>
               ))}
             </View>
-            <View style={styles.account}>{accountActions}</View>
+            <View style={styles.account}>
+              {themeToggle}
+              {accountActions}
+            </View>
           </>
         )}
       </View>
@@ -136,146 +156,162 @@ export function Navbar() {
   );
 }
 
-const styles = StyleSheet.create({
-  header: {
-    backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-    zIndex: 50,
-  },
-  inner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    maxWidth: 1160,
-    width: '100%',
-    alignSelf: 'center',
-  },
-  brand: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  wordmark: {
-    fontSize: fontSize.lg,
-    fontWeight: '800',
-    color: colors.text,
-    letterSpacing: -0.3,
-  },
-  navLinks: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  navItem: {
-    paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: radius.pill,
-  },
-  navText: {
-    fontSize: fontSize.md,
-    fontWeight: '600',
-    color: colors.textMuted,
-  },
-  navTextActive: {
-    color: colors.primaryDark,
-    fontWeight: '700',
-  },
-  account: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  accountLink: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-  },
-  accountText: {
-    color: colors.text,
-    fontWeight: '600',
-    fontSize: fontSize.sm,
-    maxWidth: 120,
-  },
-  adminLink: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-  },
-  adminText: {
-    color: colors.textMuted,
-    fontWeight: '600',
-    fontSize: fontSize.sm,
-  },
-  logoutLink: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-  },
-  logoutText: {
-    color: colors.danger,
-    fontWeight: '600',
-    fontSize: fontSize.sm,
-  },
-  loginLink: {
-    paddingHorizontal: 14,
-    paddingVertical: 9,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.primary,
-  },
-  loginText: {
-    color: colors.primary,
-    fontWeight: '700',
-    fontSize: fontSize.sm,
-  },
-  signupLink: {
-    paddingHorizontal: 14,
-    paddingVertical: 9,
-    borderRadius: radius.pill,
-    backgroundColor: colors.primary,
-  },
-  signupText: {
-    color: colors.textOnPrimary,
-    fontWeight: '700',
-    fontSize: fontSize.sm,
-  },
-  hamburger: {
-    width: 44,
-    height: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  mobileMenu: {
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    gap: 2,
-  },
-  mobileItem: {
-    paddingVertical: 12,
-  },
-  mobileText: {
-    fontSize: fontSize.md,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  mobileDivider: {
-    height: 1,
-    backgroundColor: colors.border,
-    marginVertical: spacing.sm,
-  },
-  mobileAccount: {
-    gap: spacing.sm,
-    paddingBottom: spacing.sm,
-  },
-});
+const createStyles = (colors: typeof lightColors) =>
+  StyleSheet.create({
+    header: {
+      backgroundColor: colors.surface,
+      borderBottomWidth: 1,
+      borderBottomColor: colors.border,
+      zIndex: 50,
+    },
+    inner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.sm,
+      maxWidth: 1160,
+      width: '100%',
+      alignSelf: 'center',
+    },
+    brand: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+    },
+    wordmark: {
+      fontSize: fontSize.lg,
+      fontWeight: '800',
+      color: colors.text,
+      letterSpacing: -0.3,
+    },
+    navLinks: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
+    navItem: {
+      paddingHorizontal: 14,
+      paddingVertical: 10,
+      borderRadius: radius.pill,
+    },
+    navText: {
+      fontSize: fontSize.md,
+      fontWeight: '600',
+      color: colors.textMuted,
+    },
+    navTextActive: {
+      color: colors.primaryDark,
+      fontWeight: '700',
+    },
+    account: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
+    accountLink: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+    },
+    accountText: {
+      color: colors.text,
+      fontWeight: '600',
+      fontSize: fontSize.sm,
+      maxWidth: 120,
+    },
+    adminLink: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+    },
+    adminText: {
+      color: colors.textMuted,
+      fontWeight: '600',
+      fontSize: fontSize.sm,
+    },
+    logoutLink: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 6,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+    },
+    logoutText: {
+      color: colors.danger,
+      fontWeight: '600',
+      fontSize: fontSize.sm,
+    },
+    loginLink: {
+      paddingHorizontal: 14,
+      paddingVertical: 9,
+      borderRadius: radius.pill,
+      borderWidth: 1,
+      borderColor: colors.primary,
+    },
+    loginText: {
+      color: colors.primary,
+      fontWeight: '700',
+      fontSize: fontSize.sm,
+    },
+    signupLink: {
+      paddingHorizontal: 14,
+      paddingVertical: 9,
+      borderRadius: radius.pill,
+      backgroundColor: colors.primary,
+    },
+    signupText: {
+      color: colors.textOnPrimary,
+      fontWeight: '700',
+      fontSize: fontSize.sm,
+    },
+    themeToggle: {
+      width: 40,
+      height: 40,
+      borderRadius: 20,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.background,
+    },
+    mobileRight: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: spacing.sm,
+    },
+    hamburger: {
+      width: 44,
+      height: 44,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    mobileMenu: {
+      borderTopWidth: 1,
+      borderTopColor: colors.border,
+      paddingHorizontal: spacing.lg,
+      paddingVertical: spacing.md,
+      gap: 2,
+    },
+    mobileItem: {
+      paddingVertical: 12,
+    },
+    mobileText: {
+      fontSize: fontSize.md,
+      fontWeight: '600',
+      color: colors.text,
+    },
+    mobileDivider: {
+      height: 1,
+      backgroundColor: colors.border,
+      marginVertical: spacing.sm,
+    },
+    mobileAccount: {
+      gap: spacing.sm,
+      paddingBottom: spacing.sm,
+    },
+  });

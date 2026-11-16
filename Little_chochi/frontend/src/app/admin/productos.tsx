@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   ScrollView,
   Text,
@@ -6,6 +6,7 @@ import {
   Pressable,
   StyleSheet,
   Switch,
+  Modal,
   useWindowDimensions,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,7 +16,8 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
 import { Loading, EmptyState, ErrorBanner } from '@/components/ui/Feedback';
-import { colors, spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
+import { spacing, fontSize, radius, maxContentWidth } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
 import { productsApi, type ProductInput } from '@/modules/api/products';
 import { categoriesApi } from '@/modules/api/categories';
 import { uploadImage } from '@/modules/api/uploads';
@@ -59,7 +61,6 @@ export default function AdminProductos() {
 
   const { width } = useWindowDimensions();
   const isMobile = width < 640;
-  const [version, setVersion] = useState(0);
 
   useEffect(() => {
     let active = true;
@@ -80,7 +81,10 @@ export default function AdminProductos() {
     return () => {
       active = false;
     };
-  }, [version]);
+  }, []);
+
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   function abrirNuevo() {
     setEditId(null);
@@ -170,12 +174,14 @@ export default function AdminProductos() {
     setGuardando(true);
     try {
       if (editId) {
-        await productsApi.update(editId, input);
+        const res = await productsApi.update(editId, input);
+        // Actualizamos la lista al instante sin recargar la página.
+        setProductos((prev) => prev.map((p) => (p.id === editId ? res.data : p)));
       } else {
-        await productsApi.create(input);
+        const res = await productsApi.create(input);
+        setProductos((prev) => [res.data, ...prev]);
       }
       cerrarForm();
-      setVersion((v) => v + 1);
     } catch (e: any) {
       setFormError(e?.message || 'No se pudo guardar el producto');
     } finally {
@@ -189,8 +195,8 @@ export default function AdminProductos() {
     setError(null);
     try {
       await productsApi.remove(confirmDeleteId);
+      setProductos((prev) => prev.filter((p) => p.id !== confirmDeleteId));
       setConfirmDeleteId(null);
-      setVersion((v) => v + 1);
     } catch (e: any) {
       setError(e?.message || 'No se pudo eliminar el producto');
       setConfirmDeleteId(null);
@@ -200,175 +206,218 @@ export default function AdminProductos() {
   }
 
   return (
-    <ScrollView style={styles.screen} contentContainerStyle={styles.container}>
-      <View style={styles.inner}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Productos</Text>
-          <Button title="Nuevo producto" icon="add" onPress={abrirNuevo} />
-        </View>
+    <View style={styles.screen}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.inner}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Productos</Text>
+            <Button title="Nuevo producto" icon="add" onPress={abrirNuevo} />
+          </View>
 
-        {error ? <ErrorBanner mensaje={error} /> : null}
+          {error ? <ErrorBanner mensaje={error} /> : null}
 
-        {showForm ? (
-          <View style={styles.formCard}>
-            <Text style={styles.formTitle}>{editId ? 'Editar producto' : 'Nuevo producto'}</Text>
-
-            {formError ? <ErrorBanner mensaje={formError} /> : null}
-
-            <View style={styles.formRow}>
-              <Input
-                label="Nombre"
-                value={form.nombre}
-                onChangeText={(v) => setForm((f) => ({ ...f, nombre: v }))}
-                placeholder="Ej: Babero artesanal"
-                containerStyle={styles.flexGrow}
-              />
-              <Input
-                label="Precio (ARS)"
-                value={form.precio}
-                onChangeText={(v) => setForm((f) => ({ ...f, precio: v.replace(',', '.') }))}
-                placeholder="4500"
-                keyboardType="decimal-pad"
-                containerStyle={styles.precioInput}
-              />
-            </View>
-
-            <Input
-              label="Descripción"
-              value={form.descripcion}
-              onChangeText={(v) => setForm((f) => ({ ...f, descripcion: v }))}
-              placeholder="Describí el producto…"
-              multiline
-            />
-
-            <View style={styles.field}>
-              <Text style={styles.fieldLabel}>Categoría</Text>
-              <View style={styles.chips}>
-                {categorias.map((cat) => {
-                  const active = form.categoria_id === cat.id;
-                  return (
+          {cargando ? (
+            <Loading />
+          ) : productos.length === 0 ? (
+            <EmptyState title="No hay productos" mensaje="Cargá el primer producto de la tienda." />
+          ) : (
+            <View style={styles.list}>
+              {productos.map((p) => (
+                <View key={p.id} style={styles.productRow}>
+                  <ProductImage url={p.imagen_url} style={styles.thumb} iconSize={22} />
+                  <View style={styles.rowInfo}>
+                    <Text style={styles.rowName}>{p.nombre}</Text>
+                    <Text style={styles.rowMeta}>
+                      {p.categoria} · {formatPrice(p.precio)}
+                    </Text>
+                    <View style={styles.rowBadges}>
+                      {!p.disponible ? <Badge text="Sin stock" color={colors.danger} bg={colors.dangerSoft} /> : null}
+                      {p.es_ejemplo ? <Badge text="Ejemplo" color={colors.warning} bg={colors.warningSoft} /> : null}
+                    </View>
+                  </View>
+                  <View style={[styles.rowActions, isMobile && styles.rowActionsMobile]}>
                     <Pressable
-                      key={cat.id}
                       accessibilityRole="button"
-                      accessibilityLabel={`Categoría ${cat.nombre}`}
-                      onPress={() => setForm((f) => ({ ...f, categoria_id: cat.id }))}
-                      style={[styles.chip, active && styles.chipActive]}
+                      accessibilityLabel={`Editar ${p.nombre}`}
+                      onPress={() => abrirEditar(p)}
+                      style={styles.iconBtn}
                     >
-                      <Text style={[styles.chipText, active && styles.chipTextActive]}>{cat.nombre}</Text>
+                      <Ionicons name="create-outline" size={20} color={colors.primary} />
                     </Pressable>
-                  );
-                })}
-              </View>
+                    <Pressable
+                      accessibilityRole="button"
+                      accessibilityLabel={`Eliminar ${p.nombre}`}
+                      onPress={() => setConfirmDeleteId(p.id)}
+                      style={styles.iconBtn}
+                    >
+                      <Ionicons name="trash-outline" size={20} color={colors.danger} />
+                    </Pressable>
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
+        </View>
+      </ScrollView>
+
+      {/* Modal: crear / editar producto */}
+      <Modal visible={showForm} transparent animationType="fade" onRequestClose={cerrarForm}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.formTitle}>{editId ? 'Editar producto' : 'Nuevo producto'}</Text>
+              <Pressable onPress={cerrarForm} accessibilityRole="button" accessibilityLabel="Cerrar" style={styles.closeBtn}>
+                <Ionicons name="close" size={24} color={colors.textMuted} />
+              </Pressable>
             </View>
 
-            <View style={styles.field}>
-              <Text style={styles.fieldLabel}>Imagen</Text>
-              <Input
-                value={form.imagen_url}
-                onChangeText={(v) => setForm((f) => ({ ...f, imagen_url: v }))}
-                placeholder="URL de la imagen (o subí una foto)"
-              />
-              <View style={styles.uploadRow}>
-                <Button
-                  title={subiendo ? 'Subiendo…' : 'Subir imagen desde el dispositivo'}
-                  variant="outline"
-                  icon="cloud-upload-outline"
-                  onPress={elegirImagen}
-                  disabled={subiendo}
+            <ScrollView style={styles.modalScroll} showsVerticalScrollIndicator>
+              {formError ? <ErrorBanner mensaje={formError} /> : null}
+
+              <View style={styles.formRow}>
+                <Input
+                  label="Nombre"
+                  value={form.nombre}
+                  onChangeText={(v) => setForm((f) => ({ ...f, nombre: v }))}
+                  placeholder="Ej: Babero artesanal"
+                  containerStyle={styles.flexGrow}
                 />
-                {form.imagen_url ? (
-                  <ProductImage url={form.imagen_url} style={styles.preview} iconSize={20} />
-                ) : null}
+                <Input
+                  label="Precio (ARS)"
+                  value={form.precio}
+                  onChangeText={(v) => setForm((f) => ({ ...f, precio: v.replace(',', '.') }))}
+                  placeholder="4500"
+                  keyboardType="decimal-pad"
+                  containerStyle={styles.precioInput}
+                />
               </View>
-            </View>
 
-            <View style={styles.switchRow}>
-              <Text style={styles.fieldLabel}>Disponible</Text>
-              <Switch
-                value={form.disponible}
-                onValueChange={(v) => setForm((f) => ({ ...f, disponible: v }))}
-                trackColor={{ true: colors.primary, false: colors.border }}
+              <Input
+                label="Descripción"
+                value={form.descripcion}
+                onChangeText={(v) => setForm((f) => ({ ...f, descripcion: v }))}
+                placeholder="Describí el producto…"
+                multiline
               />
-            </View>
-            <View style={styles.switchRow}>
-              <Text style={styles.fieldLabel}>Producto de ejemplo</Text>
-              <Switch
-                value={form.es_ejemplo}
-                onValueChange={(v) => setForm((f) => ({ ...f, es_ejemplo: v }))}
-                trackColor={{ true: colors.accent, false: colors.border }}
-              />
-            </View>
+
+              <View style={styles.field}>
+                <Text style={styles.fieldLabel}>Categoría</Text>
+                <View style={styles.chips}>
+                  {categorias.map((cat) => {
+                    const active = form.categoria_id === cat.id;
+                    return (
+                      <Pressable
+                        key={cat.id}
+                        accessibilityRole="button"
+                        accessibilityLabel={`Categoría ${cat.nombre}`}
+                        onPress={() => setForm((f) => ({ ...f, categoria_id: cat.id }))}
+                        style={[styles.chip, active && styles.chipActive]}
+                      >
+                        <Text style={[styles.chipText, active && styles.chipTextActive]}>{cat.nombre}</Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </View>
+
+              <View style={styles.field}>
+                <Text style={styles.fieldLabel}>Imagen</Text>
+                <Input
+                  value={form.imagen_url}
+                  onChangeText={(v) => setForm((f) => ({ ...f, imagen_url: v }))}
+                  placeholder="URL de la imagen (o subí una foto)"
+                />
+                <View style={styles.uploadRow}>
+                  <Button
+                    title={subiendo ? 'Subiendo…' : 'Subir imagen'}
+                    variant="outline"
+                    icon="cloud-upload-outline"
+                    onPress={elegirImagen}
+                    disabled={subiendo}
+                  />
+                  {form.imagen_url ? (
+                    <ProductImage url={form.imagen_url} style={styles.preview} iconSize={20} />
+                  ) : null}
+                </View>
+              </View>
+
+              <View style={styles.switchRow}>
+                <Text style={styles.fieldLabel}>Disponible</Text>
+                <Switch
+                  value={form.disponible}
+                  onValueChange={(v) => setForm((f) => ({ ...f, disponible: v }))}
+                  trackColor={{ true: colors.primary, false: colors.border }}
+                />
+              </View>
+              <View style={styles.switchRow}>
+                <Text style={styles.fieldLabel}>Producto de ejemplo</Text>
+                <Switch
+                  value={form.es_ejemplo}
+                  onValueChange={(v) => setForm((f) => ({ ...f, es_ejemplo: v }))}
+                  trackColor={{ true: colors.accent, false: colors.border }}
+                />
+              </View>
+            </ScrollView>
 
             <View style={styles.formActions}>
               <Button title="Cancelar" variant="ghost" onPress={cerrarForm} />
-              <Button title={editId ? 'Guardar cambios' : 'Crear producto'} onPress={guardar} loading={guardando} icon="save-outline" />
+              <Button
+                title={editId ? 'Guardar cambios' : 'Crear producto'}
+                onPress={guardar}
+                loading={guardando}
+                icon="save-outline"
+              />
             </View>
           </View>
-        ) : null}
+        </View>
+      </Modal>
 
-        {confirmDeleteId ? (
-          <View style={styles.confirmBar}>
-            <Text style={styles.confirmText}>¿Eliminar este producto? Esta acción no se puede deshacer.</Text>
+      {/* Modal: confirmar eliminación */}
+      <Modal
+        visible={confirmDeleteId !== null}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setConfirmDeleteId(null)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalCard, styles.confirmCard]}>
+            <View style={styles.confirmIcon}>
+              <Ionicons name="trash-outline" size={28} color={colors.danger} />
+            </View>
+            <Text style={styles.confirmTitle}>Eliminar producto</Text>
+            <Text style={styles.confirmText}>
+              ¿Seguro que querés eliminar este producto? Esta acción no se puede deshacer.
+            </Text>
             <View style={styles.confirmActions}>
               <Button title="Cancelar" variant="ghost" onPress={() => setConfirmDeleteId(null)} />
               <Button title="Eliminar" variant="danger" onPress={eliminar} loading={eliminando} icon="trash-outline" />
             </View>
           </View>
-        ) : null}
-
-        {cargando ? (
-          <Loading />
-        ) : productos.length === 0 ? (
-          <EmptyState title="No hay productos" mensaje="Cargá el primer producto de la tienda." />
-        ) : (
-          <View style={styles.list}>
-            {productos.map((p) => (
-              <View key={p.id} style={styles.productRow}>
-                <ProductImage url={p.imagen_url} style={styles.thumb} iconSize={22} />
-                <View style={styles.rowInfo}>
-                  <Text style={styles.rowName}>{p.nombre}</Text>
-                  <Text style={styles.rowMeta}>
-                    {p.categoria} · {formatPrice(p.precio)}
-                  </Text>
-                  <View style={styles.rowBadges}>
-                    {!p.disponible ? <Badge text="Sin stock" color={colors.danger} bg={colors.dangerSoft} /> : null}
-                    {p.es_ejemplo ? <Badge text="Ejemplo" color={colors.warning} bg={colors.warningSoft} /> : null}
-                  </View>
-                </View>
-                <View style={[styles.rowActions, isMobile && styles.rowActionsMobile]}>
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={`Editar ${p.nombre}`}
-                    onPress={() => abrirEditar(p)}
-                    style={styles.iconBtn}
-                  >
-                    <Ionicons name="create-outline" size={20} color={colors.primary} />
-                  </Pressable>
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={`Eliminar ${p.nombre}`}
-                    onPress={() => setConfirmDeleteId(p.id)}
-                    style={styles.iconBtn}
-                  >
-                    <Ionicons name="trash-outline" size={20} color={colors.danger} />
-                  </Pressable>
-                </View>
-              </View>
-            ))}
-          </View>
-        )}
-      </View>
-    </ScrollView>
+        </View>
+      </Modal>
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.background },
   container: { flexGrow: 1 },
   inner: { width: '100%', maxWidth: maxContentWidth, alignSelf: 'center', padding: spacing.lg, gap: spacing.md },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: spacing.sm },
   title: { fontSize: fontSize.xxl, fontWeight: '800', color: colors.text },
-  formCard: {
+
+  // Modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: colors.overlay,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.lg,
+  },
+  modalCard: {
+    width: '100%',
+    maxWidth: 580,
+    maxHeight: '90%',
     backgroundColor: colors.surface,
     borderRadius: radius.lg,
     borderWidth: 1,
@@ -376,11 +425,19 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     gap: spacing.md,
   },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  closeBtn: { padding: 4 },
+  modalScroll: { flexGrow: 0 },
+
   formTitle: { fontSize: fontSize.lg, fontWeight: '800', color: colors.text },
   formRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md },
   flexGrow: { flex: 1, minWidth: 200 },
   precioInput: { width: 160 },
-  field: { gap: spacing.xs },
+  field: { gap: spacing.xs, marginBottom: spacing.sm },
   fieldLabel: { fontSize: fontSize.sm, fontWeight: '600', color: colors.text },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   chip: {
@@ -396,18 +453,24 @@ const styles = StyleSheet.create({
   chipTextActive: { color: colors.textOnPrimary },
   uploadRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: spacing.md, marginTop: spacing.xs },
   preview: { width: 72, height: 72, borderRadius: radius.md },
-  switchRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  switchRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: spacing.xs },
   formActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: spacing.sm, flexWrap: 'wrap' },
-  confirmBar: {
+
+  // Confirmación
+  confirmCard: { maxWidth: 420, alignItems: 'center' },
+  confirmIcon: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: colors.dangerSoft,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.danger,
-    padding: spacing.md,
-    gap: spacing.sm,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  confirmText: { color: colors.danger, fontSize: fontSize.sm, fontWeight: '600' },
-  confirmActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: spacing.sm },
+  confirmTitle: { fontSize: fontSize.lg, fontWeight: '800', color: colors.text },
+  confirmText: { color: colors.textMuted, fontSize: fontSize.sm, textAlign: 'center', lineHeight: 20 },
+  confirmActions: { flexDirection: 'row', justifyContent: 'center', gap: spacing.sm, flexWrap: 'wrap' },
+
+  // Lista
   list: { gap: spacing.sm },
   productRow: {
     flexDirection: 'row',

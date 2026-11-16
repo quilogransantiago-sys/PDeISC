@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ScrollView, Text, View, StyleSheet, useWindowDimensions, Pressable } from 'react-native';
 import { Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -9,7 +9,8 @@ import { Footer } from '@/components/Footer';
 import { FadeInView } from '@/components/ui/FadeInView';
 import { Button } from '@/components/ui/Button';
 import { Loading, EmptyState } from '@/components/ui/Feedback';
-import { colors, spacing, fontSize, radius, maxContentWidth, gradients } from '@/styles/theme';
+import { spacing, fontSize, radius, maxContentWidth, gradients } from '@/styles/theme';
+import { useTheme } from '@/context/ThemeContext';
 import { productsApi } from '@/modules/api/products';
 import { categoriesApi } from '@/modules/api/categories';
 import type { Producto, Categoria } from '@/modules/types';
@@ -56,6 +57,9 @@ export default function HomeScreen() {
       active = false;
     };
   }, []);
+
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.container}>
@@ -168,7 +172,7 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (colors: any) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.background,
