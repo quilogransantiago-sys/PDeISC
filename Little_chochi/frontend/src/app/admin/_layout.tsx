@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Stack, Redirect, Link, usePathname } from 'expo-router';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Logo } from '@/components/Logo';
 import { FullScreenLoading } from '@/components/ui/Feedback';
@@ -12,6 +12,8 @@ export default function AdminLayout() {
   const { usuario, initializing, logout } = useAuth();
   const pathname = usePathname();
   const { colors } = useTheme();
+  const { width } = useWindowDimensions();
+  const compact = width < 640;
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   if (initializing) return <FullScreenLoading />;
@@ -33,19 +35,19 @@ export default function AdminLayout() {
           <Link href="/" asChild>
             <Pressable style={styles.brand}>
               <Logo size={34} />
-              <Text style={styles.brandText}>Little Chochi · Panel</Text>
+              {!compact ? <Text style={styles.brandText}>Little Chochi · Panel</Text> : null}
             </Pressable>
           </Link>
           <View style={styles.topActions}>
             <Link href="/" asChild>
-              <Pressable style={styles.storeLink}>
+              <Pressable style={styles.storeLink} accessibilityLabel="Ver tienda">
                 <Ionicons name="storefront-outline" size={18} color={colors.primary} />
-                <Text style={styles.storeText}>Ver tienda</Text>
+                {!compact ? <Text style={styles.storeText}>Ver tienda</Text> : null}
               </Pressable>
             </Link>
-            <Pressable onPress={logout} style={styles.logout}>
+            <Pressable onPress={logout} style={styles.logout} accessibilityLabel="Salir">
               <Ionicons name="log-out-outline" size={18} color={colors.danger} />
-              <Text style={styles.logoutText}>Salir</Text>
+              {!compact ? <Text style={styles.logoutText}>Salir</Text> : null}
             </Pressable>
           </View>
         </View>
