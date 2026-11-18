@@ -33,7 +33,7 @@ export function createApp() {
   app.use(express.json({ limit: '1mb' }));
 
   // Imágenes subidas por el admin
-  app.use('/uploads', express.static(path.resolve(__dirname, '../../uploads')));
+  app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));
 
   // Health check
   app.get('/api/health', (req, res) => {
