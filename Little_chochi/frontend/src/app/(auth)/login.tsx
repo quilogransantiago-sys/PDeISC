@@ -11,17 +11,13 @@ import { spacing, fontSize, radius } from '@/styles/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 
-type Proveedor = 'google' | 'facebook' | 'github';
+type Proveedor = 'google' | 'github';
 
 const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID;
-const FACEBOOK_APP_ID = process.env.EXPO_PUBLIC_FACEBOOK_APP_ID;
 const GITHUB_CLIENT_ID = process.env.EXPO_PUBLIC_GITHUB_CLIENT_ID;
 
 const googleDiscovery = {
   authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
-};
-const facebookDiscovery = {
-  authorizationEndpoint: 'https://www.facebook.com/dialog/oauth',
 };
 const githubDiscovery = {
   authorizationEndpoint: 'https://github.com/login/oauth/authorize',
@@ -47,18 +43,6 @@ export default function LoginScreen() {
       extraParams: { prompt: 'select_account' },
     },
     googleDiscovery,
-  );
-
-  // Facebook: flujo implícito → access_token
-  const [, facebookResponse, facebookPromptAsync] = AuthSession.useAuthRequest(
-    {
-      clientId: FACEBOOK_APP_ID ?? '',
-      scopes: ['public_profile', 'email'],
-      responseType: AuthSession.ResponseType.Token,
-      redirectUri: AuthSession.makeRedirectUri(),
-      usePKCE: false,
-    },
-    facebookDiscovery,
   );
 
   // GitHub: flujo de código → el backend lo cambia por un access token
@@ -100,20 +84,6 @@ export default function LoginScreen() {
       })();
     }
   }, [googleResponse, completarSocial]);
-
-  useEffect(() => {
-    if (facebookResponse?.type === 'success' || facebookResponse?.type === 'error') {
-      (async () => {
-        if (facebookResponse.type === 'success') {
-          const token = facebookResponse.params?.access_token;
-          if (token) await completarSocial('facebook', token);
-          else setError('Facebook no devolvió un token válido');
-        } else {
-          setError('No se pudo completar el inicio de sesión con Facebook');
-        }
-      })();
-    }
-  }, [facebookResponse, completarSocial]);
 
   useEffect(() => {
     if (githubResponse?.type === 'success' || githubResponse?.type === 'error') {
@@ -216,14 +186,6 @@ export default function LoginScreen() {
             style={styles.socialButton}
           >
             <Ionicons name="logo-google" size={22} color={colors.text} />
-          </Pressable>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Iniciar sesión con Facebook"
-            onPress={() => abrirProveedor(facebookPromptAsync, FACEBOOK_APP_ID, 'Facebook')}
-            style={styles.socialButton}
-          >
-            <Ionicons name="logo-facebook" size={22} color={colors.text} />
           </Pressable>
           <Pressable
             accessibilityRole="button"
