@@ -14,6 +14,9 @@ npm-debug.*
 # Backups comprimidos (ej. Little_chochi.zip)
 *.zip
 
+# Salida temporal de `eas build:inspect`
+eas-archive/
+
 # Otros proyectos del repo (no son parte de Little Chochi)
 /js/
 /react/
