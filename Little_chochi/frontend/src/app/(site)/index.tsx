@@ -58,13 +58,16 @@ export default function HomeScreen() {
     };
   }, []);
 
-  const { colors } = useTheme();
+  const { colors, mode } = useTheme();
   const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.container}>
       {/* Hero */}
-      <LinearGradient colors={[...gradients.hero]} style={styles.hero}>
+      <LinearGradient
+        colors={mode === 'dark' ? [...gradients.heroDark] : [...gradients.hero]}
+        style={styles.hero}
+      >
         <View style={styles.heroInner}>
           <View style={styles.heroText}>
             <Text style={styles.kicker}>Boutique artesanal para bebés</Text>
