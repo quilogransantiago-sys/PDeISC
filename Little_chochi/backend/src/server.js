@@ -13,8 +13,10 @@ async function main() {
   }
 
   const app = createApp();
-  app.listen(config.port, () => {
-    console.log(`✔ API Little Chochi escuchando en http://localhost:${config.port}`);
+  // AlwaysData (y otros hosts) exponen la dirección en IP/HOST y el puerto en PORT.
+  const host = process.env.IP || process.env.HOST || undefined;
+  app.listen(config.port, host, () => {
+    console.log(`✔ API Little Chochi escuchando en http://${host || 'localhost'}:${config.port}`);
   });
 }
 
