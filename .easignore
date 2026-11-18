@@ -1,0 +1,10 @@
+# Archivos que NO se suben a EAS Build (raíz del repo Git).
+# EAS CLI lee este .easignore desde la raíz del repositorio.
+node_modules/
+.expo/
+dist/
+web-build/
+.git/
+.DS_Store
+*.log
+npm-debug.*
