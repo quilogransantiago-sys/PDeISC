@@ -1,0 +1,9 @@
+# Archivos que NO se suben a EAS Build (reduce el tarball y el tiempo de upload)
+node_modules/
+.expo/
+dist/
+web-build/
+.git/
+.DS_Store
+*.log
+npm-debug.*
