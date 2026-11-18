@@ -179,12 +179,22 @@ export async function me(req, res) {
 /** Verifica el token/código contra el proveedor y devuelve la identidad. */
 async function verifySocial(proveedor, token, code) {
   if (proveedor === 'google') {
-    const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+    // Intenta como id_token (JWT de OpenID Connect, viene del SDK nativo de Google).
+    const tokenInfoRes = await fetch(
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(token)}`,
+    );
+    if (tokenInfoRes.ok) {
+      const data = await tokenInfoRes.json();
+      return { socialId: data.sub, email: data.email, nombre: data.name };
+    }
+
+    // Fallback: access_token (flujo web de expo-auth-session).
+    const userRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
       headers: { Authorization: `Bearer ${token}` },
     });
-    if (!res.ok) throw httpError(401, 'No se pudo validar el token de Google');
-    const data = await res.json();
-    return { socialId: data.sub, email: data.email, nombre: data.name };
+    if (!userRes.ok) throw httpError(401, 'No se pudo validar el token de Google');
+    const data2 = await userRes.json();
+    return { socialId: data2.sub, email: data2.email, nombre: data2.name };
   }
 
   if (proveedor === 'facebook') {

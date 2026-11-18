@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ScrollView, Text, View, Pressable, StyleSheet } from 'react-native';
+import { ScrollView, Text, View, Pressable, StyleSheet, Platform } from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import * as AuthSession from 'expo-auth-session';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { Logo } from '@/components/Logo';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
@@ -11,16 +12,10 @@ import { spacing, fontSize, radius } from '@/styles/theme';
 import { useAuth } from '@/context/AuthContext';
 import { useTheme } from '@/context/ThemeContext';
 
-type Proveedor = 'google' | 'github';
-
 const GOOGLE_CLIENT_ID = process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID;
-const GITHUB_CLIENT_ID = process.env.EXPO_PUBLIC_GITHUB_CLIENT_ID;
 
 const googleDiscovery = {
   authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
-};
-const githubDiscovery = {
-  authorizationEndpoint: 'https://github.com/login/oauth/authorize',
 };
 
 export default function LoginScreen() {
@@ -31,8 +26,9 @@ export default function LoginScreen() {
   const [error, setError] = useState<string | null>(null);
   const [info, setInfo] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
+  const [cargandoGoogle, setCargandoGoogle] = useState(false);
 
-  // Google: flujo implícito → access_token
+  // Google en web: expo-auth-session (flujo implícito → access_token)
   const [, googleResponse, googlePromptAsync] = AuthSession.useAuthRequest(
     {
       clientId: GOOGLE_CLIENT_ID ?? '',
@@ -45,38 +41,34 @@ export default function LoginScreen() {
     googleDiscovery,
   );
 
-  // GitHub: flujo de código → el backend lo cambia por un access token
-  const [, githubResponse, githubPromptAsync] = AuthSession.useAuthRequest(
-    {
-      clientId: GITHUB_CLIENT_ID ?? '',
-      scopes: ['read:user', 'user:email'],
-      responseType: AuthSession.ResponseType.Code,
-      redirectUri: AuthSession.makeRedirectUri(),
-      usePKCE: false,
-    },
-    githubDiscovery,
-  );
+  // Google nativo: configuramos el SDK una sola vez.
+  useEffect(() => {
+    if (Platform.OS !== 'web' && GOOGLE_CLIENT_ID) {
+      GoogleSignin.configure({ webClientId: GOOGLE_CLIENT_ID });
+    }
+  }, []);
 
   const completarSocial = useCallback(
-    async (proveedor: Proveedor, token?: string, code?: string) => {
+    async (token: string) => {
       setError(null);
       setInfo(null);
       try {
-        await socialLogin(proveedor, token, code);
+        await socialLogin(token);
         router.replace('/cuenta');
       } catch (e: any) {
-        setError(e?.message || `No se pudo iniciar sesión con ${proveedor}`);
+        setError(e?.message || 'No se pudo iniciar sesión con Google');
       }
     },
     [socialLogin, router],
   );
 
+  // Web: manejar la respuesta de expo-auth-session.
   useEffect(() => {
     if (googleResponse?.type === 'success' || googleResponse?.type === 'error') {
       (async () => {
         if (googleResponse.type === 'success') {
           const token = googleResponse.params?.access_token;
-          if (token) await completarSocial('google', token);
+          if (token) await completarSocial(token);
           else setError('Google no devolvió un token válido');
         } else {
           setError('No se pudo completar el inicio de sesión con Google');
@@ -84,23 +76,6 @@ export default function LoginScreen() {
       })();
     }
   }, [googleResponse, completarSocial]);
-
-  useEffect(() => {
-    if (githubResponse?.type === 'success' || githubResponse?.type === 'error') {
-      (async () => {
-        if (githubResponse.type === 'success') {
-          const code = githubResponse.params?.code;
-          if (code) await completarSocial('github', undefined, code);
-          else setError('GitHub no devolvió un código válido');
-        } else {
-          setError('No se pudo completar el inicio de sesión con GitHub');
-        }
-      })();
-    }
-  }, [githubResponse, completarSocial]);
-
-  const { colors } = useTheme();
-  const styles = useMemo(() => createStyles(colors), [colors]);
 
   async function handleLogin() {
     setError(null);
@@ -120,19 +95,36 @@ export default function LoginScreen() {
     }
   }
 
-  function abrirProveedor(
-    promptAsync: () => Promise<unknown>,
-    clienteId: string | undefined,
-    nombre: string,
-  ) {
+  async function handleGoogle() {
     setError(null);
     setInfo(null);
-    if (!clienteId) {
-      setInfo(`Falta configurar la variable del cliente de ${nombre} en frontend/.env`);
+    if (!GOOGLE_CLIENT_ID) {
+      setInfo('Falta configurar EXPO_PUBLIC_GOOGLE_CLIENT_ID');
       return;
     }
-    promptAsync().catch(() => setError(`No se pudo abrir la ventana de ${nombre}`));
+
+    if (Platform.OS === 'web') {
+      googlePromptAsync().catch(() => setError('No se pudo abrir la ventana de Google'));
+      return;
+    }
+
+    // Nativo (Android/iOS): SDK de Google Sign-In.
+    setCargandoGoogle(true);
+    try {
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      const res = await GoogleSignin.signIn();
+      if (res.type === 'success' && res.data.idToken) {
+        await completarSocial(res.data.idToken);
+      }
+    } catch (e: any) {
+      setError(e?.message || 'No se pudo iniciar sesión con Google');
+    } finally {
+      setCargandoGoogle(false);
+    }
   }
+
+  const { colors } = useTheme();
+  const styles = useMemo(() => createStyles(colors), [colors]);
 
   return (
     <ScrollView style={styles.screen} contentContainerStyle={styles.container}>
@@ -182,18 +174,11 @@ export default function LoginScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Iniciar sesión con Google"
-            onPress={() => abrirProveedor(googlePromptAsync, GOOGLE_CLIENT_ID, 'Google')}
+            onPress={handleGoogle}
+            disabled={cargandoGoogle}
             style={styles.socialButton}
           >
             <Ionicons name="logo-google" size={22} color={colors.text} />
-          </Pressable>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Iniciar sesión con GitHub"
-            onPress={() => abrirProveedor(githubPromptAsync, GITHUB_CLIENT_ID, 'GitHub')}
-            style={styles.socialButton}
-          >
-            <Ionicons name="logo-github" size={22} color={colors.text} />
           </Pressable>
         </View>
 
